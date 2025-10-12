@@ -1,43 +1,15 @@
-import React from 'react'
+
+import BannerSection from '../components/Home/BannerSection'
+import TopAttractions from '../components/Home/TopAttractions'
+import TopCities from '../components/Home/TopCities'
 
 function Home() {
   return (
-    <div>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-      <h1>Welcome to TourBooking</h1>
-      <p>Your one-stop solution for booking amazing tours.</p>
-    </div>
+    <>
+    <BannerSection />
+    <TopCities />
+    <TopAttractions />
+    </>
   )
 }
 
