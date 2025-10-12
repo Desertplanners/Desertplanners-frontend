@@ -1,50 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const attractions = [
   {
     name: "Burj Khalifa",
     price: "AED 350",
-    img: "https://plus.unsplash.com/premium_photo-1694475634077-e6e4b623b574?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1071",
+    img: "https://plus.unsplash.com/premium_photo-1694475634077-e6e4b623b574?auto=format&fit=crop&w=1071&q=80",
   },
   {
     name: "Desert Safari",
     price: "AED 250",
-    img: "https://images.unsplash.com/photo-1588310558566-b983c7d257e4?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=688",
+    img: "https://images.unsplash.com/photo-1588310558566-b983c7d257e4?auto=format&fit=crop&w=688&q=80",
   },
   {
     name: "Ferrari World",
     price: "AED 450",
-    img: "https://images.unsplash.com/photo-1578152882785-df9744e359e5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=735",
+    img: "https://images.unsplash.com/photo-1578152882785-df9744e359e5?auto=format&fit=crop&w=735&q=80",
   },
   {
     name: "Palm Jumeirah",
     price: "AED 200",
-    img: "https://images.unsplash.com/photo-1682410601904-24ec1d9858e6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074",
+    img: "https://images.unsplash.com/photo-1682410601904-24ec1d9858e6?auto=format&fit=crop&w=1074&q=80",
   },
   {
     name: "Dubai Marina",
     price: "AED 150",
-    img: "https://images.unsplash.com/photo-1459787915554-b34915863013?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=633",
+    img: "https://images.unsplash.com/photo-1459787915554-b34915863013?auto=format&fit=crop&w=633&q=80",
   },
   {
     name: "Global Village",
     price: "AED 100",
-    img: "https://images.unsplash.com/photo-1671949047848-847819cdc705?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074",
+    img: "https://images.unsplash.com/photo-1671949047848-847819cdc705?auto=format&fit=crop&w=1074&q=80",
   },
 ];
 
 export default function TopAttractionsCarousel() {
   const [current, setCurrent] = useState(0);
-  const cardsPerView = 3;
+  const [cardsPerView, setCardsPerView] = useState(4);
 
-  const next = () => {
-    setCurrent((prev) => (prev + 1) % attractions.length);
-  };
+  // Responsive cards per view
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setCardsPerView(4); // Desktop
+      else if (window.innerWidth >= 640) setCardsPerView(2); // Tablet
+      else setCardsPerView(1); // Mobile
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const prev = () => {
+  const next = () => setCurrent((prev) => (prev + 1) % attractions.length);
+  const prev = () =>
     setCurrent((prev) => (prev - 1 + attractions.length) % attractions.length);
-  };
 
   const getVisible = () => {
     const visible = [];
@@ -76,16 +84,17 @@ export default function TopAttractionsCarousel() {
           </button>
 
           {/* Cards */}
-          <div className="flex gap-6 overflow-hidden w-full">
+          <div className="flex gap-6 overflow-hidden w-full transition-transform duration-500">
             {visibleAttractions.map((item, idx) => (
               <div
                 key={idx}
-                className="relative flex-shrink-0 w-[32%] rounded-xl shadow-lg group overflow-hidden transition-transform duration-500 hover:scale-105"
+                className="relative flex-shrink-0 rounded-xl shadow-lg group overflow-hidden transition-transform duration-500"
+                style={{ width: `${100 / cardsPerView - 1.5}%` }}
               >
                 <img
                   src={item.img}
                   alt={item.name}
-                  className="w-full h-80 object-cover"
+                  className="w-full h-80 object-cover transform transition duration-500 group-hover:scale-105"
                 />
                 {/* Price Ribbon */}
                 <span className="absolute top-2 left-2 bg-[#e82429] text-white px-3 py-1 rounded-full font-semibold text-sm">
