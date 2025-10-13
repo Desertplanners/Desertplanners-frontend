@@ -211,26 +211,53 @@ export default function Navbar() {
           name: "Excursion Tickets",
           path: "/tours/excursion-tickets",
           subSubLinks: [
-            { name: "AI Ain Tour", path: "/tours/excursion-tickets/ai-ain-tour" },
+            {
+              name: "AI Ain Tour",
+              path: "/tours/excursion-tickets/ai-ain-tour",
+            },
             {
               name: "City Circuit - 25 Min. Flight",
               path: "/tours/excursion-tickets/city-circuit---25-min.-flight",
             },
-            { name: "Dubai Miracle Garden", path: "/tours/excursion-tickets/dubai-miracle-garden" },
-            { name: "Explorer Ticket", path: "/tours/excursion-tickets/explorer-ticket" },
-            { name: "Fujairah City Tour", path: "/tours/excursion-tickets/fujairah-city-tour" },
+            {
+              name: "Dubai Miracle Garden",
+              path: "/tours/excursion-tickets/dubai-miracle-garden",
+            },
+            {
+              name: "Explorer Ticket",
+              path: "/tours/excursion-tickets/explorer-ticket",
+            },
+            {
+              name: "Fujairah City Tour",
+              path: "/tours/excursion-tickets/fujairah-city-tour",
+            },
             { name: "Img World", path: "/tours/excursion-tickets/img-world" },
-            { name: "Legoland Theme Park", path: "/tours/excursion-tickets/legoland-theme-park" },
-            { name: "Regular Zoo Entry", path: "/tours/excursion-tickets/regular-zoo-entry" },
-            { name: "Sharjah City Tour", path: "/tours/excursion-tickets/sharjah-city-tour" },
+            {
+              name: "Legoland Theme Park",
+              path: "/tours/excursion-tickets/legoland-theme-park",
+            },
+            {
+              name: "Regular Zoo Entry",
+              path: "/tours/excursion-tickets/regular-zoo-entry",
+            },
+            {
+              name: "Sharjah City Tour",
+              path: "/tours/excursion-tickets/sharjah-city-tour",
+            },
           ],
         },
         {
           name: "Combo Packages",
           path: "/tours/combo-packages",
           subSubLinks: [
-            { name: "City + Safari", path: "/tours/combo-packages/city-+-safari-combo" },
-            { name: "Burj + Aquarium", path: "/tours/combo-packages/burj-+-aquarium-combo" },
+            {
+              name: "City + Safari",
+              path: "/tours/combo-packages/city-+-safari-combo",
+            },
+            {
+              name: "Burj + Aquarium",
+              path: "/tours/combo-packages/burj-+-aquarium-combo",
+            },
           ],
         },
       ],
@@ -293,7 +320,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-[1200px] mx-auto flex items-center justify-between px-4 py-4">
         {/* Logo */}
-        <Link to="/">
+        <Link to="/" onClick={() => setMenuOpen(false)}>
           <img
             src="/desertplanners_logo.png"
             alt="Logo"
@@ -392,6 +419,7 @@ export default function Navbar() {
                     <div className="flex justify-between items-center">
                       <Link
                         to={link.path}
+                        onClick={() => setMenuOpen(false)} // 🔥 auto close
                         className="px-4 py-2 font-medium text-[#404041] rounded-md hover:bg-[#e82429]/10 hover:text-[#e82429] flex-1"
                       >
                         {link.title}
@@ -417,6 +445,7 @@ export default function Navbar() {
                             <div className="flex justify-between items-center">
                               <Link
                                 to={sublink.path}
+                                onClick={() => setMenuOpen(false)} // 🔥 auto close
                                 className="block px-4 py-2 text-sm text-[#404041] hover:bg-[#e82429]/10 hover:text-[#e82429] rounded"
                               >
                                 {sublink.name}
@@ -450,6 +479,7 @@ export default function Navbar() {
                                   <Link
                                     key={k}
                                     to={sub.path}
+                                    onClick={() => setMenuOpen(false)} // 🔥 auto close
                                     className="block px-4 py-1 text-sm text-gray-600 hover:bg-[#e82429]/10 hover:text-[#e82429] rounded transition"
                                   >
                                     {sub.name}
@@ -465,6 +495,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     to={link.path}
+                    onClick={() => setMenuOpen(false)} // 🔥 auto close
                     className="block px-4 py-2 font-medium text-[#404041] hover:bg-[#e82429]/10 hover:text-[#e82429] rounded"
                   >
                     {link.title}
@@ -488,6 +519,7 @@ export default function Navbar() {
             {/* Contact Button */}
             <Link
               to="/contact"
+              onClick={() => setMenuOpen(false)} // 🔥 auto close
               className="block px-4 py-2 mt-2 rounded-md font-semibold text-white bg-[#e82429] hover:bg-[#c51b22] text-center transition-transform hover:scale-105"
             >
               Contact Us
