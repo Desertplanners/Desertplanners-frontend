@@ -264,14 +264,20 @@ export default function Navbar() {
     },
     {
       title: "Holiday Packages",
-      path: "/holiday-packages",
+      path: "/holidays",
       subLinks: [
-        { name: "Dubai Holiday Packages", path: "/holiday-packages/dubai" },
         {
-          name: "Abu Dhabi Holiday Packages",
+          name: "3 Nights - 4 Day Dubai Package",
+          path: "/holiday-packages/dubai",
+        },
+        {
+          name: "5 Nights - 6 Day Dubai Package",
           path: "/holiday-packages/abu-dhabi",
         },
-        { name: "Europe Holiday Packages", path: "/holiday-packages/europe" },
+        {
+          name: "4 Nights - 5 Day Dubai Package",
+          path: "/holiday-packages/europe",
+        },
       ],
     },
     {
