@@ -21,6 +21,7 @@ export default function Navbar() {
     },
     {
       title: "Holiday Packages",
+      path: "/holiday-packages",
       subLinks: [
         { name: "Dubai Getaway", path: "/dubai-package" },
         { name: "Bali Holidays", path: "/bali" },
@@ -31,6 +32,7 @@ export default function Navbar() {
     },
     {
       title: "Visa Services",
+      path: "/visa-services",
       subLinks: [
         { name: "Dubai Visa", path: "/dubai-visa" },
         { name: "Singapore Visa", path: "/singapore-visa" },
@@ -60,7 +62,6 @@ export default function Navbar() {
           {navLinks.map((link, i) =>
             link.subLinks ? (
               <div key={i} className="relative group">
-                {/* Updated: Wrap main link with Link */}
                 <Link
                   to={link.path}
                   className="flex items-center gap-1 font-medium text-[#404041] hover:text-[#e82429] transition-colors duration-300"
@@ -143,19 +144,26 @@ export default function Navbar() {
               <div key={i} className="border-b border-gray-100">
                 {link.subLinks ? (
                   <>
-                    <button
-                      className="w-full flex justify-between items-center px-4 py-2 font-medium text-[#404041] rounded-md hover:bg-[#e82429] hover:text-white transition-colors duration-200"
-                      onClick={() =>
-                        setActiveDropdown(activeDropdown === i ? null : i)
-                      }
-                    >
-                      {link.title}
-                      <FiChevronDown
-                        className={`transition-transform ${
-                          activeDropdown === i ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
+                    <div className="flex justify-between items-center">
+                      <Link
+                        to={link.path}
+                        className="px-4 py-2 font-medium text-[#404041] rounded-md hover:bg-[#e82429] hover:text-white transition-colors duration-200 flex-1"
+                      >
+                        {link.title}
+                      </Link>
+                      <button
+                        className="px-2"
+                        onClick={() =>
+                          setActiveDropdown(activeDropdown === i ? null : i)
+                        }
+                      >
+                        <FiChevronDown
+                          className={`transition-transform ${
+                            activeDropdown === i ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                    </div>
                     {activeDropdown === i && (
                       <div className="bg-white">
                         {link.subLinks.map((sublink, j) => (
