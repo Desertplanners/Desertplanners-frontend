@@ -78,7 +78,7 @@ export default function TopCitiesSlider() {
 
           {/* Cards container with swipe */}
           <div
-            className="flex justify-between gap-5 overflow-hidden w-full transition-transform duration-700 ease-in-out touch-pan-x"
+            className="flex justify-between gap-5 overflow-hidden w-full transition-transform duration-700 ease-in-out touch-pan-x touch-pan-y"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
