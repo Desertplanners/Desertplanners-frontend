@@ -27,6 +27,14 @@ export default function TopCitiesSlider() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Auto slide effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % cities.length);
+    }, 5000); // change slide every 5 seconds
+    return () => clearInterval(timer);
+  }, []);
+
   // next and previous functions
   const nextSlide = () => setCurrent((prev) => (prev + 1) % cities.length);
   const prevSlide = () => setCurrent((prev) => (prev - 1 + cities.length) % cities.length);
@@ -56,8 +64,6 @@ export default function TopCitiesSlider() {
   };
 
   const visibleCities = getVisibleCities();
-
-  // total pages for dots
   const totalPages = Math.ceil(cities.length / visibleCards);
 
   return (
@@ -68,7 +74,6 @@ export default function TopCitiesSlider() {
         </h2>
 
         <div className="relative flex items-center justify-center">
-          {/* Left Button (Desktop) */}
           <button
             onClick={prevSlide}
             className="absolute left-0 z-10 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition hidden sm:block"
@@ -76,7 +81,6 @@ export default function TopCitiesSlider() {
             <FiChevronLeft size={22} />
           </button>
 
-          {/* Cards container with swipe */}
           <div
             className="flex justify-between gap-5 overflow-hidden w-full transition-transform duration-700 ease-in-out touch-pan-x touch-pan-y"
             onTouchStart={handleTouchStart}
@@ -107,7 +111,6 @@ export default function TopCitiesSlider() {
             ))}
           </div>
 
-          {/* Right Button (Desktop) */}
           <button
             onClick={nextSlide}
             className="absolute right-0 z-10 bg-white bg-opacity-70 hover:bg-opacity-100 p-2 rounded-full shadow-md transition hidden sm:block"
@@ -116,7 +119,6 @@ export default function TopCitiesSlider() {
           </button>
         </div>
 
-        {/* Pagination Dots (Mobile & Tablet) */}
         <div className="flex justify-center mt-6 gap-2 sm:hidden">
           {Array.from({ length: totalPages }).map((_, idx) => (
             <button

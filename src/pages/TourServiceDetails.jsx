@@ -39,7 +39,7 @@ export default function TourServiceDetails() {
     <div className="bg-gray-50 py-10">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 px-4">
         {/* LEFT CONTENT */}
-        <div className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 order-2 space-y-8 lg:order-1">
           {/* GALLERY */}
           <div className="bg-white rounded-2xl shadow-md overflow-hidden">
             <img
@@ -227,7 +227,7 @@ export default function TourServiceDetails() {
         </div>
 
         {/* RIGHT CONTENT (CHECK AVAILABILITY) */}
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 order-1 lg:order-2">
           <div className="sticky top-24 bg-white rounded-3xl shadow-xl p-6 flex flex-col gap-5">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-[#404041]">

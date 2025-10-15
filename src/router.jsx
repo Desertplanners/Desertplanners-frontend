@@ -9,6 +9,10 @@ import HolidayDetails from "./pages/HolidayDetails";
 import VisaList from "./pages/VisaList";
 import VisaDetails from "./pages/VisaDetails";
 import ContactUs from "./pages/Contact";
+import AdminRegister from "./pages/AdminRegister";
+import AdminLogin from "./pages/AdminLogin";
+
+
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -25,6 +29,9 @@ const AppRouter = () => (
       <Route path="/visa" element={<VisaList />} />
       <Route path="/visa/:slug" element={<VisaDetails />} />
       <Route path="/contact" element={<ContactUs />} />
+      {/* Admin Auth */}
+      <Route path="/admin/register" element={<AdminRegister />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
       <Route
         path="*"
         element={
