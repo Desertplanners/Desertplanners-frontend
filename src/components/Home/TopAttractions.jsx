@@ -40,8 +40,12 @@ export default function TopAttractionsCarousel() {
     return visible;
   };
 
-  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
-  const handleTouchMove = (e) => { touchEndX.current = e.touches[0].clientX; };
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
   const handleTouchEnd = () => {
     if (!touchStartX.current || !touchEndX.current) return;
     const diff = touchStartX.current - touchEndX.current;
@@ -52,13 +56,24 @@ export default function TopAttractionsCarousel() {
 
   const visibleAttractions = getVisible();
 
+  // ✅ Auto slide effect (every 5 seconds)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % attractions.length);
+    }, 5000); // 5 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   // Total pages for dots
   const totalPages = Math.ceil(attractions.length / cardsPerView);
 
   return (
-    <section className="py-10 bg-gray-50">
+    <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4 relative">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left" style={{ color: "#404041" }}>
+        <h2
+          className="text-3xl sm:text-4xl font-bold mb-6 text-left"
+          style={{ color: "#404041" }}
+        >
           Top Attractions
         </h2>
 

@@ -52,9 +52,9 @@ export default function UAEVisaServicesSlider() {
   const totalPages = Math.ceil(visaServices.length / cardsPerView);
 
   return (
-    <section className="py-10 bg-gray-50">
+    <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4 relative">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left" style={{ color: "#404041" }}>
+        <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-left" style={{ color: "#404041" }}>
           UAE Visa Services
         </h2>
 

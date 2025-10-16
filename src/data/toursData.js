@@ -385,12 +385,18 @@ const toursData = [
         price: "230",
         category: "Sightseeing",
       },
-      {
-        title: "Sharjah City Tour",
-        img: "https://i.pinimg.com/736x/02/a1/4c/02a14c9f24f9439ea0321da8a1aaede9.jpg",
-        price: "30",
-        category: "Religious",
-      },
+        {
+          title: "Sharjah City Tour",
+          img: "https://i.pinimg.com/736x/02/a1/4c/02a14c9f24f9439ea0321da8a1aaede9.jpg",
+          price: "30",
+          category: "Religious",
+        },
+        {
+          title: "Ajman City Tour",
+          img: "https://i.pinimg.com/1200x/47/d2/c2/47d2c22f9255593d5dbb0f1443369f4f.jpg",
+          price: "30",
+          category: "Religious",
+        },
     ],
   },
 

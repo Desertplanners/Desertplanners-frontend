@@ -9,8 +9,9 @@ import HolidayDetails from "./pages/HolidayDetails";
 import VisaList from "./pages/VisaList";
 import VisaDetails from "./pages/VisaDetails";
 import ContactUs from "./pages/Contact";
-import AdminRegister from "./pages/AdminRegister";
-import AdminLogin from "./pages/AdminLogin";
+import AdminRegister from "./pages/Admin/AdminRegister";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
 
 
 const AppRouter = () => (
@@ -32,6 +33,8 @@ const AppRouter = () => (
       {/* Admin Auth */}
       <Route path="/admin/register" element={<AdminRegister />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
       <Route
         path="*"
         element={

@@ -48,7 +48,7 @@ const thingsToDo = [
 
 export default function TopThingsToDoDubai() {
   return (
-    <section className="py-10 bg-[#f8fafc]">
+    <section className="py-8 bg-[#f8fafc]">
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-6">

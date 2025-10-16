@@ -1,17 +1,34 @@
 import React, { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useNavigate } from "react-router-dom"; // ✅ for navigation
 
 const cities = [
-  { name: "Dubai", img: "https://images.unsplash.com/flagged/photo-1559717865-a99cac1c95d8?auto=format&fit=crop&q=80&w=1171" },
-  { name: "Abu Dhabi", img: "https://images.unsplash.com/photo-1603565095944-2a6f33bb517c?auto=format&fit=crop&q=80&w=1171" },
-  { name: "Ajman", img: "https://images.unsplash.com/photo-1557678493-c54624d611fc?auto=format&fit=crop&q=80&w=687" },
-  { name: "Sharjah", img: "https://plus.unsplash.com/premium_photo-1697730012360-d49e7ca1a776?auto=format&fit=crop&q=80&w=1192" },
-  { name: "Paris", img: "https://images.unsplash.com/photo-1528909514045-2fa4ac7a08ba?auto=format&fit=crop&w=800&q=80" },
+  {
+    name: "Dubai",
+    img: "https://images.unsplash.com/flagged/photo-1559717865-a99cac1c95d8?auto=format&fit=crop&q=80&w=1171",
+    link: "/tours/dubai-city-tour/dubai-city-tour",
+  },
+  {
+    name: "Abu Dhabi",
+    img: "https://images.unsplash.com/photo-1603565095944-2a6f33bb517c?auto=format&fit=crop&q=80&w=1171",
+    link: "/tours/abu-dhabi-city-tour/abu-dhabi-city-tour",
+  },
+  {
+    name: "Ajman",
+    img: "https://images.unsplash.com/photo-1557678493-c54624d611fc?auto=format&fit=crop&q=80&w=687",
+    link: "/tours/excursion-tickets/ajman-city-tour",
+  },
+  {
+    name: "Sharjah",
+    img: "https://plus.unsplash.com/premium_photo-1697730012360-d49e7ca1a776?auto=format&fit=crop&q=80&w=1192",
+    link: "/tours/excursion-tickets/sharjah-city-tour",
+  },
 ];
 
 export default function TopCitiesSlider() {
   const [current, setCurrent] = useState(0);
   const [visibleCards, setVisibleCards] = useState(4);
+  const navigate = useNavigate(); // ✅ navigation hook
 
   // responsive visible card count
   const getVisibleCards = () => {
@@ -31,7 +48,7 @@ export default function TopCitiesSlider() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % cities.length);
-    }, 5000); // change slide every 5 seconds
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
@@ -67,9 +84,12 @@ export default function TopCitiesSlider() {
   const totalPages = Math.ceil(cities.length / visibleCards);
 
   return (
-    <section className="py-10 bg-gray-50">
+    <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto relative px-4">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left" style={{ color: "#404041" }}>
+        <h2
+          className="text-3xl sm:text-4xl font-bold mb-6 text-left"
+          style={{ color: "#404041" }}
+        >
           Top Cities to Visit
         </h2>
 
@@ -90,9 +110,15 @@ export default function TopCitiesSlider() {
             {visibleCities.map((city, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 transition-transform duration-700 ease-in-out"
+                onClick={() => navigate(city.link)} // ✅ navigate to details page
+                className="flex-shrink-0 transition-transform duration-700 ease-in-out cursor-pointer"
                 style={{
-                  width: visibleCards === 4 ? "23%" : visibleCards === 2 ? "48%" : "100%",
+                  width:
+                    visibleCards === 4
+                      ? "23%"
+                      : visibleCards === 2
+                      ? "48%"
+                      : "100%",
                 }}
               >
                 <div className="relative overflow-hidden rounded-xl shadow-lg group select-none">
@@ -125,7 +151,9 @@ export default function TopCitiesSlider() {
               key={idx}
               onClick={() => setCurrent(idx * visibleCards)}
               className={`w-3 h-3 rounded-full transition ${
-                idx === Math.floor(current / visibleCards) ? "bg-[#e82429]" : "bg-gray-300"
+                idx === Math.floor(current / visibleCards)
+                  ? "bg-[#e82429]"
+                  : "bg-gray-300"
               }`}
             />
           ))}

@@ -1,15 +1,8 @@
-const admin = "/admin";
-
-const BASE = "http://localhost:5000"; 
-// agar aap network pe test kar rahe ho to:
-// const BASE = "http://192.168.1.105:5000";
+const admin = "/api/admin";
 
 export const API = {
-  BASE_URL: BASE,
-
-  // Admin APIs
   ADMIN_REGISTER: `${admin}/register`,
   ADMIN_LOGIN: `${admin}/login`,
+  ADMIN_PROFILE: `${admin}/me`,
+  ADMIN_UPDATE_PROFILE: `${admin}/me`,
 };
-
-export default API;

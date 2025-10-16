@@ -2,7 +2,7 @@ import React from "react";
 
 export default function TravelInspiration() {
   return (
-    <section className="py-16 bg-gradient-to-r from-gray-50 via-white to-gray-100">
+    <section className="py-8 bg-gradient-to-r from-gray-50 via-white to-gray-100">
       <div className="max-w-[1200px] mx-auto flex flex-col lg:flex-row items-center justify-between px-6 gap-10">
         
         {/* ===== Left Content ===== */}

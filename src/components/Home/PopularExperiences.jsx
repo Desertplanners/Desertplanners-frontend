@@ -29,9 +29,9 @@ const experiences = [
 
 export default function PopularExperiences() {
   return (
-    <section className="py-10 bg-gray-50">
+    <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-[#404041]">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-[#404041]">
           Most Popular Experiences in Dubai
         </h2>
 

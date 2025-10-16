@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import DataService from "../config/DataService";
-import { API } from "../config/API";
+import DataService from "../../config/DataService";
+import { API } from "../../config/API";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminRegister() {

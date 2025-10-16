@@ -95,9 +95,9 @@ export default function TestimonialCarousel() {
   const totalPages = Math.ceil(testimonials.length / cardsPerView);
 
   return (
-    <section className="py-10 bg-gray-100">
+    <section className="py-8 bg-gray-100">
       <div className="max-w-[1200px] mx-auto px-4 relative">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left text-gray-800">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-left text-gray-800">
           What Our Travelers Say
         </h2>
 
