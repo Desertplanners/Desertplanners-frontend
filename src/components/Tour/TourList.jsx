@@ -4,6 +4,8 @@ import TourCard from "./TourCard";
 export default function TourList() {
   const tours = [
     {
+      id: 1,
+      path: "abu-dhabi-city-tour",
       image: "https://images.unsplash.com/photo-1590822067318-d58785999ad3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1032",
       category: "Guided Tours",
       rating: "4.5",
@@ -23,6 +25,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 2,
+      path: "adventure-tour",
       image: "https://plus.unsplash.com/premium_photo-1694475175003-9b470d82de5e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171",
       category: "Adventure Tours",
       rating: "4.7",
@@ -42,6 +46,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 3,
+      path : "burj-khalifa",
       image: "https://images.unsplash.com/photo-1582120031356-35f21bf61055?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687",
       category: "Adventure Tours",
       rating: "4.7",
@@ -61,6 +67,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 4,
+      path: "desert-safari",
       image: "https://images.unsplash.com/photo-1684137557817-d5fc4d3ccf69?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
       category: "Adventure Tours",
       rating: "4.7",
@@ -80,6 +88,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 5,
+      path: "dhow-cruise",
       image: "https://images.unsplash.com/photo-1515678821046-f1ba75cb9f9e?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
       category: "Adventure Tours",
       rating: "4.7",
@@ -99,6 +109,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 6,
+      path: "dubai-city-tour",
       image: "https://plus.unsplash.com/premium_photo-1697729914552-368899dc4757?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1112",
       category: "Adventure Tours",
       rating: "4.7",
@@ -118,6 +130,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id:7,
+      path: "dubai-aquarium",
       image: "https://images.unsplash.com/photo-1635756962089-ee9e9cfd284c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687",
       category: "Adventure Tours",
       rating: "4.7",
@@ -137,6 +151,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 8,
+      path: "helicopter-tour",
       image: "https://images.unsplash.com/photo-1707938594551-23a20304682f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=735",
       category: "Adventure Tours",
       rating: "4.7",
@@ -156,6 +172,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 9,
+      path: "yas-island",
       image: "https://images.unsplash.com/photo-1606225791862-6b106554ccaa?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074",
       category: "Adventure Tours",
       rating: "4.7",
@@ -175,6 +193,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 10,
+      path: "excursion-tickets",
       image: "https://images.unsplash.com/photo-1636909802866-2926b29d2b34?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
       category: "Adventure Tours",
       rating: "4.7",
@@ -194,6 +214,8 @@ export default function TourList() {
       showInfoText: "Show inclusions & important info →",
     },
     {
+      id: 11,
+      path: "combo-packages",
       image: "https://plus.unsplash.com/premium_photo-1694475218266-b93569487419?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
       category: "Adventure Tours",
       rating: "4.7",

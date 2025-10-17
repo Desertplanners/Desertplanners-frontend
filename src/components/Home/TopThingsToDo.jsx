@@ -1,5 +1,6 @@
 import React from "react";
 import { MapPin, Clock, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const thingsToDo = [
   {
@@ -7,46 +8,58 @@ const thingsToDo = [
     location: "Downtown Dubai",
     rating: 4.9,
     duration: "2 Hours",
-    img: "https://images.unsplash.com/photo-1637751325549-5b6ccb614819?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687",
+    img: "https://images.unsplash.com/photo-1637751325549-5b6ccb614819?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687",
+    path: "tours/burj-khalifa/burj-khalifa---124th-+-125th-floor-non-prime-hours",
   },
   {
     name: "Desert Safari Adventure",
     location: "Dubai Desert",
     rating: 4.8,
     duration: "6 Hours",
-    img: "https://images.unsplash.com/photo-1759731688224-c433f7bec5ab?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687",
+    img: "https://images.unsplash.com/photo-1759731688224-c433f7bec5ab?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687",
+    path: "tours/desert-safari/desert-safari-with-bbq-dinner-by-4*4-vechicle-with-quad-bike-on-sharing-basis",
   },
   {
     name: "Dinner Cruise at Marina",
     location: "Dubai Marina",
     rating: 4.7,
     duration: "3 Hours",
-    img: "https://images.unsplash.com/photo-1733155695385-782a3ca77ae7?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171",
+    img: "https://images.unsplash.com/photo-1733155695385-782a3ca77ae7?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1171",
+    path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers-on-sharing-basis",
   },
   {
     name: "Dubai Miracle Garden",
     location: "Al Barsha South",
     rating: 4.6,
     duration: "2 Hours",
-    img: "https://plus.unsplash.com/premium_photo-1661954483883-edd65eac3577?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
+    img: "https://plus.unsplash.com/premium_photo-1661954483883-edd65eac3577?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170",
+    path: "tours/excursion-tickets/dubai-miracle-garden",
   },
   {
     name: "Helicopter Tour Dubai",
     location: "Palm Jumeirah",
     rating: 4.9,
     duration: "1 Hour",
-    img: "https://plus.unsplash.com/premium_photo-1661755648502-5d01555e7664?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171",
+    img: "https://plus.unsplash.com/premium_photo-1661755648502-5d01555e7664?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1171",
+    path: "tours/helicopter-tour/12-mins-iconic-helicopter-tour-dubai",
   },
   {
     name: "Dubai Frame Visit",
     location: "Zabeel Park",
     rating: 4.8,
     duration: "1.5 Hours",
-    img: "https://images.unsplash.com/photo-1628859017536-c2f1d69f3c84?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=937",
+    img: "https://images.unsplash.com/photo-1628859017536-c2f1d69f3c84?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=937",
+    path: "tours/excursion-tickets/img-world",
   },
 ];
 
 export default function TopThingsToDoDubai() {
+  const navigate = useNavigate();
+
+  const goToDetails = (path) => {
+    navigate(`/${path}`);
+  };
+
   return (
     <section className="py-8 bg-[#f8fafc]">
       <div className="max-w-[1200px] mx-auto px-6">
@@ -65,10 +78,13 @@ export default function TopThingsToDoDubai() {
           {thingsToDo.map((item, index) => (
             <div
               key={index}
-              className="bg-white rounded-2xl shadow-md hover:shadow-xl overflow-hidden transition-all duration-500 flex flex-col"
+              className="bg-white rounded-2xl shadow-md hover:shadow-xl overflow-hidden transition-all duration-500 flex flex-col cursor-pointer"
             >
               {/* Image */}
-              <div className="relative overflow-hidden h-56">
+              <div
+                className="relative overflow-hidden h-56"
+                onClick={() => goToDetails(item.path)}
+              >
                 <img
                   src={item.img}
                   alt={item.name}
@@ -81,7 +97,7 @@ export default function TopThingsToDoDubai() {
 
               {/* Content */}
               <div className="p-5 flex-1 flex flex-col justify-between">
-                <div>
+                <div onClick={() => goToDetails(item.path)}>
                   <h3 className="text-lg font-bold text-gray-800 mb-2 hover:text-[#e82429] transition">
                     {item.name}
                   </h3>
@@ -96,7 +112,10 @@ export default function TopThingsToDoDubai() {
                   </div>
                 </div>
 
-                <button className="mt-4 w-full bg-[#e82429] text-white py-2 rounded-lg font-semibold text-sm hover:bg-[#721011] transition">
+                <button
+                  className="mt-4 w-full bg-[#e82429] text-white py-2 rounded-lg font-semibold text-sm hover:bg-[#721011] transition"
+                  onClick={() => goToDetails(item.path)} // ✅ Book Now also goes to details
+                >
                   Book Now
                 </button>
               </div>
