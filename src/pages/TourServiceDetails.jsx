@@ -168,21 +168,30 @@ export default function TourServiceDetails() {
               <li>🌟 Access to the Royal Suite and exclusive hotel areas.</li>
               <li>🌟 Learn Burj Al Arab’s design secrets and history.</li>
               <li>🌟 Explore the Inside Burj Boutique and shop souvenirs.</li>
-              <li>💡 Fun Fact: The marble used is the same as Michelangelo’s sculptures.</li>
+              <li>
+                💡 Fun Fact: The marble used is the same as Michelangelo’s
+                sculptures.
+              </li>
             </ul>
           </div>
 
           {/* NEED TO KNOW */}
           <div className="bg-white rounded-2xl shadow-md p-6 space-y-3">
-            <h2 className="text-2xl font-semibold text-[#404041]">Need to Know</h2>
-            <h3 className="text-lg font-semibold text-[#e82429]">Important Information</h3>
+            <h2 className="text-2xl font-semibold text-[#404041]">
+              Need to Know
+            </h2>
+            <h3 className="text-lg font-semibold text-[#e82429]">
+              Important Information
+            </h3>
             <ul className="list-disc list-inside text-gray-700">
               <li>Max 12 people per group.</li>
               <li>Smart casual attire required.</li>
               <li>Kids Club available for ages 2+.</li>
             </ul>
 
-            <h3 className="text-lg font-semibold text-[#e82429]">Restrictions</h3>
+            <h3 className="text-lg font-semibold text-[#e82429]">
+              Restrictions
+            </h3>
             <ul className="list-disc list-inside text-gray-700">
               <li>No food & drinks allowed.</li>
               <li>No photography in the lobby.</li>
@@ -195,7 +204,9 @@ export default function TourServiceDetails() {
 
           {/* CANCELLATION */}
           <div className="bg-white rounded-2xl shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-[#404041] mb-2">Cancellation Policy</h2>
+            <h2 className="text-2xl font-semibold text-[#404041] mb-2">
+              Cancellation Policy
+            </h2>
             <p className="text-gray-700 leading-relaxed">
               You can cancel up to <strong>24 hours before</strong> the
               experience for a full refund.
@@ -209,27 +220,29 @@ export default function TourServiceDetails() {
               <span className="absolute left-0 bottom-0 w-16 h-1 bg-[#e82429] rounded-full"></span>
             </h2>
 
-            {[{
-              name: "Aarav Sharma",
-              date: "Oct 2025",
-              rating: 5,
-              review:
-                "Absolutely mesmerizing! The tour guide was informative and polite. The interiors of Burj Al Arab are beyond imagination.",
-            },
-            {
-              name: "Sophia Khan",
-              date: "Sept 2025",
-              rating: 5,
-              review:
-                "Felt like royalty for a day. The Royal Suite was stunning, and the staff made it a truly unforgettable experience!",
-            },
-            {
-              name: "Rahul Mehta",
-              date: "Aug 2025",
-              rating: 4,
-              review:
-                "Great experience overall. The only downside was the crowd at the entrance, but the tour itself was top-notch.",
-            }].map((r, i) => (
+            {[
+              {
+                name: "Aarav Sharma",
+                date: "Oct 2025",
+                rating: 5,
+                review:
+                  "Absolutely mesmerizing! The tour guide was informative and polite. The interiors of Burj Al Arab are beyond imagination.",
+              },
+              {
+                name: "Sophia Khan",
+                date: "Sept 2025",
+                rating: 5,
+                review:
+                  "Felt like royalty for a day. The Royal Suite was stunning, and the staff made it a truly unforgettable experience!",
+              },
+              {
+                name: "Rahul Mehta",
+                date: "Aug 2025",
+                rating: 4,
+                review:
+                  "Great experience overall. The only downside was the crowd at the entrance, but the tour itself was top-notch.",
+              },
+            ].map((r, i) => (
               <div
                 key={i}
                 className="bg-white rounded-2xl shadow-lg p-5 hover:shadow-2xl transition-all duration-300"
@@ -244,15 +257,44 @@ export default function TourServiceDetails() {
                   </div>
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, idx) => (
-                      <span key={idx} className={`px-1 rounded ${idx < r.rating ? "bg-yellow-400" : "bg-gray-200"} text-yellow-500`}>
+                      <span
+                        key={idx}
+                        className={`px-1 rounded ${
+                          idx < r.rating ? "bg-yellow-400" : "bg-gray-200"
+                        } text-yellow-500`}
+                      >
                         <FaStar size={14} />
                       </span>
                     ))}
                   </div>
                 </div>
-                <p className="text-gray-700 leading-relaxed text-base">{r.review}</p>
+                <p className="text-gray-700 leading-relaxed text-base">
+                  {r.review}
+                </p>
               </div>
             ))}
+          </div>
+
+          {/* LOCATION MAP */}
+          <div className="bg-white rounded-3xl shadow-lg p-8 mt-6">
+            <h2 className="text-2xl font-semibold text-[#404041] flex items-center gap-2 mb-4">
+              <FaMapMarkerAlt className="text-[#e82429]" /> Location on Map
+            </h2>
+            <p className="text-gray-700 mb-4">
+              Explore the exact location of this experience in the heart of
+              Dubai.
+            </p>
+            <div className="w-full h-[400px] rounded-2xl overflow-hidden border border-[#e82429]/20 shadow-md">
+              <iframe
+                title="Dubai Map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d115906.80734362169!2d55.17127943775587!3d25.20484932788862!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f434eb2ff9cf3%3A0x7d02f59f5dc1a49d!2sDubai!5e0!3m2!1sen!2sae!4v1708231145123!5m2!1sen!2sae"
+                width="100%"
+                height="100%"
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </div>
           </div>
         </div>
       </div>
