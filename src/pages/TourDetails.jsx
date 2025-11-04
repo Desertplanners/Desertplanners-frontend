@@ -8,6 +8,10 @@ export default function TourDetails() {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Dynamic Base URL (for local + deployed backend)
+  const baseURL =
+    import.meta.env.VITE_API_URL || "https://desetplanner-backend.onrender.com";
+
   useEffect(() => {
     const fetchCategoryTours = async () => {
       try {
@@ -44,7 +48,11 @@ export default function TourDetails() {
       {/* Category Banner */}
       <div className="relative w-full h-64 md:h-96 overflow-hidden">
         <img
-          src={`http://localhost:5000/${tours[0].mainImage}`}
+          src={
+            tours[0].mainImage?.startsWith("http")
+              ? tours[0].mainImage
+              : `${baseURL}/${tours[0].mainImage}`
+          }
           alt={tours[0].category?.name || "Category"}
           className="w-full h-full object-cover brightness-70"
         />
@@ -66,7 +74,11 @@ export default function TourDetails() {
             {/* Image */}
             <div className="relative h-64 md:h-72 w-full overflow-hidden rounded-t-3xl">
               <img
-                src={`http://localhost:5000/${tour.mainImage}`}
+                src={
+                  tour.mainImage?.startsWith("http")
+                    ? tour.mainImage
+                    : `${baseURL}/${tour.mainImage}`
+                }
                 alt={tour.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />

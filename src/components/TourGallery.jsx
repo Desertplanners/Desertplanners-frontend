@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Lightbox from "react-18-image-lightbox";
 import "react-18-image-lightbox/style.css";
 
 const TourGallery = ({ tour }) => {
-  // 🧤 Guard: tour null ya undefined ho to safe fallback
   if (!tour) {
     return (
       <div className="text-center text-gray-500 p-10">
@@ -12,7 +11,6 @@ const TourGallery = ({ tour }) => {
     );
   }
 
-  // ✅ Dynamic Base URL (works in local + deployed)
   const baseURL =
     import.meta.env.VITE_API_URL ||
     "https://desetplanner-backend.onrender.com";
@@ -20,13 +18,22 @@ const TourGallery = ({ tour }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
-  // ✅ Convert images into full URLs
+  // ✅ Convert only galleryImages
   const images =
     tour?.galleryImages?.map((img) =>
       img?.startsWith("http") ? img : `${baseURL}/${img}`
     ) || [];
 
-  // 🧤 Guard: agar koi image nahi hai
+  const [mainImage, setMainImage] = useState(images[0]);
+
+  // 🧠 FIX: Jab tour change ho → mainImage ko reset karo
+  useEffect(() => {
+    if (images.length > 0) {
+      setMainImage(images[0]);
+      setPhotoIndex(0);
+    }
+  }, [tour?._id, tour?.galleryImages]);
+
   if (images.length === 0) {
     return (
       <div className="text-center text-gray-500 p-10">
@@ -34,8 +41,6 @@ const TourGallery = ({ tour }) => {
       </div>
     );
   }
-
-  const [mainImage, setMainImage] = useState(images[0]);
 
   return (
     <div className="relative flex flex-col md:flex-row bg-white rounded-2xl shadow-md overflow-hidden">
