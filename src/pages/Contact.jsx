@@ -4,6 +4,7 @@ import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from "react-icons/fa"
 import { API } from "../config/API";
 import DataService from "../config/DataService";
 import toast from "react-hot-toast";
+
 export default function ContactUs() {
   const [formData, setFormData] = useState({
     name: "",
@@ -25,9 +26,10 @@ export default function ContactUs() {
     try {
       const api = DataService();
       const response = await api.post(API.CREATE_ENQUIRY, formData);
-      // NOTE: No need for response.json() with axios
-      if (response.data.success) {
-        toast("Message submitted! Admin will contact you soon.");
+
+      // ✅ Handle success by HTTP status also (201 = created)
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Message submitted! Admin will contact you soon. ✅");
         setFormData({
           name: "",
           email: "",
@@ -36,11 +38,22 @@ export default function ContactUs() {
           message: "",
         });
       } else {
-        toast.error(response.data.message || "Something went wrong. Please try again.");
+        toast.error(
+          response?.data?.message || "Something went wrong. Please try again."
+        );
       }
     } catch (err) {
-      console.error(err);
-      toast.error("Server error. Try again later.");
+      console.error("❌ Enquiry submission error:", err);
+
+      // 🔹 Backend error could be from nodemailer / timeout
+      if (err.response) {
+        toast.error(
+          err.response.data?.message ||
+            "Server responded with an error. Try again later."
+        );
+      } else {
+        toast.error("Network issue or server not reachable. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -68,7 +81,9 @@ export default function ContactUs() {
         <div className="lg:col-span-7">
           <div className="bg-white rounded-3xl shadow-2xl p-10 space-y-6 relative overflow-hidden">
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#e82429]/30 rounded-full blur-3xl animate-pulse"></div>
-            <h2 className="text-3xl font-bold text-[#721011] relative z-10">Contact Form</h2>
+            <h2 className="text-3xl font-bold text-[#721011] relative z-10">
+              Contact Form
+            </h2>
             <p className="text-gray-600 relative z-10">
               Have questions? Fill out the form below and we'll get back to you!
             </p>
@@ -148,10 +163,26 @@ export default function ContactUs() {
         {/* Right: Contact Info */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {[
-            { icon: <FaMapMarkerAlt className="text-[#e82429] text-3xl" />, title: "Address", text: "123 Travel Street, Dubai, UAE" },
-            { icon: <FaPhoneAlt className="text-[#e82429] text-3xl" />, title: "Phone", text: "+971 55 123 4567" },
-            { icon: <FaEnvelope className="text-[#e82429] text-3xl" />, title: "Email", text: "info@travelcompany.com" },
-            { icon: <FaClock className="text-[#e82429] text-3xl" />, title: "Hours", text: "Mon - Fri: 9:00 AM - 6:00 PM" },
+            {
+              icon: <FaMapMarkerAlt className="text-[#e82429] text-3xl" />,
+              title: "Address",
+              text: "123 Travel Street, Dubai, UAE",
+            },
+            {
+              icon: <FaPhoneAlt className="text-[#e82429] text-3xl" />,
+              title: "Phone",
+              text: "+971 55 123 4567",
+            },
+            {
+              icon: <FaEnvelope className="text-[#e82429] text-3xl" />,
+              title: "Email",
+              text: "info@travelcompany.com",
+            },
+            {
+              icon: <FaClock className="text-[#e82429] text-3xl" />,
+              title: "Hours",
+              text: "Mon - Fri: 9:00 AM - 6:00 PM",
+            },
           ].map((card, idx) => (
             <div
               key={idx}
@@ -159,7 +190,9 @@ export default function ContactUs() {
             >
               <div className="p-4 bg-[#e82429]/20 rounded-full">{card.icon}</div>
               <div>
-                <h3 className="font-bold text-[#721011] text-lg">{card.title}</h3>
+                <h3 className="font-bold text-[#721011] text-lg">
+                  {card.title}
+                </h3>
                 <p className="text-gray-600">{card.text}</p>
               </div>
             </div>
