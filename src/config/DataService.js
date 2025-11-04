@@ -1,10 +1,10 @@
 // config/DataService.js
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000";
+// ✅ Backend base URL from .env (VITE syntax for Vite projects)
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const DataService = (type = "user") => {
-  // ✅ Choose token based on type (user or admin)
   const token =
     type === "admin"
       ? localStorage.getItem("adminToken")

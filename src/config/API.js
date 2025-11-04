@@ -9,7 +9,7 @@ const visas = "/api/visas";
 const sections = "/api/sections"; // ✅ new added
 
 export const API = {
-  BASE_URL: "http://localhost:5000",
+  BASE_URL: "https://desetplanner-backend.onrender.com",
 
   // ---- Admin ----
   ADMIN_REGISTER: `${admin}/register`,
