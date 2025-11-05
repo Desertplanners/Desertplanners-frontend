@@ -11,7 +11,6 @@ export default function Cart({ userId }) {
   const [clearing, setClearing] = useState(false);
   const [removingItemId, setRemovingItemId] = useState(null);
 
-  // ✅ Get valid ObjectId string
   const getUserId = () => {
     const uid = userId || localStorage.getItem("userId");
     return uid && /^[0-9a-fA-F]{24}$/.test(uid) ? uid : null;
@@ -19,7 +18,6 @@ export default function Cart({ userId }) {
 
   const isLoggedIn = () => !!localStorage.getItem("userToken");
 
-  // ✅ Fetch cart items
   const fetchCart = async (uid) => {
     try {
       setLoading(true);
@@ -34,7 +32,6 @@ export default function Cart({ userId }) {
     }
   };
 
-  // ✅ Remove single item
   const removeItem = async (itemId) => {
     try {
       setRemovingItemId(itemId);
@@ -50,7 +47,6 @@ export default function Cart({ userId }) {
     }
   };
 
-  // ✅ Clear all cart items
   const clearCart = async () => {
     try {
       setClearing(true);
@@ -66,31 +62,21 @@ export default function Cart({ userId }) {
     }
   };
 
-  // ✅ Fetch cart when component mounts
   useEffect(() => {
     const uid = getUserId();
     if (uid) fetchCart(uid);
     else setLoading(false);
   }, [userId]);
 
-  // ✅ Total price
   const totalPrice = cart.reduce(
     (sum, item) => sum + (item.tourId?.price || 0) * item.guests,
     0
   );
 
-  // ✅ Checkout logic
   const handleCheckout = () => {
-    if (!isLoggedIn()) {
-      // 🧠 Save current path before redirecting
-      localStorage.setItem("redirectAfterLogin", "/cart");
-      navigate("/login");
-    } else {
-      navigate("/checkout");
-    }
+    navigate("/checkout", { state: { cart } });
   };
 
-  // ✅ Loading State
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -98,7 +84,6 @@ export default function Cart({ userId }) {
       </div>
     );
 
-  // ✅ Empty Cart (Modern & Attractive)
   if (cart.length === 0)
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] text-center bg-gradient-to-b from-gray-50 to-white p-8 rounded-3xl shadow-inner">
@@ -123,7 +108,6 @@ export default function Cart({ userId }) {
       </div>
     );
 
-  // ✅ Cart UI
   return (
     <div className="max-w-[1200px] mx-auto p-4">
       <h2 className="text-3xl font-bold mb-6 text-[#721011]">Your Cart</h2>
@@ -136,7 +120,7 @@ export default function Cart({ userId }) {
           >
             <div className="flex items-center gap-4">
               <img
-                src={`http://localhost:5000/${item.tourId?.mainImage}`}
+                src={`https://desetplanner-backend.onrender.com/${item.tourId?.mainImage}`}
                 alt={item.tourId?.title}
                 className="w-28 h-20 object-cover rounded-xl"
               />

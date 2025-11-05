@@ -1,154 +1,250 @@
-import React, { useEffect, useState } from "react";
-import { API } from "../config/API";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import DataService from "../config/DataService";
-import { motion } from "framer-motion";
-import { ShoppingCart, Package, Loader2 } from "lucide-react";
+import { API } from "../config/API";
+import {
+  FaCalendarAlt,
+  FaUser,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaPhoneAlt,
+} from "react-icons/fa";
 import toast from "react-hot-toast";
 
 export default function Checkout() {
-  const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const cart = location.state?.cart || [];
 
-  // ✅ use valid ObjectId (from real user login)
-  const userId = localStorage.getItem("userId"); // not tempUserId
+  // 🧠 Logged-in user (if any)
+  const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const token = user?.token || localStorage.getItem("token");
 
-  // ✅ fetch cart items
-  const fetchCart = async () => {
+  const [form, setForm] = useState({
+    guestName: user?.name || "",
+    guestEmail: user?.email || "",
+    guestContact: user?.phone || "",
+    pickupPoint: "",
+    dropPoint: "",
+    specialRequest: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + (item.tourId?.price || 0) * (item.guests || 1),
+    0
+  );
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (
+      !form.guestName ||
+      !form.guestEmail ||
+      !form.pickupPoint ||
+      !form.dropPoint
+    ) {
+      toast.error("⚠️ Please fill all required fields!");
+      return;
+    }
+
+    setLoading(true);
     try {
-      if (!userId || !/^[0-9a-fA-F]{24}$/.test(userId)) {
-        console.error("Invalid userId for checkout");
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
       const api = DataService();
-      const res = await api.get(API.GET_CART(userId));
-      setCart(res.data?.items || []);
+
+      const headers = {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      };
+
+      const bookingData = {
+        guestName: form.guestName,
+        guestEmail: form.guestEmail,
+        guestContact: form.guestContact,
+        pickupPoint: form.pickupPoint,
+        dropPoint: form.dropPoint,
+        specialRequest: form.specialRequest,
+        totalPrice,
+        items: cart.map((item) => ({
+          tourId: item.tourId?._id || item.tourId,
+          date: item.date,
+          guests: item.guests,
+          pickupPoint: form.pickupPoint,
+          dropPoint: form.dropPoint,
+        })),
+      };
+
+      const res = await api.post(API.CREATE_BOOKING, bookingData, { headers });
+
+      if (res.data?.success) {
+        toast.success("🎉 Booking confirmed successfully!");
+        navigate("/booking-success", { state: { booking: res.data.booking } });
+      } else {
+        toast.error(res.data.message || "Booking failed. Please try again.");
+      }
     } catch (err) {
-      console.error("Error fetching cart:", err);
+      console.error("❌ Booking Error:", err);
+      toast.error(
+        err.response?.data?.message || "Something went wrong while booking."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // ✅ booking handler
-  const handleBooking = async () => {
-    try {
-      if (!userId || !/^[0-9a-fA-F]{24}$/.test(userId)) {
-        alert("Invalid user ID");
-        return;
-      }
-
-      const api = DataService();
-      await api.post(API.CREATE_BOOKING, { userId });
-      toast("Booking successful!");
-
-      // clear cart
-      await api.delete(API.CLEAR_CART(userId));
-      setCart([]);
-    } catch (err) {
-      console.error("Booking failed:", err);
-      toast("Booking failed");
-    }
-  };
-
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
-  // 🌀 Loading State
-  if (loading)
-    return (
-      <div className="flex flex-col items-center justify-center h-[70vh] text-[#404041]">
-        <Loader2 className="w-10 h-10 animate-spin text-[#e82429]" />
-        <p className="mt-3 text-lg font-medium">Loading your checkout...</p>
-      </div>
-    );
-
-  // 🛒 Empty Cart State
-  if (cart.length === 0)
-    return (
-      <div className="flex flex-col items-center justify-center h-[75vh] text-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4 }}
-          className="p-10 rounded-3xl bg-white shadow-lg border border-[#e82429]/20"
-        >
-          <ShoppingCart className="w-16 h-16 mx-auto text-[#e82429]" />
-          <h2 className="mt-4 text-2xl font-bold text-[#404041]">
-            Your Cart is Empty
-          </h2>
-          <p className="mt-2 text-gray-500 max-w-md">
-            Looks like you haven’t added anything yet.  
-            Explore our amazing tours and start planning your next adventure!
-          </p>
-          <button
-            onClick={() => (window.location.href = "/tours")}
-            className="mt-6 bg-[#e82429] hover:bg-[#721011] text-white font-semibold px-6 py-3 rounded-xl shadow-md transition-all duration-300"
-          >
-            Explore Tours
-          </button>
-        </motion.div>
-      </div>
-    );
-
-  // ✅ Total price
-  const totalPrice = cart.reduce(
-    (sum, item) => sum + (item.tourId?.price || 0) * item.guests,
-    0
-  );
-
-  // ✅ Main UI
   return (
-    <div className="max-w-[1200px] mx-auto p-6">
-      <motion.h2
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-extrabold text-[#404041] mb-8 flex items-center gap-3"
-      >
-        <Package className="text-[#e82429]" /> Checkout
-      </motion.h2>
+    <div className="max-w-5xl mx-auto mt-12 p-8 bg-gradient-to-br from-[#ffffff] via-[#f9f7ff] to-[#fff1f3] rounded-3xl shadow-2xl">
+      {/* 🏖️ Heading */}
+      <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-[#8000ff] to-[#e5006e] text-transparent bg-clip-text drop-shadow-lg">
+        Checkout & Confirm Your Booking
+      </h2>
 
-      {/* 🧾 Cart Items */}
-      <div className="space-y-4">
-        {cart.map((item) => (
-          <motion.div
-            key={item._id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="flex justify-between items-center bg-white border border-gray-200 shadow-md p-5 rounded-2xl hover:shadow-lg transition-all"
-          >
-            <div>
-              <h3 className="text-lg font-semibold text-[#721011]">
-                {item.tourId?.title}
-              </h3>
-              <p className="text-sm text-gray-600">
-                Date: {new Date(item.date).toDateString()}
-              </p>
-              <p className="text-sm text-gray-600">Guests: {item.guests}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-bold text-[#404041]">
-                AED {(item.tourId?.price || 0) * item.guests}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      <div className="grid md:grid-cols-2 gap-10">
+        {/* 🧾 Booking Summary */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all">
+          <h3 className="text-2xl font-semibold mb-5 text-[#721011] flex items-center gap-2">
+            <FaCalendarAlt className="text-[#e82429]" /> Booking Summary
+          </h3>
 
-      {/* 💰 Total & Confirm */}
-      <div className="mt-8 flex justify-between items-center bg-[#e82429]/10 border border-[#e82429]/20 p-5 rounded-2xl">
-        <h3 className="text-xl font-semibold text-[#404041]">
-          Total: <span className="text-[#e82429]">AED {totalPrice}</span>
-        </h3>
-        <button
-          onClick={handleBooking}
-          className="bg-[#e82429] hover:bg-[#721011] text-white px-8 py-3 rounded-xl font-semibold shadow-md transition-all duration-300"
-        >
-          Confirm Booking
-        </button>
+          {cart.length > 0 ? (
+            <div className="space-y-5">
+              {cart.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-5 border-b pb-4 border-gray-200 hover:bg-gray-50 rounded-xl transition-all p-2"
+                >
+                  <img
+                    src={
+                      item.tourId?.mainImage
+                        ? `https://desetplanner-backend.onrender.com/${item.tourId.mainImage}`
+                        : "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                    }
+                    alt={item.tourId?.title}
+                    className="w-28 h-24 object-cover rounded-2xl shadow"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900 text-lg">
+                      {item.tourId?.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      <FaCalendarAlt className="inline text-[#e82429] mr-1" />
+                      {item.date
+                        ? new Date(item.date).toDateString()
+                        : "Not selected"}
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      Guests: {item.guests}
+                    </p>
+                    <p className="text-[#e82429] font-bold">
+                      AED {(item.tourId?.price || 0) * (item.guests || 1)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-between pt-4 border-t border-gray-200 text-lg">
+                <span className="font-bold text-gray-800">Total Price:</span>
+                <span className="font-bold text-[#e82429]">
+                  AED {totalPrice}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-10">No items in cart 🛒</p>
+          )}
+        </div>
+
+        {/* 🧍 Traveler Info */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all">
+          <h3 className="text-2xl font-semibold mb-5 text-[#721011] flex items-center gap-2">
+            <FaUser className="text-[#e82429]" /> Traveler Information
+          </h3>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="relative">
+              <FaUser className="absolute left-3 top-3 text-gray-400" />
+              <input
+                name="guestName"
+                value={form.guestName}
+                onChange={handleChange}
+                placeholder="Full Name"
+                className="w-full pl-10 border p-3 rounded-xl focus:ring-2 focus:ring-[#e82429] outline-none"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
+              <input
+                type="email"
+                name="guestEmail"
+                value={form.guestEmail}
+                onChange={handleChange}
+                placeholder="Email Address"
+                className="w-full pl-10 border p-3 rounded-xl focus:ring-2 focus:ring-[#e82429] outline-none"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <FaPhoneAlt className="absolute left-3 top-3 text-gray-400" />
+              <input
+                name="guestContact"
+                value={form.guestContact}
+                onChange={handleChange}
+                placeholder="Phone Number"
+                className="w-full pl-10 border p-3 rounded-xl focus:ring-2 focus:ring-[#e82429] outline-none"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
+              <input
+                name="pickupPoint"
+                value={form.pickupPoint}
+                onChange={handleChange}
+                placeholder="Pickup Point"
+                className="w-full pl-10 border p-3 rounded-xl focus:ring-2 focus:ring-[#e82429] outline-none"
+                required
+              />
+            </div>
+
+            <div className="relative">
+              <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
+              <input
+                name="dropPoint"
+                value={form.dropPoint}
+                onChange={handleChange}
+                placeholder="Drop Point"
+                className="w-full pl-10 border p-3 rounded-xl focus:ring-2 focus:ring-[#e82429] outline-none"
+                required
+              />
+            </div>
+
+            <textarea
+              name="specialRequest"
+              value={form.specialRequest}
+              onChange={handleChange}
+              placeholder="Special Request (Optional)"
+              className="w-full border p-3 rounded-xl h-24 focus:ring-2 focus:ring-[#e82429] outline-none"
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl font-semibold text-lg hover:scale-[1.03] transition-transform"
+            >
+              {loading ? "Processing..." : "Confirm Booking"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

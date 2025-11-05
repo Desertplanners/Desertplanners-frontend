@@ -37,7 +37,7 @@ const AppRouter = () => (
       <Route path="/holidays/:slug" element={<HolidayDetails />} /> */}
       <Route path="/visa" element={<VisaList />} />
       <Route path="/visa/:slug" element={<VisaDetails />} />
-      <Route path="/contact" element={<ContactUs />} />
+      <Route path="/contact-us" element={<ContactUs />} />
       {/* Admin Auth */}
       <Route path="/admin/register" element={<AdminRegister />} />
       <Route path="/admin/login" element={<AdminLogin />} />

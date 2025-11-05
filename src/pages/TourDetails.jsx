@@ -4,11 +4,10 @@ import DataService from "../config/DataService";
 import { API } from "../config/API";
 
 export default function TourDetails() {
-  const { slug } = useParams(); // category slug
+  const { slug } = useParams();
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Dynamic Base URL (for local + deployed backend)
   const baseURL =
     import.meta.env.VITE_API_URL || "https://desetplanner-backend.onrender.com";
 
@@ -26,15 +25,26 @@ export default function TourDetails() {
       }
     };
 
-    fetchCategoryTours();
+    // background data load with minimal delay
+    requestIdleCallback(fetchCategoryTours);
   }, [slug]);
 
-  if (loading)
+  // 🧩 Skeleton Loader — visible until data arrives
+  if (loading) {
     return (
-      <h2 className="text-center py-10 text-2xl font-semibold text-gray-700">
-        Loading...
-      </h2>
+      <div className="max-w-[1200px] mx-auto px-4 py-10 animate-pulse">
+        <div className="h-64 md:h-96 bg-gray-200 rounded-3xl mb-8"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-gray-100 h-[380px] rounded-3xl shadow-md"
+            ></div>
+          ))}
+        </div>
+      </div>
     );
+  }
 
   if (tours.length === 0)
     return (
@@ -45,7 +55,7 @@ export default function TourDetails() {
 
   return (
     <div className="w-full">
-      {/* Category Banner */}
+      {/* 🖼️ Category Banner */}
       <div className="relative w-full h-64 md:h-96 overflow-hidden">
         <img
           src={
@@ -63,7 +73,7 @@ export default function TourDetails() {
         </div>
       </div>
 
-      {/* Tours Grid */}
+      {/* 🧳 Tours Grid */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-0 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {tours.map((tour) => (
           <Link
@@ -71,7 +81,7 @@ export default function TourDetails() {
             to={`/tours/${slug}/${tour.slug}`}
             className="block bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 hover:scale-[1.04] relative group"
           >
-            {/* Image */}
+            {/* 📸 Image */}
             <div className="relative h-64 md:h-72 w-full overflow-hidden rounded-t-3xl">
               <img
                 src={
@@ -85,7 +95,7 @@ export default function TourDetails() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
 
-            {/* Card Content */}
+            {/* 📋 Card Content */}
             <div className="p-6 flex flex-col justify-between h-56">
               <h2 className="text-xl font-bold text-[#e82429] mb-3 transition-transform duration-300 group-hover:translate-y-[-2px]">
                 {tour.title}

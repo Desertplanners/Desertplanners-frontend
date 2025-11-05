@@ -124,7 +124,7 @@ export default function Navbar() {
         path: `/visa/${v.slug}`,
       })),
     },
-    { title: "Contact Us", path: "/contact" },
+    { title: "Contact Us", path: "/contact-us" },
   ];
 
   const handleSearch = (e) => {

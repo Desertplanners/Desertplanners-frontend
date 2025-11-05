@@ -171,12 +171,12 @@ export default function ContactUs() {
             {
               icon: <FaPhoneAlt className="text-[#e82429] text-3xl" />,
               title: "Phone",
-              text: "+971 55 123 4567",
+              text: "+971 50 369 4525",
             },
             {
               icon: <FaEnvelope className="text-[#e82429] text-3xl" />,
               title: "Email",
-              text: "info@travelcompany.com",
+              text: "info@desertplanners.net",
             },
             {
               icon: <FaClock className="text-[#e82429] text-3xl" />,

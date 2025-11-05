@@ -8,13 +8,12 @@ export default function TopAttractionsCarousel() {
   const [attractions, setAttractions] = useState([]);
   const [current, setCurrent] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(4);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
   // ✅ Section ID for “Top Attractions”
-  const sectionId = "69083cc3dda693d673b550fd"; // Replace with actual _id for Top Attractions section from MongoDB
+  const sectionId = "69083cc3dda693d673b550fd";
 
   // ✅ Fetch data from backend
   useEffect(() => {
@@ -25,8 +24,6 @@ export default function TopAttractionsCarousel() {
         setAttractions(res.data || []);
       } catch (error) {
         console.error("Error fetching attractions:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchAttractions();
@@ -55,7 +52,8 @@ export default function TopAttractionsCarousel() {
 
   // ✅ Next / Prev buttons
   const next = () => setCurrent((prev) => (prev + 1) % attractions.length);
-  const prev = () => setCurrent((prev) => (prev - 1 + attractions.length) % attractions.length);
+  const prev = () =>
+    setCurrent((prev) => (prev - 1 + attractions.length) % attractions.length);
 
   // ✅ Swipe support
   const handleTouchStart = (e) => (touchStartX.current = e.touches[0].clientX);
@@ -80,22 +78,12 @@ export default function TopAttractionsCarousel() {
   const visibleAttractions = getVisible();
   const totalPages = Math.ceil(attractions.length / cardsPerView);
 
-  // ✅ Loading and empty states
-  if (loading)
-    return (
-      <div className="py-10 text-center text-gray-500 text-lg">
-        Loading Top Attractions...
-      </div>
-    );
+  // ✅ No loading or "no data" message — simply return nothing if empty
+  if (!attractions.length) {
+    return null;
+  }
 
-  if (!attractions.length)
-    return (
-      <div className="py-10 text-center text-gray-500 text-lg">
-        No attractions found in this section.
-      </div>
-    );
-
-  // ✅ Main UI (Same design as before)
+  // ✅ Main UI
   return (
     <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4 relative">
@@ -135,19 +123,36 @@ export default function TopAttractionsCarousel() {
                   className="w-full h-80 object-cover transform transition duration-500 hover:scale-105"
                 />
                 {/* Text inside image */}
-                <div className="absolute bottom-5 left-5 text-white">
-                  <h3 className="text-2xl font-extrabold tracking-wide drop-shadow-lg">
+                <div className="absolute bottom-0 left-0 w-full bg-black/50 backdrop-blur-sm px-5 py-4 flex flex-col items-start">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-1 tracking-wide">
                     {item.name}
                   </h3>
+
                   {item.price && (
-                    <p className="text-lg font-bold text-gray-100">
-                      From{" "}
-                      <span className="text-[#e82429] font-extrabold">
+                    <div className="flex items-center gap-1 text-sm sm:text-base text-gray-200">
+                      <span className="text-white/90">From</span>
+                      <span className="text-[#ff4d4d] font-semibold">
                         {item.price}
                       </span>
-                    </p>
+                      <span className="text-white/80">/ person</span>
+                    </div>
                   )}
                 </div>
+                {/* <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-4">
+  <h3 className="text-xl sm:text-2xl font-semibold text-white mb-1 leading-tight drop-shadow-md">
+    {item.name}
+  </h3>
+
+  {item.price && (
+    <p className="text-sm sm:text-base text-gray-200 font-medium">
+      From{" "}
+      <span className="text-[#ffb703] font-semibold">
+        {item.price}
+      </span>{" "}
+      / person
+    </p>
+  )}
+</div> */}
               </div>
             ))}
           </div>

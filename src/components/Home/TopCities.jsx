@@ -8,10 +8,9 @@ export default function TopCitiesSlider() {
   const [cities, setCities] = useState([]);
   const [current, setCurrent] = useState(0);
   const [visibleCards, setVisibleCards] = useState(4);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ This is your section ID from MongoDB
+  // ✅ Your section ID from MongoDB
   const sectionId = "69082fb8544d61ec230a8054";
 
   // ✅ Fetch city items from backend
@@ -23,14 +22,12 @@ export default function TopCitiesSlider() {
         setCities(res.data || []);
       } catch (error) {
         console.error("Error fetching top cities:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchCities();
   }, []);
 
-  // ✅ responsive visible card count
+  // ✅ Responsive visible card count
   const getVisibleCards = () => {
     if (window.innerWidth < 640) return 1;
     if (window.innerWidth < 1024) return 2;
@@ -53,7 +50,7 @@ export default function TopCitiesSlider() {
     return () => clearInterval(timer);
   }, [cities]);
 
-  // ✅ Next/Prev
+  // ✅ Next / Prev
   const nextSlide = () => setCurrent((prev) => (prev + 1) % cities.length);
   const prevSlide = () => setCurrent((prev) => (prev - 1 + cities.length) % cities.length);
 
@@ -85,21 +82,9 @@ export default function TopCitiesSlider() {
   const visibleCities = getVisibleCities();
   const totalPages = Math.ceil(cities.length / visibleCards);
 
-  // ✅ Loading & Empty States
-  if (loading) {
-    return (
-      <div className="py-10 text-center text-gray-500 text-lg">
-        Loading Top Cities...
-      </div>
-    );
-  }
-
+  // ✅ Empty state only (no "Loading..." message)
   if (!cities.length) {
-    return (
-      <div className="py-10 text-center text-gray-500 text-lg">
-        No cities found in this section.
-      </div>
-    );
+    return null; // kuch bhi render nahi karega jab tak data na aaye
   }
 
   // ✅ UI

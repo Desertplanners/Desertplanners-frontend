@@ -189,7 +189,7 @@ export default function WhyBookWithUs() {
   ];
 
   return (
-    <section className="bg-gray-50 py-20 px-6">
+    <section className="bg-gray-50 py-6 px-6">
       <div className="max-w-6xl mx-auto text-center">
         {/* Heading */}
         <h2 className="text-4xl font-extrabold mb-3 bg-gradient-to-r from-[#FF6B00] via-[#FF0080] to-[#7000FF] bg-clip-text text-transparent drop-shadow-md">

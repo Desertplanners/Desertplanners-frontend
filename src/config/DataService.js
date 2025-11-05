@@ -1,22 +1,32 @@
-// config/DataService.js
 import axios from "axios";
 
-// ✅ Backend base URL from .env (VITE syntax for Vite projects)
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "https://desetplanner-backend.onrender.com";
 
-const DataService = (type = "user") => {
-  const token =
-    type === "admin"
-      ? localStorage.getItem("adminToken")
-      : localStorage.getItem("userToken");
+const DataService = (type = "guest") => {
+  let token = null;
+
+  // 🧠 Token load only if user or admin login hai
+  if (type === "user") {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    token = userInfo?.token || null;
+  } else if (type === "admin") {
+    token = localStorage.getItem("adminToken");
+  }
+
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  // 🛡️ Add Authorization header only if token valid hai
+  if (token && token !== "undefined" && token !== "null") {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   return axios.create({
     baseURL: API_BASE_URL,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-    withCredentials: true,
+    headers,
+    withCredentials: false, // ❌ Render CORS issue fix
   });
 };
 

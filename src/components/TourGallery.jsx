@@ -73,9 +73,6 @@ const TourGallery = ({ tour }) => {
             setTimeout(() => setIsOpen(true), 0);
           }}
         />
-        <div className="absolute bottom-2 right-2 bg-black/60 text-white text-sm px-3 py-1 rounded-full">
-          Click to zoom
-        </div>
       </div>
 
       {/* ✅ Safe Lightbox Rendering */}

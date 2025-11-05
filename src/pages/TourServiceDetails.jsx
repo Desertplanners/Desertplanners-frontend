@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import TourGallery from "../components/TourGallery";
 import toast from "react-hot-toast";
+import { Suspense, lazy } from "react";
 
 export default function TourServiceDetails() {
   const { categorySlug, tourSlug } = useParams();
@@ -42,19 +43,21 @@ export default function TourServiceDetails() {
   // Fetch tour details
   useEffect(() => {
     const fetchTour = async () => {
+      const api = DataService();
       try {
-        const api = DataService();
         const res = await api.get(API.GET_TOUR(tourSlug));
-
         if (res.data) {
           setTour(res.data);
+          setMainImage(`${API.BASE_URL}/${res.data.mainImage}`);
           setRelatedTours(res.data.relatedTours || []);
-          setMainImage(`http://localhost:5000/${res.data.mainImage}`);
-          console.log("Fetched tour:", res.data);
+
+          // Load secondary data in background
+          requestIdleCallback(() => {
+            console.log("Preloading related tours...");
+          });
         }
       } catch (err) {
-        console.error("Error fetching tour details:", err);
-        setTour(null);
+        console.error("Error fetching tour:", err);
       } finally {
         setLoading(false);
       }
@@ -254,12 +257,20 @@ export default function TourServiceDetails() {
 
     return null;
   };
-  if (loading)
+  if (loading) {
     return (
-      <div className="text-center py-20 text-2xl font-semibold text-gray-700">
-        Loading...
+      <div className="max-w-[1200px] mx-auto px-4 py-10 animate-pulse">
+        <div className="h-[400px] bg-gray-200 rounded-3xl mb-8"></div>
+        <div className="h-10 bg-gray-200 w-2/3 mb-4 rounded"></div>
+        <div className="h-6 bg-gray-200 w-1/3 mb-4 rounded"></div>
+        <div className="grid grid-cols-3 gap-4">
+          <div className="h-6 bg-gray-200 rounded"></div>
+          <div className="h-6 bg-gray-200 rounded"></div>
+          <div className="h-6 bg-gray-200 rounded"></div>
+        </div>
       </div>
     );
+  }
 
   if (!tour)
     return (
@@ -274,7 +285,13 @@ export default function TourServiceDetails() {
         {/* LEFT SECTION — IMAGES + DETAILS */}
         <div className="lg:col-span-8 order-1 lg:order-1 space-y-8">
           {/* Main Image + Thumbnails */}
-          <TourGallery tour={tour} />
+          <Suspense
+            fallback={
+              <div className="h-[400px] bg-gray-200 animate-pulse rounded-3xl"></div>
+            }
+          >
+            <TourGallery tour={tour} />
+          </Suspense>
 
           {/* Title + Price */}
           <div className="bg-gradient-to-r from-[#fff4f4] to-[#ffeaea] rounded-3xl shadow-xl p-6 border border-[#e82429]/30">
@@ -336,7 +353,7 @@ export default function TourServiceDetails() {
                 <DatePicker
                   selected={startDate}
                   onChange={(date) => setStartDate(date)}
-                  minDate={new Date()}
+                  minDate={new Date(Date.now() + 24 * 60 * 60 * 1000)}
                   placeholderText="Select a date"
                   className="w-full border rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#e82429] focus:outline-none shadow-sm"
                 />
@@ -689,7 +706,7 @@ export default function TourServiceDetails() {
               <DatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
-                minDate={new Date()}
+                minDate={new Date(Date.now() + 24 * 60 * 60 * 1000)}
                 placeholderText="Select a date"
                 className="w-full border rounded-2xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none shadow-sm"
               />
