@@ -56,7 +56,8 @@ export default function TourDetails() {
   return (
     <div className="w-full">
       {/* 🖼️ Category Banner */}
-      <div className="relative w-full h-64 md:h-96 overflow-hidden">
+      <div className="relative w-full h-64 md:h-[420px] rounded-2xl overflow-hidden shadow-lg">
+        {/* Background Image */}
         <img
           src={
             tours[0].mainImage?.startsWith("http")
@@ -64,10 +65,18 @@ export default function TourDetails() {
               : `${baseURL}/${tours[0].mainImage}`
           }
           alt={tours[0].category?.name || "Category"}
-          className="w-full h-full object-cover brightness-70"
+          className="w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-700 ease-out"
         />
+
+        {/* Soft Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+
+        {/* Clean Center Title */}
         <div className="absolute inset-0 flex justify-center items-center">
-          <h1 className="text-[#721011] text-3xl md:text-5xl font-extrabold text-center max-w-[1200px] px-4 tracking-wide drop-shadow-[2px_2px_8px_rgba(0,0,0,0.7)] bg-white/20 backdrop-blur-sm rounded-lg py-2">
+          <h1
+            className="text-4xl md:text-6xl font-extrabold text-white text-center tracking-wide 
+      px-6 py-2 rounded-lg te/20"
+          >
             {tours[0].category?.name || "Category"}
           </h1>
         </div>

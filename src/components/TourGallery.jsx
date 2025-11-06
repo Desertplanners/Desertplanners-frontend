@@ -18,7 +18,6 @@ const TourGallery = ({ tour }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
 
-  // ✅ Convert only galleryImages
   const images =
     tour?.galleryImages?.map((img) =>
       img?.startsWith("http") ? img : `${baseURL}/${img}`
@@ -26,7 +25,6 @@ const TourGallery = ({ tour }) => {
 
   const [mainImage, setMainImage] = useState(images[0]);
 
-  // 🧠 FIX: Jab tour change ho → mainImage ko reset karo
   useEffect(() => {
     if (images.length > 0) {
       setMainImage(images[0]);
@@ -44,50 +42,46 @@ const TourGallery = ({ tour }) => {
 
   return (
     <div className="relative flex flex-col md:flex-row bg-white rounded-2xl shadow-md overflow-hidden">
-      {/* Sidebar Thumbnails */}
-      <div className="flex md:flex-col gap-2 p-2 bg-white shadow-inner rounded-l-xl overflow-x-auto md:overflow-y-auto max-h-[420px]">
+      {/* ✅ Sidebar Thumbnails (equal size, full visible) */}
+      <div className="flex md:flex-col gap-2 p-3 bg-white shadow-inner rounded-l-xl overflow-x-auto md:overflow-y-auto max-h-[420px] min-w-[100px]">
         {images.map((img, idx) => (
-          <img
+          <div
             key={idx}
-            src={img}
-            alt={`${tour?.title || "Tour"} thumb ${idx + 1}`}
-            className={`w-20 h-20 object-cover rounded-lg cursor-pointer border-2 transition-transform duration-200 hover:scale-105 ${
-              mainImage === img ? "border-[#e82429]" : "border-transparent"
+            className={`w-20 h-20 rounded-lg flex items-center justify-center border-2 cursor-pointer transition-all duration-200 hover:scale-105 bg-gray-100 bg-center bg-no-repeat bg-contain ${
+              mainImage === img
+                ? "border-[#e82429] shadow-md scale-105"
+                : "border-transparent"
             }`}
+            style={{ backgroundImage: `url(${img})` }}
             onClick={() => {
               setMainImage(img);
               setPhotoIndex(idx);
             }}
-          />
+          ></div>
         ))}
       </div>
 
-      {/* Main Image */}
-      <div className="flex-1 relative">
-        <img
-          src={mainImage}
-          alt={tour?.title || "Tour Image"}
-          className="w-full h-[420px] object-cover rounded-r-2xl cursor-pointer"
+      {/* ✅ Main Image (same size, full visible) */}
+      <div className="flex-1 relative bg-gray-100 flex items-center justify-center">
+        <div
+          className="w-full h-[420px] bg-center bg-no-repeat bg-contain rounded-r-2xl cursor-pointer transition-transform duration-300 hover:scale-[1.03]"
+          style={{ backgroundImage: `url(${mainImage})` }}
           onClick={() => {
             setPhotoIndex(images.indexOf(mainImage));
             setTimeout(() => setIsOpen(true), 0);
           }}
-        />
+        ></div>
       </div>
 
-      {/* ✅ Safe Lightbox Rendering */}
+      {/* ✅ Lightbox */}
       {typeof window !== "undefined" && isOpen && images.length > 0 && (
         <Lightbox
           mainSrc={images[photoIndex]}
           nextSrc={images[(photoIndex + 1) % images.length]}
-          prevSrc={
-            images[(photoIndex + images.length - 1) % images.length]
-          }
+          prevSrc={images[(photoIndex + images.length - 1) % images.length]}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() =>
-            setPhotoIndex(
-              (photoIndex + images.length - 1) % images.length
-            )
+            setPhotoIndex((photoIndex + images.length - 1) % images.length)
           }
           onMoveNextRequest={() =>
             setPhotoIndex((photoIndex + 1) % images.length)

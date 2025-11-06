@@ -68,7 +68,7 @@ export default function HolidayPackages() {
   return (
     <section className="py-12 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left bg-gradient-to-r from-[#8000ff] to-[#e5006e] bg-clip-text text-transparent">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left bg-clip-text">
           Holiday Packages
         </h2>
 

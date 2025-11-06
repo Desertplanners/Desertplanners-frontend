@@ -50,10 +50,10 @@ export default function PopularExperiences() {
           {experiences.map((exp, idx) => (
             <div
               key={idx}
-              className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500 cursor-pointer"
-              onClick={() => goToDetails(exp.path)} // ✅ Entire card clickable
+              className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500 cursor-pointer flex flex-col"
+              onClick={() => goToDetails(exp.path)}
             >
-              {/* Image with overlay */}
+              {/* Image */}
               <div className="relative h-64 overflow-hidden">
                 <img
                   src={exp.img}
@@ -65,20 +65,23 @@ export default function PopularExperiences() {
                 </span>
               </div>
 
-              {/* Content below image */}
-              <div className="p-5 flex flex-col">
-                <h3
-                  className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 hover:text-[#e82429] transition"
-                  onClick={() => goToDetails(exp.path)} // ✅ Title click
-                >
-                  {exp.title}
-                </h3>
-                <p className="text-gray-500 text-sm mb-4">{exp.desc}</p>
+              {/* Content */}
+              <div className="p-5 flex flex-col justify-between flex-1">
+                <div>
+                  <h3
+                    className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 hover:text-[#e82429] transition"
+                    onClick={() => goToDetails(exp.path)}
+                  >
+                    {exp.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm">{exp.desc}</p>
+                </div>
+
                 <button
-                  className="mt-auto py-3 rounded-lg font-semibold bg-[#e82429] text-white hover:bg-[#d01f23] transition duration-300"
+                  className="mt-4 py-3 rounded-lg font-semibold bg-[#e82429] text-white hover:bg-[#d01f23] transition duration-300"
                   onClick={(e) => {
-                    e.stopPropagation(); // prevent double triggering
-                    goToDetails(exp.path); // ✅ Book Now click
+                    e.stopPropagation();
+                    goToDetails(exp.path);
                   }}
                 >
                   Book Now

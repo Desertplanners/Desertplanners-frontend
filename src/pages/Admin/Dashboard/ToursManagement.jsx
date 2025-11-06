@@ -111,12 +111,18 @@ export default function ToursManagement() {
                 <img
                   src={
                     tour.mainImage
-                      ? `http://localhost:5000/${tour.mainImage}`
+                      ? tour.mainImage.startsWith("http")
+                        ? tour.mainImage
+                        : `${
+                            import.meta.env.VITE_API_URL ||
+                            "https://desetplanner-backend.onrender.com"
+                          }/${tour.mainImage}`
                       : "https://via.placeholder.com/400x200"
                   }
                   alt={tour.title}
                   className="w-full h-48 object-cover"
                 />
+
                 <span className="absolute top-3 left-3 bg-[var(--color-accent)] text-[var(--color-white)] text-xs font-semibold px-2 py-1 rounded-full shadow">
                   {tour.category?.name || "Uncategorized"}
                 </span>
