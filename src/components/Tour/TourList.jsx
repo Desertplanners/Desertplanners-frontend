@@ -6,7 +6,7 @@ export default function TourList() {
     {
       id: 1,
       path: "abu-dhabi-city-tour",
-      image: "https://images.unsplash.com/photo-1590822067318-d58785999ad3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1032",
+      image: "/TourImg/AbuDhabi.png",
       category: "Guided Tours",
       rating: "4.5",
       reviews: "318",
