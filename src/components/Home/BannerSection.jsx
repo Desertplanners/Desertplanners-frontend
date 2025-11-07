@@ -73,9 +73,13 @@ export default function Banner() {
                 {/* Simple Price */}
 
                 <p className="text-sm sm:text-lg md:text-xl font-medium mb-4 sm:mb-6">
-  <span className="text-[#e82429] font-semibold">Starting from </span>
-  <span className="text-[#ffffff] font-extrabold">{slide.price}</span>
-</p>
+                  <span className="text-[#e82429] font-semibold">
+                    Starting from{" "}
+                  </span>
+                  <span className="text-[#ffffff] font-extrabold">
+                    {slide.price}
+                  </span>
+                </p>
 
                 {/* Button */}
                 <a

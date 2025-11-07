@@ -19,11 +19,11 @@ export default function TravelInspiration() {
           </p>
 
           <form className="flex flex-col sm:flex-row items-center gap-3 sm:gap-0 sm:space-x-3 justify-center lg:justify-start">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e82429] transition-all duration-300"
-            />
+          <input
+  type="email"
+  placeholder="Enter your email"
+  className="w-full sm:w-[350px] lg:w-[400px] px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#e82429] transition-all duration-300"
+/>
             <button
               type="submit"
               className="bg-[#e82429] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#b91c23] transition-all duration-300"

@@ -166,12 +166,12 @@ export default function ContactUs() {
             {
               icon: <FaMapMarkerAlt className="text-[#e82429] text-3xl" />,
               title: "Address",
-              text: "123 Travel Street, Dubai, UAE",
+              text: "Desert Planners Tourism LLC ,\n\nP.O. Box: 43710, Dubai, UAE",
             },
             {
               icon: <FaPhoneAlt className="text-[#e82429] text-3xl" />,
               title: "Phone",
-              text: "+971 50 369 4525",
+              text: "+97143546677",
             },
             {
               icon: <FaEnvelope className="text-[#e82429] text-3xl" />,
@@ -203,7 +203,7 @@ export default function ContactUs() {
       {/* Full-width Map */}
       <div className="w-full mt-10">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3609.243947104038!2d55.23623471500779!3d25.204849983868447!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f4349b1a8d4f1%3A0x12b6ec4b12345678!2sDubai%2C%20UAE!5e0!3m2!1sen!2sin!4v1694567890123!5m2!1sen!2sin"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41465.69666469703!2d55.27165081812245!3d25.264376433810032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f433bff0b836d%3A0xd7787e1f3959e5f1!2sDesert%20Planners%20Tourism%20LLC!5e1!3m2!1sen!2sin!4v1762533672459!5m2!1sen!2sin"
           width="100%"
           height="400"
           className="border-0"

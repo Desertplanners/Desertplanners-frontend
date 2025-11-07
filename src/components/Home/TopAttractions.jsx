@@ -130,7 +130,7 @@ export default function TopAttractionsCarousel() {
 
                   {item.price && (
                     <div className="flex items-center gap-1 text-sm sm:text-base text-gray-200">
-                      <span className="text-white/90">From</span>
+                      <span className="text-white/90">From</span> AED
                       <span className="text-[#ff4d4d] font-semibold">
                         {item.price}
                       </span>

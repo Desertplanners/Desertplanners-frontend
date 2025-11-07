@@ -23,16 +23,33 @@ export default function Footer() {
   ];
 
   const topDestinations = [
-    { name: "Abu Dhabi City Tour", path: "/tours/abu-dhabi-city-tour/abu-dhabi-city-tour-with-ferrari-world" },
+    {
+      name: "Abu Dhabi City Tour",
+      path: "/tours/abu-dhabi-city-tour/abu-dhabi-city-tour-with-ferrari-world",
+    },
     { name: "Dubai City Tour", path: "/tours/dubai-city-tour" },
-    { name: "Yas WaterPark With Meal", path: "/tours/dubai-city-tour/dubai-city-tour" },
-    { name: "Dubai Miracle Garden", path: "/tours/combo-packages/miracle-garden-+-global-village-combo-ticket" },
+    {
+      name: "Yas WaterPark With Meal",
+      path: "/tours/dubai-city-tour/dubai-city-tour",
+    },
+    {
+      name: "Dubai Miracle Garden",
+      path: "/tours/combo-packages/miracle-garden-+-global-village-combo-ticket",
+    },
     { name: "Sharjah City Tour", path: "/tours/sharjah-city-tour" },
   ];
 
   const socialLinks = [
-    { icon: FaFacebookF, color: "bg-[#3b5998]", href: "https://www.facebook.com/Desertplannersdxb" },
-    { icon: FaInstagram, color: "bg-gradient-to-tr from-pink-500 to-orange-400", href: "https://www.instagram.com/desertplannerstourism/" },
+    {
+      icon: FaFacebookF,
+      color: "bg-[#3b5998]",
+      href: "https://www.facebook.com/Desertplannersdxb",
+    },
+    {
+      icon: FaInstagram,
+      color: "bg-gradient-to-tr from-pink-500 to-orange-400",
+      href: "https://www.instagram.com/desertplannerstourism/",
+    },
     { icon: FaTwitter, color: "bg-[#00acee]", href: "#" },
     { icon: FaLinkedinIn, color: "bg-[#0077b5]", href: "#" },
   ];
@@ -42,7 +59,6 @@ export default function Footer() {
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Main Footer */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
-
           {/* Brand */}
           <div className="space-y-6">
             <img
@@ -51,8 +67,8 @@ export default function Footer() {
               className="w-32 h-16 object-contain"
             />
             <p className="text-sm leading-6 text-gray-400">
-              Discover your next adventure with us! Explore the best tour packages
-              and unforgettable experiences around the world.
+              Discover your next adventure with us! Explore the best tour
+              packages and unforgettable experiences around the world.
             </p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social, i) => (
@@ -120,13 +136,13 @@ export default function Footer() {
               <li className="flex items-start gap-3 group">
                 <FaMapMarkerAlt className="text-[#e82429] mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
-                  123 Main Street, Dubai, UAE
+                  Desert Planners Tourism LLC P.O. Box: 43710, Dubai, UAE
                 </span>
               </li>
               <li className="flex items-center gap-3 group">
                 <FaPhoneAlt className="text-[#e82429] group-hover:scale-110 transition-transform" />
                 <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
-                  +971 50 369 4525
+                  +97143546677
                 </span>
               </li>
               <li className="flex items-center gap-3 group">
@@ -174,7 +190,8 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm text-center md:text-left">
-              © {new Date().getFullYear()} Desert Planners Tourism LLC. All rights reserved.
+              © {new Date().getFullYear()} Desert Planners Tourism LLC. All
+              rights reserved.
             </p>
             <div className="flex items-center gap-2 text-sm text-gray-400">
               <span>Designed with passion</span>

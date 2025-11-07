@@ -5,7 +5,7 @@ const experiences = [
   {
     title: "Desert Safari",
     desc: "Thrilling dune bashing, camel rides & stunning sunsets.",
-    price: "AED 150",
+    price: "AED 50",
     img: "https://images.unsplash.com/photo-1588310558566-b983c7d257e4?auto=format&fit=crop&w=800&q=80",
     path: "tours/desert-safari-with-dinner/desert-safari-with-bbq-dinner-by-4x4-vehicle",
   },
@@ -24,11 +24,11 @@ const experiences = [
     path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers",
   },
   {
-    title: "Sea World Abu Dhabi",
-    desc: "Fun-filled water slides and rides for the whole family.",
+    title: "Dubai City Tour",
+    desc: "Explore the iconic landmarks and hidden gems of Dubai.",
     price: "AED 375",
-    img: "https://i.pinimg.com/736x/58/31/30/583130cba9abd8960050f9335f5c03f1.jpg",
-    path: "tours/yas-island-theme-park/sea-world",
+    img: "/TourImg/Dubai-City-Tour.png",
+    path: "tours/dubai-city-tour/dubai-city-tour",
   },
 ];
 

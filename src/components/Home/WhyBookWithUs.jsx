@@ -21,29 +21,16 @@ export default function WhyBookWithUs() {
         <>
           Planning your Dubai adventure has never been simpler! At Desert
           Planners, you can book Dubai tours and activities online in just a few
-          clicks — no registration fees and instant confirmation. Whether you’re
-          reserving a{" "}
-          <Link
-            to="/tours/desert-safari"
-            className="text-primary font-semibold hover:underline"
-          >
-            Desert Safari with BBQ Dinner
-          </Link>
-          ,{" "}
+          clicks no registration fees and instant confirmation. Whether you’re
+          reserving a ,{" "}
           <Link
             to="/tours/dubai-city-tour"
             className="text-primary font-semibold hover:underline"
           >
             Dubai City Tour
           </Link>{" "}
-          or{" "}
-          <Link
-            to="/tours/abu-dhabi-sightseeing"
-            className="text-primary font-semibold hover:underline"
-          >
-            Abu Dhabi Sightseeing Package
-          </Link>
-          , our process is quick, secure, and hassle-free.
+          or Abu Dhabi Sightseeing Package , our process is quick, secure, and
+          hassle-free.
         </>
       ),
     },
@@ -52,30 +39,10 @@ export default function WhyBookWithUs() {
       title: "Best Price Guarantee",
       desc: (
         <>
-          Get the best deals on Dubai tour packages — guaranteed! Desert
-          Planners partners directly with top operators to ensure you always get
-          the lowest rates on{" "}
-          <Link
-            to="/tours/desert-safari"
-            className="text-primary font-semibold hover:underline"
-          >
-            Desert Safaris
-          </Link>
-          ,{" "}
-          <Link
-            to="/tours/theme-parks"
-            className="text-primary font-semibold hover:underline"
-          >
-            Theme Park Tickets
-          </Link>{" "}
-          and{" "}
-          <Link
-            to="/tours/city-tours"
-            className="text-primary font-semibold hover:underline"
-          >
-            City Tours
-          </Link>
-          . Premium experiences at unbeatable prices.
+          Get the best deals on Dubai tour packages guaranteed! Desert Planners
+          partners directly with top operators to ensure you always get the
+          lowest rates on Desert Safari , Theme Park Tickets and City To .
+          Premium experiences at unbeatable prices.
         </>
       ),
     },
@@ -108,21 +75,9 @@ export default function WhyBookWithUs() {
       desc: (
         <>
           Our expert travel consultants are available round-the-clock. Whether
-          you need help customizing your{" "}
-          <Link
-            to="/tours/desert-safari"
-            className="text-primary font-semibold hover:underline"
-          >
-            Desert Safari
-          </Link>{" "}
-          or planning a{" "}
-          <Link
-            to="/tours/family-holidays"
-            className="text-primary font-semibold hover:underline"
-          >
-            family holiday
-          </Link>
-          , we’re here via WhatsApp, phone, or live chat — anytime, anywhere.
+          you need help customizing your Desert Safari or planning a family
+          holiday , we’re here via WhatsApp, phone, or live chat anytime,
+          anywhere.
         </>
       ),
     },
@@ -149,28 +104,8 @@ export default function WhyBookWithUs() {
           >
             Desert Safaris
           </Link>{" "}
-          to{" "}
-          <Link
-            to="/tours/burj-khalifa"
-            className="text-primary font-semibold hover:underline"
-          >
-            Burj Khalifa Tours
-          </Link>
-          ,{" "}
-          <Link
-            to="/tours/img-worlds"
-            className="text-primary font-semibold hover:underline"
-          >
-            IMG World Tickets
-          </Link>
-          , and{" "}
-          <Link
-            to="/tours/abu-dhabi"
-            className="text-primary font-semibold hover:underline"
-          >
-            Abu Dhabi Packages
-          </Link>
-          — Desert Planners is your one-stop destination for unforgettable Dubai
+          to Burj Khalifa Tours , IMG World Tickets , and Abu Dhabi Packages —
+          Desert Planners is your one-stop destination for unforgettable Dubai
           adventures.
         </>
       ),
