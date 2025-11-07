@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function Banner() {
-  // 🖼️ Your banner images (from your uploads)
   const slides = [
     {
-      image: "/Group-1.png", // Burj Al Arab
-      title: "Discover Dubai Like Never Before",
-      subtitle: "Experience luxury tours and make unforgettable memories.",
+      image: "/Banner1.webp",
+      subtitle: "Escape to the oasis of luxury and adventure.",
+      title: "DUBAI TOUR",
+      price: "AED 75",
       cta: "Explore Tours",
       link: "/tours",
     },
     {
-      image: "/Group-2.png", // Mosque
-      title: "A Blend of Heritage & Modernity",
-      subtitle: "Witness the architectural marvels of the UAE.",
-      cta: "Book Your Experience",
+      image: "/Banner2.webp",
+      subtitle: "Experience the grandeur of the UAE’s capital.",
+      title: "ABU DHABI TOUR",
+      price: "AED 455",
+      cta: "Explore Tours",
       link: "/tours",
     },
     {
-      image: "/Group-3.png", // Dubai Marina
-      title: "Explore The City of Gold",
-      subtitle: "Luxury cruises, desert safaris & iconic skyline views.",
+      image: "/Banner3.webp",
+      subtitle: "Discover the cultural charm of Sharjah.",
+      title: "SHARJAH TOUR",
+      price: "AED 200",
       cta: "View All Packages",
       link: "/tours",
     },
@@ -29,7 +30,6 @@ export default function Banner() {
 
   const [current, setCurrent] = useState(0);
 
-  // 🔁 Auto slide every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
@@ -37,78 +37,78 @@ export default function Banner() {
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  // ⬅️➡️ Manual navigation
-  const nextSlide = () => setCurrent((prev) => (prev + 1) % slides.length);
-  const prevSlide = () =>
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-
   return (
     <div className="relative w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[650px] overflow-hidden">
-      {/* 🖼️ Slide Images */}
       {slides.map((slide, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+          className={`absolute inset-0 transition-opacity duration-[1500ms] ease-in-out ${
             index === current ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
         >
+          {/* Background image */}
           <img
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover scale-110 animate-zoom-slow"
           />
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-black/60"></div>
+
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent"></div>
 
           {/* Text Content */}
           {index === current && (
-            <div className="absolute inset-0 flex justify-center items-center text-white text-center px-6">
-              <div className="max-w-3xl animate-fadeInUp">
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 drop-shadow-lg">
-                  {slide.title}
-                </h2>
-                <p className="text-base sm:text-lg md:text-xl mb-6 opacity-90 max-w-2xl mx-auto drop-shadow-md">
+            <div className="absolute bottom-14 left-0 w-full">
+              <div className="max-w-[1200px] mx-auto px-6 text-left text-white animate-fadeInUp">
+                {/* Subtitle with gradient background */}
+                <p className="inline-block bg-gradient-to-r from-[#e82429]/80 to-[#ff5f5f]/80 backdrop-blur-md px-4 py-2 rounded-full text-sm sm:text-lg font-medium tracking-wide mb-4 shadow-md border border-white/10">
                   {slide.subtitle}
                 </p>
-                <a
-                  href={slide.link}
-                  className="px-6 py-3 bg-[#e82429] hover:bg-[#91181b] rounded-xl font-semibold text-white shadow-lg transition-all duration-300 transform hover:scale-105 inline-block"
-                >
-                  {slide.cta}
-                </a>
+
+                {/* Title */}
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 leading-tight drop-shadow-2xl tracking-wide">
+                  {slide.title}
+                </h2>
+
+                {/* Premium Price Bar */}
+                {/* Simple Price */}
+                <p className="text-lg sm:text-xl font-medium text-white/90 mb-6">
+                  Starting from{" "}
+                  <span className="text-[#e82429] font-semibold">
+                    {slide.price}
+                  </span>
+                </p>
+
+                {/* Button */}
+                <div>
+                  <a
+                    href={slide.link}
+                    className="inline-block px-8 py-3 bg-gradient-to-r from-[#e82429] to-[#ff5151] hover:shadow-[0_0_20px_#e82429aa] text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                  >
+                    {slide.cta}
+                  </a>
+                </div>
               </div>
             </div>
           )}
         </div>
       ))}
-
-      {/* ⬅️➡️ Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur-sm transition"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-
-      <button
-        onClick={nextSlide}
-        className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white p-2 rounded-full backdrop-blur-sm transition"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
-
-      {/* 🔘 Slide Indicators */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {slides.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrent(idx)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              idx === current ? "bg-[#e82429] scale-125" : "bg-white/60"
-            }`}
-          ></button>
-        ))}
-      </div>
     </div>
   );
 }
+
+/* ✨ Custom Animations */
+<style>
+{`
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes zoomSlow {
+  from { transform: scale(1.1); }
+  to { transform: scale(1.05); }
+}
+.animate-fadeInUp { animation: fadeInUp 1.2s ease forwards; }
+.animate-zoom-slow { animation: zoomSlow 8s ease-in-out infinite alternate; }
+`}
+</style>
