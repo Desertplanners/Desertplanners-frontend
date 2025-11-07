@@ -15,7 +15,7 @@ function Home() {
     <BannerSection />
     <TopCities />
     <TopAttractions />
-    <HolidayPackages />
+    {/* <HolidayPackages /> */}
     <PopularExperiences />
     {/* <TopThingsToDo /> */}
     {/* <UAEVisaServices /> */}
