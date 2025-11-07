@@ -3,32 +3,32 @@ import { useNavigate } from "react-router-dom";
 
 const experiences = [
   {
-    title: "Desert Safari Adventure",
+    title: "Desert Safari",
     desc: "Thrilling dune bashing, camel rides & stunning sunsets.",
-    price: "AED 250",
+    price: "AED 150",
     img: "https://images.unsplash.com/photo-1588310558566-b983c7d257e4?auto=format&fit=crop&w=800&q=80",
-    path: "tours/desert-safari/desert-safari-with-bbq-dinner-with-quad-bike",
+    path: "tours/desert-safari-with-dinner/desert-safari-with-bbq-dinner-by-4x4-vehicle",
   },
   {
     title: "Burj Khalifa At The Top",
     desc: "Marvel at Dubai from the tallest observation deck.",
-    price: "AED 350",
+    price: "AED 179",
     img: "https://plus.unsplash.com/premium_photo-1694475631307-0f0a85924605?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1145",
-    path: "tours/burj-khalifa/at-the-top-(level-124---125)",
+    path: "tours/burj-khalifa/burj-khalifa-at-the-top-124-+-125-floor-non-prime-hours",
   },
   {
     title: "Dubai Marina Yacht Tour",
     desc: "Luxury sailing in Dubai Marina with amazing views.",
-    price: "AED 450",
+    price: "AED 150",
     img: "https://images.unsplash.com/photo-1600665787589-c970451fc6b1?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2070",
-    path: "tours/dhow-cruise/lotus-mega-yacht-dinner---food-&-soft-quenchers",
+    path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers",
   },
   {
-    title: "Aquaventure Waterpark",
+    title: "Sea World Abu Dhabi",
     desc: "Fun-filled water slides and rides for the whole family.",
-    price: "AED 200",
-    img: "https://plus.unsplash.com/premium_photo-1675039871139-06cc792da9a7?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1332",
-    path: "tours/yas-island/yas-waterpark-with-mealt",
+    price: "AED 375",
+    img: "https://i.pinimg.com/736x/58/31/30/583130cba9abd8960050f9335f5c03f1.jpg",
+    path: "tours/yas-island-theme-park/sea-world",
   },
 ];
 

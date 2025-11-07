@@ -11,6 +11,10 @@ export default function TourDetails() {
   const baseURL =
     import.meta.env.VITE_API_URL || "https://desetplanner-backend.onrender.com";
 
+  // 🔹 Common fallback banner image
+  const commonBanner =
+    "/images/dubai-common-banner.jpg"; // 👉 Place this image in /public/images folder
+
   useEffect(() => {
     const fetchCategoryTours = async () => {
       try {
@@ -25,11 +29,10 @@ export default function TourDetails() {
       }
     };
 
-    // background data load with minimal delay
     requestIdleCallback(fetchCategoryTours);
   }, [slug]);
 
-  // 🧩 Skeleton Loader — visible until data arrives
+  // 🧩 Skeleton Loader
   if (loading) {
     return (
       <div className="max-w-[1200px] mx-auto px-4 py-10 animate-pulse">
@@ -56,28 +59,30 @@ export default function TourDetails() {
   return (
     <div className="w-full">
       {/* 🖼️ Category Banner */}
-      <div className="relative w-full h-64 md:h-[420px] rounded-2xl overflow-hidden shadow-lg">
-        {/* Background Image */}
+      <div className="relative w-full h-[180px] sm:h-[200px] md:h-[240px] lg:h-[300px] rounded-2xl overflow-hidden shadow-lg bg-black">
+        {/* 🧠 Image fallback — use category image else show common banner */}
         <img
           src={
-            tours[0].mainImage?.startsWith("http")
-              ? tours[0].mainImage
-              : `${baseURL}/${tours[0].mainImage}`
+            tours[0].mainImage
+              ? tours[0].mainImage.startsWith("http")
+                ? tours[0].mainImage
+                : `${baseURL}/${tours[0].mainImage}`
+              : commonBanner
           }
-          alt={tours[0].category?.name || "Category"}
-          className="w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-700 ease-out"
+          alt={tours[0].category?.name || "Dubai Tours"}
+          className="w-full h-full object-cover object-center transition-transform duration-700 ease-out"
+          onError={(e) => (e.currentTarget.src = commonBanner)}
         />
 
-        {/* Soft Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
 
-        {/* Clean Center Title */}
-        <div className="absolute inset-0 flex justify-center items-center">
+        {/* Category Title */}
+        <div className="absolute inset-0 flex justify-center items-center text-center">
           <h1
-            className="text-4xl md:text-6xl font-extrabold text-white text-center tracking-wide 
-            px-6 py-2 rounded-lg"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-wide drop-shadow-lg"
           >
-            {tours[0].category?.name || "Category"}
+            {tours[0].category?.name || "Explore Dubai Adventures"}
           </h1>
         </div>
       </div>
@@ -90,7 +95,7 @@ export default function TourDetails() {
             to={`/tours/${slug}/${tour.slug}`}
             className="block bg-white rounded-3xl overflow-hidden shadow-lg transition hover:shadow-2xl relative group"
           >
-            {/* 📸 Image */}
+            {/* 📸 Tour Image */}
             <div className="relative h-64 md:h-72 w-full overflow-hidden rounded-t-3xl">
               <img
                 src={
@@ -100,6 +105,7 @@ export default function TourDetails() {
                 }
                 alt={tour.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => (e.currentTarget.src = commonBanner)}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
@@ -113,7 +119,7 @@ export default function TourDetails() {
                 from AED {tour.price} / person
               </p>
               <div className="mt-auto text-center bg-[#404041] text-white font-semibold py-3 rounded-2xl shadow-md hover:shadow-lg hover:bg-gray-700 transition-all cursor-pointer">
-                View Trip 
+                View Trip
               </div>
             </div>
           </Link>

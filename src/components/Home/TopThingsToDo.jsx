@@ -9,7 +9,7 @@ const thingsToDo = [
     rating: 4.9,
     duration: "2 Hours",
     img: "https://images.unsplash.com/photo-1637751325549-5b6ccb614819?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687",
-    path: "tours/burj-khalifa/burj-khalifa---124th-+-125th-floor-non-prime-hours",
+    path: "tours/burj-khalifa/burj-khalifa-at-the-top-148-+-124th-+-125th-floor-non-prime-hours",
   },
   {
     name: "Desert Safari Adventure",
@@ -17,7 +17,7 @@ const thingsToDo = [
     rating: 4.8,
     duration: "6 Hours",
     img: "https://images.unsplash.com/photo-1759731688224-c433f7bec5ab?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=687",
-    path: "tours/desert-safari/desert-safari-with-bbq-dinner-by-4*4-vechicle-with-quad-bike-on-sharing-basis",
+    path: "tours/desert-safari-with-dinner/desert-safari-with-bbq-dinner-by-4x4-vehicle",
   },
   {
     name: "Dinner Cruise at Marina",
@@ -25,23 +25,23 @@ const thingsToDo = [
     rating: 4.7,
     duration: "3 Hours",
     img: "https://images.unsplash.com/photo-1733155695385-782a3ca77ae7?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1171",
-    path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers-on-sharing-basis",
+    path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers",
   },
   {
     name: "Dubai Miracle Garden",
     location: "Al Barsha South",
     rating: 4.6,
-    duration: "2 Hours",
+    duration: "6 Hours",
     img: "https://plus.unsplash.com/premium_photo-1661954483883-edd65eac3577?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1170",
-    path: "tours/excursion-tickets/dubai-miracle-garden",
+    path: "tours/combo-packages/miracle-garden-+-global-village-combo-ticket",
   },
   {
     name: "Helicopter Tour Dubai",
     location: "Palm Jumeirah",
     rating: 4.9,
-    duration: "1 Hour",
+    duration: "20 Minutes",
     img: "https://plus.unsplash.com/premium_photo-1661755648502-5d01555e7664?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1171",
-    path: "tours/helicopter-tour/12-mins-iconic-helicopter-tour-dubai",
+    path: "",
   },
   {
     name: "Dubai Frame Visit",
@@ -49,7 +49,7 @@ const thingsToDo = [
     rating: 4.8,
     duration: "1.5 Hours",
     img: "https://images.unsplash.com/photo-1628859017536-c2f1d69f3c84?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=937",
-    path: "tours/excursion-tickets/img-world",
+    path: "",
   },
 ];
 
