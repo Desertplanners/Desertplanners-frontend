@@ -16,7 +16,7 @@ export default function Banner() {
       title: "ABU DHABI TOUR",
       price: "AED 455",
       cta: "Explore Tours",
-      link: "/tours/abu-dhabi-city-tour/abu-dhabi-city-tour-with-ferrari-world",
+      link: "tours/abu-dhabi-city-tour/abu-dhabi-city-tour-with-ferrari-world",
     },
     {
       image: "/Banner3.webp",
@@ -24,7 +24,7 @@ export default function Banner() {
       title: "DESERT SAFARI",
       price: "AED 150",
       cta: "View All Packages",
-      link: "/tours/desert-safari-with-dinner/desert-safari-with-bbq-dinner-by-4x4-vehicle,
+      link: "tours/desert-safari-with-dinner/desert-safari-with-bbq-dinner-by-4x4-vehicle"
     },
   ];
 
