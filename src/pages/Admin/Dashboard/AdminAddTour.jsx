@@ -221,9 +221,14 @@ export default function AdminAddTour({ tour, onSuccess }) {
     formData.append("duration", duration);
     formData.append("category", category);
 
-    if (mainImage) formData.append("mainImage", mainImage);
-    galleryImages.forEach((file) => formData.append("galleryImages", file));
+    if (mainImage) formData.append("mainImage", mainImage, mainImage.name);
 
+    galleryImages.forEach((file) => {
+      if (file instanceof File) {
+        formData.append("galleryImages", file, file.name);
+      }
+    });
+    console.log("📤 Sending FormData:", Object.fromEntries(formData.entries()));
     formData.append("highlights", JSON.stringify(highlights));
     formData.append("inclusions", JSON.stringify(inclusions));
     formData.append("exclusions", JSON.stringify(exclusions));
