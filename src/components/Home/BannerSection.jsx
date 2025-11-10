@@ -11,7 +11,7 @@ export default function Banner() {
       link: "/tours/dubai-city-tour/dubai-city-tour",
     },
     {
-      image: "/Banner2.webp",
+      image: "/abu-dhabi.png",
       subtitle: "Experience the grandeur of the UAE’s capital.",
       title: "ABU DHABI TOUR",
       price: "AED 455",
