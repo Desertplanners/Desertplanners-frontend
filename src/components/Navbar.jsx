@@ -10,17 +10,17 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [tourCategories, setTourCategories] = useState([]);
   const [holidayCategory, setHolidayCategory] = useState(null);
-  const [visas, setVisas] = useState([]);
+  const [visaCategories, setVisaCategories] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const [openSubIndex, setOpenSubIndex] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
+  // ✅ Check if user logged in
   useEffect(() => {
     const checkLogin = () => {
       const token = localStorage.getItem("userToken");
       setUserLoggedIn(!!token);
     };
-
     checkLogin();
     window.addEventListener("userLoginChange", checkLogin);
     window.addEventListener("storage", checkLogin);
@@ -31,9 +31,11 @@ export default function Navbar() {
     };
   }, []);
 
+  // ✅ Fetch Tours + Visa Categories
   useEffect(() => {
     const api = DataService();
 
+    // ---- Fetch Tour Categories ----
     const fetchCategories = async () => {
       try {
         const res = await api.get(API.GET_CATEGORIES);
@@ -45,6 +47,7 @@ export default function Navbar() {
               cat.slug ||
               cat.categorySlug ||
               cat.name?.toLowerCase().replace(/\s+/g, "-");
+
             try {
               const toursRes = await api.get(API.GET_TOURS_BY_CATEGORY(slug));
               return { ...cat, slug, tours: toursRes.data || [] };
@@ -73,13 +76,31 @@ export default function Navbar() {
       }
     };
 
+    // ---- Fetch Visa Categories ----
     const fetchVisas = async () => {
       try {
-        const res = await api.get(API.GET_VISAS);
-        setVisas(res.data || []);
+        const visaCatRes = await api.get(API.GET_VISA_CATEGORIES);
+        const visaCats = visaCatRes.data || [];
+
+        const formatted = await Promise.all(
+          visaCats.map(async (vCat) => {
+            const slug =
+              vCat.slug ||
+              vCat.categorySlug ||
+              vCat.name?.toLowerCase().replace(/\s+/g, "-");
+
+            try {
+              const visasRes = await api.get(`${API.GET_VISAS}?category=${vCat._id}`);
+              return { ...vCat, slug, visas: visasRes.data || [] };
+            } catch {
+              return { ...vCat, slug, visas: [] };
+            }
+          })
+        );
+
+        setVisaCategories(formatted);
       } catch (err) {
-        console.error("Error fetching visas:", err);
-        setVisas([]);
+        console.error("Error fetching visa categories:", err);
       }
     };
 
@@ -87,6 +108,7 @@ export default function Navbar() {
     fetchVisas();
   }, []);
 
+  // ✅ Navigation structure
   const navLinks = [
     {
       title: "Tours",
@@ -110,16 +132,21 @@ export default function Navbar() {
       subLinks:
         holidayCategory?.tours?.map((tour) => ({
           name: tour.title,
-          path: `/tours/holidays/${tour.slug}`,
+          path: `/tours/${holidayCategory.slug}/${tour.slug}`,
         })) || [],
     },
     {
       title: "Visa Services",
       path: "/visa",
       subLinks:
-        visas.map((v) => ({
-          name: v.title,
-          path: `/visa/${v.slug}`,
+        visaCategories.map((vCat) => ({
+          name: vCat.name,
+          path: `/visa/${vCat.slug}`,
+          subSubLinks:
+            vCat.visas?.map((visa) => ({
+              name: visa.title,
+              path: `/visa/${vCat.slug}/${visa.slug}`,
+            })) || [],
         })) || [],
     },
     { title: "Contact Us", path: "/contact-us" },
@@ -131,12 +158,9 @@ export default function Navbar() {
   };
 
   const handleMainClick = (i, link) => {
-    // Toggle dropdown
     const isAlreadyOpen = openIndex === i;
     setOpenIndex(isAlreadyOpen ? null : i);
-
-    // 🔥 If it's "Tours" and has sublinks, auto-open first sublink
-    if (!isAlreadyOpen && link.title === "Tours" && link.subLinks?.length > 0) {
+    if (!isAlreadyOpen && link.subLinks?.length > 0) {
       setOpenSubIndex(0);
     } else {
       setOpenSubIndex(null);
@@ -236,14 +260,12 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* ✅ Mobile Menu */}
-      {/* ✅ Mobile Menu */}
+      {/* Mobile Menu */}
       {menuOpen && (
         <div className="lg:hidden bg-white border-t shadow-md">
           <ul className="flex flex-col p-4 space-y-2">
             {navLinks.map((link, i) => (
               <li key={i}>
-                {/* Main link */}
                 <div className="flex justify-between items-center font-medium text-[#404041] py-2">
                   <Link
                     to={link.path}
@@ -253,7 +275,6 @@ export default function Navbar() {
                     {link.title}
                   </Link>
 
-                  {/* Dropdown toggle arrow */}
                   {link.subLinks?.length > 0 && (
                     <button
                       onClick={() => setOpenIndex(openIndex === i ? null : i)}
@@ -268,13 +289,11 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* 2nd level */}
                 {openIndex === i && link.subLinks?.length > 0 && (
                   <ul className="pl-4 mt-1 space-y-1">
                     {link.subLinks.map((sublink, j) => (
                       <li key={j}>
                         <div className="flex justify-between items-center text-sm text-gray-700 py-1">
-                          {/* Category link (click = go to page) */}
                           <Link
                             to={sublink.path}
                             className="flex-1 hover:text-[#e82429] transition-colors"
@@ -283,7 +302,6 @@ export default function Navbar() {
                             {sublink.name}
                           </Link>
 
-                          {/* Arrow for sub-sub dropdown */}
                           {sublink.subSubLinks?.length > 0 && (
                             <button
                               onClick={(e) => {
@@ -303,7 +321,6 @@ export default function Navbar() {
                           )}
                         </div>
 
-                        {/* 3rd level */}
                         {openSubIndex === j &&
                           sublink.subSubLinks?.length > 0 && (
                             <ul className="pl-4 mt-1 space-y-1">

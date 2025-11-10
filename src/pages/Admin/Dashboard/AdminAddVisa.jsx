@@ -21,7 +21,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
     exclusions: [],
     documents: [],
     relatedVisas: [],
-    visaCategory: "", // ✅ new field
+    visaCategory: "", // ✅ visaCategory field
   });
 
   const [allVisas, setAllVisas] = useState([]);
@@ -29,12 +29,20 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
   const [loading, setLoading] = useState(false);
   const api = DataService();
 
-  // Prefill form if editing
+  // ✅ Prefill form if editing (auto select category fix)
   useEffect(() => {
-    if (editVisa) setFormData(editVisa);
+    if (editVisa) {
+      setFormData({
+        ...editVisa,
+        visaCategory:
+          editVisa.visaCategory && editVisa.visaCategory._id
+            ? editVisa.visaCategory._id
+            : editVisa.visaCategory || "",
+      });
+    }
   }, [editVisa]);
 
-  // Auto slug
+  // ✅ Auto-generate slug from title
   useEffect(() => {
     const slug = formData.title
       .toLowerCase()
@@ -43,7 +51,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
     setFormData((prev) => ({ ...prev, slug }));
   }, [formData.title]);
 
-  // Fetch all visas (for related list)
+  // ✅ Fetch all visas for related list
   useEffect(() => {
     const fetchAllVisas = async () => {
       try {
@@ -52,7 +60,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
           ? res.data
           : res.data.visas || [];
         setAllVisas(visasArray);
-      } catch (err) {
+      } catch {
         toast.error("Error fetching visas");
       }
     };
@@ -65,19 +73,20 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
       try {
         const res = await api.get(API.GET_VISA_CATEGORIES);
         setVisaCategories(res.data || []);
-      } catch (err) {
+      } catch {
         toast.error("Error fetching visa categories");
       }
     };
     fetchVisaCategories();
   }, []);
 
-  // handleChange
+  // ✅ Input change handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ For array fields
   const handleArrayChange = (e, key, index) => {
     const arr = [...formData[key]];
     arr[index] = e.target.value;
@@ -94,7 +103,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
     setFormData((prev) => ({ ...prev, [key]: arr }));
   };
 
-  // Submit
+  // ✅ Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -124,7 +133,18 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[ "title", "slug", "price", "overview", "details", "visaType", "processingTime", "entryType", "validity", "stayDuration", ].map((field) => (
+            {[
+              "title",
+              "slug",
+              "price",
+              "overview",
+              "details",
+              "visaType",
+              "processingTime",
+              "entryType",
+              "validity",
+              "stayDuration",
+            ].map((field) => (
               <div key={field} className="flex flex-col">
                 <label className="text-gray-700 font-medium mb-1 capitalize">
                   {field}
@@ -135,7 +155,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
                   value={formData[field]}
                   onChange={handleChange}
                   className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e82429]"
-                  required
+                  required={["title", "price", "overview"].includes(field)}
                   disabled={field === "slug"}
                 />
               </div>
@@ -143,7 +163,9 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
 
             {/* ✅ Visa Category Dropdown */}
             <div className="flex flex-col">
-              <label className="text-gray-700 font-medium mb-1">Visa Category</label>
+              <label className="text-gray-700 font-medium mb-1">
+                Visa Category
+              </label>
               <select
                 name="visaCategory"
                 value={formData.visaCategory}
@@ -164,7 +186,9 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
           {/* Array Fields */}
           {["gallery", "inclusions", "exclusions", "documents"].map((key) => (
             <div key={key} className="border rounded-xl p-4 bg-gray-50">
-              <h3 className="font-semibold text-[#e82429] mb-2 capitalize">{key}</h3>
+              <h3 className="font-semibold text-[#e82429] mb-2 capitalize">
+                {key}
+              </h3>
               {formData[key].map((val, idx) => (
                 <div key={idx} className="flex gap-2 mb-2">
                   <input
@@ -229,6 +253,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
             </button>
           </div>
 
+          {/* Submit Buttons */}
           <div className="flex justify-end gap-4 mt-6">
             <button
               type="button"

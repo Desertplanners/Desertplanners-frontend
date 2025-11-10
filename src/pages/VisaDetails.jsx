@@ -4,7 +4,6 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
-import WhatsAppButton from "../components/WhatsAppButton";
 import {
   FaClock,
   FaMapMarkerAlt,
@@ -20,7 +19,8 @@ import {
 } from "react-icons/fa";
 
 export default function VisaDetails() {
-  const { slug } = useParams();
+  // ✅ Corrected Params
+  const { categorySlug, visaSlug } = useParams();
   const [visa, setVisa] = useState(null);
   const [mainImage, setMainImage] = useState("");
   const [relatedVisas, setRelatedVisas] = useState([]);
@@ -31,7 +31,7 @@ export default function VisaDetails() {
   useEffect(() => {
     const fetchVisa = async () => {
       try {
-        const res = await api.get(API.GET_VISA_BY_SLUG(slug));
+        const res = await api.get(API.GET_VISA_BY_SLUG(visaSlug));
         setVisa(res.data);
         setMainImage(res.data.gallery?.[0] || res.data.img);
       } catch (err) {
@@ -41,16 +41,14 @@ export default function VisaDetails() {
       }
     };
     fetchVisa();
-  }, [slug]);
+  }, [visaSlug]);
 
   // ✅ Fetch Related Visas
-
   useEffect(() => {
     if (!visa) return;
-
     const fetchRelatedVisas = async () => {
       try {
-        const res = await api.get(API.GET_VISAS); // Backend se direct array mil raha
+        const res = await api.get(API.GET_VISAS);
         const filtered = (res.data || []).filter((v) => v._id !== visa._id);
         setRelatedVisas(filtered);
       } catch (err) {
@@ -58,8 +56,7 @@ export default function VisaDetails() {
         setRelatedVisas([]);
       }
     };
-
-    fetchRelatedVisas(); // ⬅️ Call the function
+    fetchRelatedVisas();
   }, [visa]);
 
   if (loading)
@@ -131,36 +128,12 @@ export default function VisaDetails() {
           {/* QUICK FACTS */}
           <section className="grid sm:grid-cols-2 md:grid-cols-3 gap-5">
             {[
-              {
-                icon: <FaClock />,
-                label: "Processing Time",
-                value: visa.processingTime,
-              },
-              {
-                icon: <FaPassport />,
-                label: "Visa Type",
-                value: visa.visaType,
-              },
-              {
-                icon: <FaListUl />,
-                label: "Entry Type",
-                value: visa.entryType,
-              },
-              {
-                icon: <FaCheckCircle />,
-                label: "Validity",
-                value: visa.validity,
-              },
-              {
-                icon: <FaTimesCircle />,
-                label: "Stay Duration",
-                value: visa.stayDuration,
-              },
-              {
-                icon: <FaInfoCircle />,
-                label: "Fees",
-                value: `AED ${visa.price}`,
-              },
+              { icon: <FaClock />, label: "Processing Time", value: visa.processingTime },
+              { icon: <FaPassport />, label: "Visa Type", value: visa.visaType },
+              { icon: <FaListUl />, label: "Entry Type", value: visa.entryType },
+              { icon: <FaCheckCircle />, label: "Validity", value: visa.validity },
+              { icon: <FaTimesCircle />, label: "Stay Duration", value: visa.stayDuration },
+              { icon: <FaInfoCircle />, label: "Fees", value: `AED ${visa.price}` },
             ].map((fact, i) => (
               <motion.div
                 key={i}
@@ -190,12 +163,10 @@ export default function VisaDetails() {
             <div className="grid md:grid-cols-2 gap-5 items-start">
               <div>
                 <p className="text-gray-700 leading-relaxed">{visa.overview}</p>
-                <p className="text-gray-700 leading-relaxed mt-3">
-                  {visa.details}
-                </p>
+                <p className="text-gray-700 leading-relaxed mt-3">{visa.details}</p>
               </div>
               <img
-                src={visa.gallery?.[0] || "/fallback-image.jpg"} // gallery ka first image use karo, fallback optional
+                src={visa.gallery?.[0] || "/fallback-image.jpg"}
                 alt={visa.title}
                 className="w-full h-60 object-cover rounded-2xl shadow"
               />
@@ -215,203 +186,6 @@ export default function VisaDetails() {
               ))}
             </ul>
           </section>
-
-          {/* STEPS TO APPLY */}
-          <section className="bg-white rounded-2xl shadow-md p-8">
-            <h2 className="text-2xl font-bold text-[#404041] mb-5">
-              Steps to Apply
-            </h2>
-            <div className="flex flex-col md:flex-row md:justify-between gap-6">
-              {[
-                "Choose Visa Type",
-                "Upload Documents",
-                "Make Payment",
-                "Receive Visa via Email",
-              ].map((step, i) => (
-                <div key={i} className="flex flex-col items-center">
-                  <div className="bg-[#e82429] text-white w-10 h-10 flex items-center justify-center rounded-full font-bold mb-2">
-                    {i + 1}
-                  </div>
-                  <p className="text-gray-700 font-medium">{step}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* INCLUSIONS & EXCLUSIONS */}
-          <section className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-2xl shadow">
-              <h3 className="text-xl font-bold text-[#e82429] mb-3">
-                Inclusions
-              </h3>
-              <ul className="space-y-2 text-gray-700">
-                {(visa.inclusions || []).map((i, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <FaCheckCircle className="text-green-500" /> {i}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="bg-white p-6 rounded-2xl shadow">
-              <h3 className="text-xl font-bold text-[#e82429] mb-3">
-                Exclusions
-              </h3>
-              <ul className="space-y-2 text-gray-700">
-                {(visa.exclusions || []).map((e, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <FaTimesCircle className="text-red-500" /> {e}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-
-          {/* REVIEWS SECTION */}
-          {/* MODERN REVIEWS SECTION */}
-          <section className="max-w-[1200px] mx-auto px-4 mt-16">
-            <h2 className="text-3xl font-extrabold text-[#721011] mb-8 text-center">
-              What Our Customers Say
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Review Card */}
-              {[
-                {
-                  name: "Alice Smith",
-                  rating: 5,
-                  text: "Amazing experience! Highly recommend for anyone applying for a UAE visa.",
-                },
-                {
-                  name: "John Doe",
-                  rating: 4,
-                  text: "Smooth process and very helpful support. Would use this service again.",
-                },
-                {
-                  name: "Maria Lee",
-                  rating: 5,
-                  text: "Fast processing and excellent guidance. Definitely recommend to everyone!",
-                },
-              ].map((review, idx) => (
-                <div
-                  key={idx}
-                  className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-lg p-6 flex flex-col gap-4 hover:shadow-2xl transition-shadow duration-300"
-                >
-                  <div className="flex items-center gap-3">
-                    <FaUserCircle className="text-3xl text-[#e82429]" />
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800">
-                        {review.name}
-                      </h3>
-                      <div className="flex items-center mt-1">
-                        {[...Array(5)].map((_, i) => (
-                          <FaStar
-                            key={i}
-                            className={`text-xs ${
-                              i < review.rating
-                                ? "text-yellow-400"
-                                : "text-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {review.text}
-                  </p>
-                  <div className="mt-auto flex justify-end">
-                    <span className="text-xs text-gray-400">
-                      Reviewed {review.rating} stars
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* RELATED VISAS */}
-          {relatedVisas.length > 0 && (
-            <section className="max-w-[1200px] mx-auto px-4 mt-16">
-              <h2 className="text-3xl font-extrabold text-[#721011] mb-10 text-start">
-                Related Visas
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                {relatedVisas.map((v) => (
-                  <Link
-                    key={v._id}
-                    to={`/visa/${v.slug}`}
-                    className="group relative flex flex-col bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
-                  >
-                    {/* IMAGE */}
-                    <div className="relative h-44 w-full overflow-hidden">
-                      <img
-                        src={
-                          t.galleryImages?.[0]
-                            ? `${API.BASE_URL}/${t.galleryImages[0]}`
-                            : t.mainImage
-                            ? `${API.BASE_URL}/${t.mainImage}`
-                            : "/no-image.jpg"
-                        }
-                        alt={t.title}
-                        className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                      {v.processingTime && (
-                        <span className="absolute top-2 left-2 bg-[#e82429] text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-                          <FaClock className="text-[10px]" /> {v.processingTime}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* CONTENT */}
-                    <div className="p-4 flex flex-col justify-between flex-1">
-                      <div className="space-y-1">
-                        <h3 className="text-lg font-bold text-[#404041] line-clamp-2 group-hover:text-[#e82429] transition-colors">
-                          {v.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm line-clamp-2">
-                          {v.overview}
-                        </p>
-                      </div>
-
-                      <div className="mt-3 flex justify-between items-center">
-                        <span className="text-[#e82429] font-bold text-md">
-                          AED {v.price}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          per application
-                        </span>
-                      </div>
-
-                      {/* CTA BUTTON */}
-                      <Link
-                        to={`/visa/${v.slug}`}
-                        className="mt-3 bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-2 rounded-xl text-center font-semibold hover:scale-105 transition-all"
-                      >
-                        Apply Now
-                      </Link>
-
-                      {/* RATING */}
-                      <div className="flex items-center mt-2">
-                        {[...Array(5)].map((_, idx) => (
-                          <FaStar
-                            key={idx}
-                            className={`${
-                              idx < 4 ? "text-yellow-400" : "text-gray-300"
-                            } text-xs`}
-                          />
-                        ))}
-                        <span className="ml-2 text-gray-500 text-xs">
-                          (4.0)
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
 
         {/* RIGHT SIDEBAR */}
@@ -453,11 +227,6 @@ export default function VisaDetails() {
             >
               <FaWhatsapp /> Need Help? Chat on WhatsApp
             </a>
-
-            <p className="text-xs text-gray-500 text-center border-t border-gray-200 pt-2">
-              Our team will contact you after submission. <br /> 100% Secure |
-              Govt Authorized
-            </p>
           </div>
         </div>
       </div>

@@ -37,7 +37,8 @@ const AppRouter = () => (
       {/* <Route path="/holidays" element={<HolidayPackages />} />
       <Route path="/holidays/:slug" element={<HolidayDetails />} /> */}
       <Route path="/visa" element={<VisaList />} />
-      <Route path="/visa/:slug" element={<VisaDetails />} />
+      <Route path="/visa/:categorySlug" element={<VisaList />} /> {/* 👈 new */}
+      <Route path="/visa/:categorySlug/:visaSlug" element={<VisaDetails />} />
       <Route path="/contact-us" element={<ContactUs />} />
       {/* Admin Auth */}
       <Route path="/admin/register" element={<AdminRegister />} />
@@ -50,7 +51,6 @@ const AppRouter = () => (
       <Route path="/privacy-policy" element={<PrivacyPolicy />} />
       <Route path="/cancellation-policy" element={<CancellationPolicy />} />
       <Route path="/booking-success" element={<BookingSuccess />} />
-      
       <Route
         path="/admin/dashboard"
         element={

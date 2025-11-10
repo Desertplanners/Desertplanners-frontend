@@ -1,21 +1,29 @@
 // src/pages/VisaList.jsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { API } from "../config/API";
+import { Link, useParams } from "react-router-dom";
 import DataService from "../config/DataService";
+import { API } from "../config/API";
 import { FaClock, FaStar } from "react-icons/fa";
 
 export default function VisaList() {
+  const { categorySlug } = useParams(); // 👈 categorySlug route se milega
   const [visas, setVisas] = useState([]);
   const [loading, setLoading] = useState(true);
   const api = DataService();
-  // Fetch visas from backend
+
+  // ✅ Fetch visas (agar categorySlug mila hai to uske hisaab se)
   const fetchVisas = async () => {
     try {
-      const res = await api.get(API.GET_VISAS);
-      // Backend may return array directly or inside { visas: [] }
-      const visaArray = Array.isArray(res.data) ? res.data : res.data.visas || [];
+      let res;
+      if (categorySlug) {
+        res = await api.get(`${API.GET_VISAS}?categorySlug=${categorySlug}`);
+      } else {
+        res = await api.get(API.GET_VISAS);
+      }
+
+      const visaArray = Array.isArray(res.data)
+        ? res.data
+        : res.data.visas || [];
       setVisas(visaArray);
     } catch (err) {
       console.error("Error fetching visas:", err);
@@ -27,7 +35,7 @@ export default function VisaList() {
 
   useEffect(() => {
     fetchVisas();
-  }, []);
+  }, [categorySlug]);
 
   if (loading) {
     return (
@@ -67,19 +75,20 @@ export default function VisaList() {
           {visas.map((v) => (
             <Link
               key={v._id}
-              to={`/visa/${v.slug}`}
+              to={`/visa/${v.visaCategory?.slug || categorySlug || ""}/${
+                v.slug
+              }`}
               className="group relative block rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-2"
             >
               {/* Image with gradient overlay */}
               <div className="relative h-56 w-full overflow-hidden rounded-t-3xl">
                 <img
-                  src={v.gallery?.[0] || v.img} // first gallery image or fallback
+                  src={v.gallery?.[0] || v.img}
                   alt={v.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
 
-                {/* Duration badge */}
                 {v.processingTime && (
                   <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
                     <FaClock className="inline-block mr-1 text-[10px]" />
@@ -98,7 +107,9 @@ export default function VisaList() {
                 </p>
 
                 <div className="flex items-center justify-between mt-4">
-                  <div className="text-[#e82429] font-bold text-lg">AED {v.price}</div>
+                  <div className="text-[#e82429] font-bold text-lg">
+                    AED {v.price}
+                  </div>
                   <div className="text-sm text-gray-500">per application</div>
                 </div>
 

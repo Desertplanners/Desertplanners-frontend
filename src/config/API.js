@@ -18,9 +18,8 @@ export const API = {
   // ✅ BASE_URL now switches automatically between local & Render
   BASE_URL: isLocalhost
     ? "https://desetplanner-backend.onrender.com" // 🔹 Render (production)
-    : "http://localhost:5000",                    // 🔹 Local (development)
+    : "http://localhost:5000", // 🔹 Local (development)
 
-    
   // ---- Admin ----
   ADMIN_REGISTER: `${admin}/register`,
   ADMIN_LOGIN: `${admin}/login`,
@@ -80,8 +79,10 @@ export const API = {
   DELETE_ENQUIRY: (id) => `${enquiries}/${id}`,
 
   // ---- ✅ Visa ----
+  // ---- ✅ Visa ----
   GET_VISAS: `${visas}`,
   GET_VISA_BY_SLUG: (slug) => `${visas}/${slug}`,
+  GET_VISAS_BY_CATEGORY: (categorySlug) => `${visas}/category/${categorySlug}`,
   ADD_VISA: `${visas}`,
   UPDATE_VISA: (id) => `${visas}/${id}`,
   DELETE_VISA: (id) => `${visas}/${id}`,
