@@ -22,7 +22,7 @@ export default function Banner() {
       image: "/abu-dhabi2.png",
       subtitle: "Experience the grandeur of the UAE’s capital.",
       title: "ABU DHABI TOUR",
-      price: "AED 455",
+      price: "AED 115",
       cta: "Explore Tours",
       link: "tours/abu-dhabi-city-tour/abu-dhabi-city-tour-with-ferrari-world",
     },
