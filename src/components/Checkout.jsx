@@ -25,7 +25,7 @@ export default function Checkout() {
     }
   }, [location.state?.cart]);
 
-  // 🧠 Logged-in user info (check both "user" and "userInfo")
+  // 🧠 Logged-in user info
   const [user, setUser] = useState(() => {
     return (
       JSON.parse(localStorage.getItem("user")) ||
@@ -37,16 +37,14 @@ export default function Checkout() {
   const token =
     user?.token || localStorage.getItem("token") || user?.accessToken || "";
 
-  // 🧩 Fetch latest user profile (optional refresh)
+  // 🧩 Fetch latest user profile
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (token) {
         try {
           const api = DataService("user");
           const res = await api.get(API.USER_PROFILE);
-          if (res.data) {
-            setUser(res.data);
-          }
+          if (res.data) setUser(res.data);
         } catch (err) {
           console.warn("⚠️ Failed to fetch user profile:", err.message);
         }
@@ -79,18 +77,20 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
 
+  // 💰 Calculate total price
   const totalPrice = cart.reduce(
     (sum, item) =>
       sum + (item.tourId?.price || item.price || 0) * (item.guests || 1),
     0
   );
 
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Handle booking submit
+  // ✅ Handle booking + payment submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -118,6 +118,7 @@ export default function Checkout() {
         ...(token && { Authorization: `Bearer ${token}` }),
       };
 
+      // 🧾 Step 1️⃣: Create booking
       const bookingData = {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
@@ -135,20 +136,54 @@ export default function Checkout() {
         })),
       };
 
-      const res = await api.post(API.CREATE_BOOKING, bookingData, { headers });
+      const bookingRes = await api.post(API.CREATE_BOOKING, bookingData, {
+        headers,
+      });
 
-      if (res.data?.success) {
-        toast.success("🎉 Booking confirmed successfully!");
+      if (!bookingRes.data?.success) {
+        toast.error(
+          bookingRes.data.message || "Booking failed. Please try again."
+        );
+        setLoading(false);
+        return;
+      }
+
+      const bookingId =
+        bookingRes.data.booking?._id || bookingRes.data.bookingId;
+      if (!bookingId) {
+        toast.error("Booking ID not found.");
+        setLoading(false);
+        return;
+      }
+
+      // 💳 Step 2️⃣: Create payment session
+      const paymentRes = await api.post(
+        API.CREATE_PAYMENT,
+        { bookingId },
+        { headers }
+      );
+
+      // ✅ Success: Redirect to Paymennt checkout
+      if (paymentRes.data?.success && paymentRes.data?.paymentLink) {
+        toast.success("Redirecting to secure payment...");
         localStorage.removeItem("guestCart");
-        navigate("/booking-success", { state: { booking: res.data.booking } });
+        window.location.href = paymentRes.data.paymentLink;
       } else {
-        toast.error(res.data.message || "Booking failed. Please try again.");
+        // ⚠️ Local testing fallback (no live payment)
+        console.warn("Payment creation failed:", paymentRes.data);
+        toast.error("Payment not initiated, confirming manually (local).");
+
+        // Local confirm
+        await api.put(API.CONFIRM_PAYMENT(bookingId));
+        localStorage.removeItem("guestCart");
+        toast.success("Booking confirmed (local test) ✅");
+        navigate("/booking-success", { state: { bookingId } });
       }
     } catch (err) {
-      console.error("❌ Booking Error:", err);
+      console.error("❌ Checkout Error:", err.response?.data || err.message);
       toast.error(
         err.response?.data?.message ||
-          "Something went wrong while booking. Please try again."
+          "Something went wrong while processing your booking."
       );
     } finally {
       setLoading(false);
@@ -170,53 +205,43 @@ export default function Checkout() {
 
           {cart.length > 0 ? (
             <div className="space-y-5">
-              {cart.map((item, i) => {
-                const imageSrc = item.tourId?.mainImage
-                  ? `https://desetplanner-backend.onrender.com/${item.tourId.mainImage}`
-                  : item.mainImage
-                  ? `https://desetplanner-backend.onrender.com/${item.mainImage}`
-                  : item.tourId?.image
-                  ? `https://desetplanner-backend.onrender.com/${item.tourId.image}`
-                  : "https://cdn-icons-png.flaticon.com/512/854/854878.png";
-
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center gap-5 border-b pb-4 border-gray-200 hover:bg-gray-50 rounded-xl transition-all p-2"
-                  >
-                    <img
-                      src={
-                        item.tourId?.mainImage?.startsWith("http")
-                          ? item.tourId.mainImage
-                          : item.mainImage?.startsWith("http")
-                          ? item.mainImage
-                          : "https://cdn-icons-png.flaticon.com/512/854/854878.png"
-                      }
-                      alt={item.tourId?.title || item.title}
-                      className="w-28 h-20 object-cover rounded-xl"
-                    />
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-lg">
-                        {item.tourId?.title || item.title}
-                      </h4>
-                      <p className="text-gray-600 text-sm">
-                        <FaCalendarAlt className="inline text-[#e82429] mr-1" />
-                        {item.date
-                          ? new Date(item.date).toDateString()
-                          : "Not selected"}
-                      </p>
-                      <p className="text-gray-600 text-sm">
-                        Guests: {item.guests || 1}
-                      </p>
-                      <p className="text-[#e82429] font-bold">
-                        AED{" "}
-                        {(item.tourId?.price || item.price || 0) *
-                          (item.guests || 1)}
-                      </p>
-                    </div>
+              {cart.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-5 border-b pb-4 border-gray-200 hover:bg-gray-50 rounded-xl transition-all p-2"
+                >
+                  <img
+                    src={
+                      item.tourId?.mainImage?.startsWith("http")
+                        ? item.tourId.mainImage
+                        : item.mainImage?.startsWith("http")
+                        ? item.mainImage
+                        : "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                    }
+                    alt={item.tourId?.title || item.title}
+                    className="w-28 h-20 object-cover rounded-xl"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-gray-900 text-lg">
+                      {item.tourId?.title || item.title}
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      <FaCalendarAlt className="inline text-[#e82429] mr-1" />
+                      {item.date
+                        ? new Date(item.date).toDateString()
+                        : "Not selected"}
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                      Guests: {item.guests || 1}
+                    </p>
+                    <p className="text-[#e82429] font-bold">
+                      AED{" "}
+                      {(item.tourId?.price || item.price || 0) *
+                        (item.guests || 1)}
+                    </p>
                   </div>
-                );
-              })}
+                </div>
+              ))}
               <div className="flex justify-between pt-4 border-t border-gray-200 text-lg">
                 <span className="font-bold text-gray-800">Total Price:</span>
                 <span className="font-bold text-[#e82429]">

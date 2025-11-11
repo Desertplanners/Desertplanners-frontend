@@ -3,6 +3,7 @@ const isLocalhost =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1";
 
+// 🧠 Base API groups
 const admin = "/api/admin";
 const user = "/api/users";
 const tours = "/api/tours";
@@ -11,8 +12,9 @@ const cart = "/api/cart";
 const bookings = "/api/bookings";
 const enquiries = "/api/enquiries";
 const visas = "/api/visas";
-const sections = "/api/sections"; // ✅ new added
+const sections = "/api/sections";
 const visaCategories = "/api/visa-categories";
+const payment = "/api/payment"; // ✅ new
 
 export const API = {
   // ✅ BASE_URL switches automatically
@@ -72,6 +74,11 @@ export const API = {
   UPDATE_BOOKING_STATUS: (id) => `${bookings}/${id}/status`,
   GET_MY_BOOKINGS: `${bookings}/my`,
 
+  // ---- Payment (💳 NEW) ----
+  CREATE_PAYMENT: `${payment}/create`,       // Step 1: Create payment session (backend → Paymennt)
+  CONFIRM_PAYMENT: (bookingId) => `${payment}/confirm/${bookingId}`, // Step 2: Temporary confirm (local test)
+  WEBHOOK_PAYMENT: `${payment}/webhook`,     // Step 3: Paymennt webhook (server auto updates)
+
   // ---- Enquiries ----
   CREATE_ENQUIRY: `${enquiries}`,
   GET_ALL_ENQUIRIES: `${enquiries}`,
@@ -94,7 +101,7 @@ export const API = {
   DELETE_SECTION: (id) => `${sections}/${id}`,
   TOGGLE_SECTION_VISIBILITY: (id) => `${sections}/${id}/visibility`,
 
-  // ---- ✅ Section Items (with image upload) ----
+  // ---- ✅ Section Items ----
   ADD_SECTION_ITEM: (sectionId) => `${sections}/${sectionId}/items`,
   GET_SECTION_ITEMS: (sectionId) => `${sections}/${sectionId}/items`,
   UPDATE_SECTION_ITEM: (sectionId, itemId) => `${sections}/${sectionId}/items/${itemId}`,
