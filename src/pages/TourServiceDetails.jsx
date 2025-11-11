@@ -98,58 +98,79 @@ export default function TourServiceDetails() {
 
   // Add to Cart
   // ✅ Inside your component
-  const handleAddToCart = async (tour) => {
-    try {
-      setAddingToCart(true);
+const handleAddToCart = async (tour) => {
+  try {
+    setAddingToCart(true);
 
-      const user = JSON.parse(localStorage.getItem("user"));
-      const formattedDate = startDate
-        ? formatDateToYYYYMMDD(startDate)
-        : new Date().toISOString().split("T")[0];
+    const user = JSON.parse(localStorage.getItem("user"));
+    const formattedDate = startDate
+      ? formatDateToYYYYMMDD(startDate)
+      : new Date().toISOString().split("T")[0];
 
-      const totalGuests = guests ? parseInt(guests) : 1;
+    const totalGuests = guests ? parseInt(guests) : 1;
 
-      if (user?._id) {
-        // 🔐 Logged-in user → backend
-        const api = DataService("user");
-        const res = await api.post(API.ADD_TO_CART, {
-          userId: user._id,
-          tourId: tour._id,
-          date: formattedDate,
-          guests: totalGuests,
-        });
+    // ======================
+    // 🔐 1️⃣ Logged-in User
+    // ======================
+    if (user?._id) {
+      // 🧹 Clear guest cart if user is logged in (important fix)
+      localStorage.removeItem("guestCart");
 
-        if (res.status === 200) {
-          toast.success("Added to your cart!");
-          navigate("/cart");
-        } else {
-          toast.error("Something went wrong!");
-        }
-        return;
+      const api = DataService("user");
+      const payload = {
+        userId: user._id,
+        tourId: tour._id,
+        date: formattedDate,
+        guests: totalGuests,
+      };
+
+      console.log("📤 Sending to backend:", payload);
+
+      const res = await api.post(API.ADD_TO_CART, payload);
+
+      if (res.data?.success) {
+        toast.success("✅ Added to your cart!");
+        // redirect to cart with updated data
+        navigate("/cart", { state: { newCart: res.data.cart } });
+      } else {
+        toast.error("❌ Something went wrong!");
       }
 
-      // 🧳 Guest (no login)
-      let localCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+      return; // stop here if logged-in user
+    }
+
+    // ======================
+    // 🧳 2️⃣ Guest User Flow
+    // ======================
+    let localCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+
+    // Avoid duplicate tours in cart
+    const existing = localCart.find((item) => item._id === tour._id);
+    if (existing) {
+      existing.guests = totalGuests;
+      existing.date = formattedDate;
+    } else {
       localCart.push({
         ...tour,
         guests: totalGuests,
         date: formattedDate,
         quantity: 1,
       });
-
-      localStorage.setItem("guestCart", JSON.stringify(localCart));
-      toast.success("Added to your cart!");
-      navigate("/cart");
-    } catch (error) {
-      console.error(
-        "Add to cart error:",
-        error.response?.data || error.message
-      );
-      toast.error("Error adding to cart!");
-    } finally {
-      setAddingToCart(false);
     }
-  };
+
+    localStorage.setItem("guestCart", JSON.stringify(localCart));
+    toast.success("✅ Added to your cart!");
+    navigate("/cart", { state: { newCart: localCart } });
+
+  } catch (error) {
+    console.error("Add to cart error:", error.response?.data || error.message);
+    toast.error("❌ Error adding to cart!");
+  } finally {
+    setAddingToCart(false);
+  }
+};
+
+
 
   // Yeh function component ke bahar add karo (file ke end mein)
   // 🔄 UPDATED - Array Format Cancellation Policy Render Function

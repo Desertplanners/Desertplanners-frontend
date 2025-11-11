@@ -28,7 +28,7 @@ export default function Banner() {
     },
     {
       image: "/Banner3.webp",
-      subtitle: "Discover the cultural charm of Sharjah.",
+      subtitle: "Discover the cultural charm of Desert Safari.",
       title: "DESERT SAFARI",
       price: "AED 150",
       cta: "View All Packages",

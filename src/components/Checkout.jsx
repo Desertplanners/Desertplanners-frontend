@@ -15,29 +15,67 @@ export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🛒 Cart data (from state or localStorage)
+  // 🛒 Cart data
   const [cart, setCart] = useState(location.state?.cart || []);
 
   useEffect(() => {
-    // ✅ If cart not passed via navigate, load from localStorage (for guests)
     if (!location.state?.cart) {
       const localCart = JSON.parse(localStorage.getItem("guestCart")) || [];
       setCart(localCart);
     }
   }, [location.state?.cart]);
 
-  // 🧠 Logged-in user (if any)
-  const user = JSON.parse(localStorage.getItem("userInfo") || "{}");
-  const token = user?.token || localStorage.getItem("token");
+  // 🧠 Logged-in user info (check both "user" and "userInfo")
+  const [user, setUser] = useState(() => {
+    return (
+      JSON.parse(localStorage.getItem("user")) ||
+      JSON.parse(localStorage.getItem("userInfo")) ||
+      {}
+    );
+  });
 
+  const token =
+    user?.token || localStorage.getItem("token") || user?.accessToken || "";
+
+  // 🧩 Fetch latest user profile (optional refresh)
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (token) {
+        try {
+          const api = DataService("user");
+          const res = await api.get(API.USER_PROFILE);
+          if (res.data) {
+            setUser(res.data);
+          }
+        } catch (err) {
+          console.warn("⚠️ Failed to fetch user profile:", err.message);
+        }
+      }
+    };
+    fetchUserProfile();
+  }, [token]);
+
+  // 🧾 Form data
   const [form, setForm] = useState({
-    guestName: user?.name || "",
-    guestEmail: user?.email || "",
-    guestContact: user?.phone || "",
+    guestName: "",
+    guestEmail: "",
+    guestContact: "",
     pickupPoint: "",
     dropPoint: "",
     specialRequest: "",
   });
+
+  // ✅ Auto-fill when user data available
+  useEffect(() => {
+    if (user?.name || user?.email || user?.phone) {
+      setForm((prev) => ({
+        ...prev,
+        guestName: user?.name || prev.guestName,
+        guestEmail: user?.email || prev.guestEmail,
+        guestContact: user?.phone || prev.guestContact,
+      }));
+    }
+  }, [user]);
 
   const [loading, setLoading] = useState(false);
 
@@ -52,6 +90,7 @@ export default function Checkout() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Handle booking submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -71,15 +110,14 @@ export default function Checkout() {
     }
 
     setLoading(true);
+
     try {
       const api = DataService();
-
       const headers = {
         "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
       };
 
-      // 🧾 Booking data
       const bookingData = {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
@@ -97,27 +135,14 @@ export default function Checkout() {
         })),
       };
 
-      // ✅ If user logged in → save booking in backend
-      if (token) {
-        const res = await api.post(API.CREATE_BOOKING, bookingData, { headers });
+      const res = await api.post(API.CREATE_BOOKING, bookingData, { headers });
 
-        if (res.data?.success) {
-          toast.success("🎉 Booking confirmed successfully!");
-          navigate("/booking-success", { state: { booking: res.data.booking } });
-        } else {
-          toast.error(res.data.message || "Booking failed. Please try again.");
-        }
-      } else {
-        // 🛒 Guest user → save locally
-        const guestBookings =
-          JSON.parse(localStorage.getItem("guestBookings")) || [];
-        guestBookings.push(bookingData);
-        localStorage.setItem("guestBookings", JSON.stringify(guestBookings));
-
-        toast.success("🎉 Booking saved locally!");
-        // Clear guest cart
+      if (res.data?.success) {
+        toast.success("🎉 Booking confirmed successfully!");
         localStorage.removeItem("guestCart");
-        navigate("/booking-success", { state: { booking: bookingData } });
+        navigate("/booking-success", { state: { booking: res.data.booking } });
+      } else {
+        toast.error(res.data.message || "Booking failed. Please try again.");
       }
     } catch (err) {
       console.error("❌ Booking Error:", err);
@@ -132,7 +157,6 @@ export default function Checkout() {
 
   return (
     <div className="max-w-5xl mx-auto mt-12 p-8 bg-gradient-to-br from-[#ffffff] via-[#f9f7ff] to-[#fff1f3] rounded-3xl shadow-2xl">
-      {/* 🏖️ Heading */}
       <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-[#8000ff] to-[#e5006e] text-transparent bg-clip-text drop-shadow-lg">
         Checkout & Confirm Your Booking
       </h2>
@@ -146,44 +170,53 @@ export default function Checkout() {
 
           {cart.length > 0 ? (
             <div className="space-y-5">
-              {cart.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-5 border-b pb-4 border-gray-200 hover:bg-gray-50 rounded-xl transition-all p-2"
-                >
-                  <img
-                    src={
-                      item.tourId?.mainImage || item.mainImage
-                        ? `https://desetplanner-backend.onrender.com/${
-                            item.tourId?.mainImage || item.mainImage
-                          }`
-                        : "https://cdn-icons-png.flaticon.com/512/854/854878.png"
-                    }
-                    alt={item.tourId?.title || item.title}
-                    className="w-28 h-24 object-cover rounded-2xl shadow"
-                  />
-                  <div>
-                    <h4 className="font-semibold text-gray-900 text-lg">
-                      {item.tourId?.title || item.title}
-                    </h4>
-                    <p className="text-gray-600 text-sm">
-                      <FaCalendarAlt className="inline text-[#e82429] mr-1" />
-                      {item.date
-                        ? new Date(item.date).toDateString()
-                        : "Not selected"}
-                    </p>
-                    <p className="text-gray-600 text-sm">
-                      Guests: {item.guests || 1}
-                    </p>
-                    <p className="text-[#e82429] font-bold">
-                      AED{" "}
-                      {(item.tourId?.price || item.price || 0) *
-                        (item.guests || 1)}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              {cart.map((item, i) => {
+                const imageSrc = item.tourId?.mainImage
+                  ? `https://desetplanner-backend.onrender.com/${item.tourId.mainImage}`
+                  : item.mainImage
+                  ? `https://desetplanner-backend.onrender.com/${item.mainImage}`
+                  : item.tourId?.image
+                  ? `https://desetplanner-backend.onrender.com/${item.tourId.image}`
+                  : "https://cdn-icons-png.flaticon.com/512/854/854878.png";
 
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-5 border-b pb-4 border-gray-200 hover:bg-gray-50 rounded-xl transition-all p-2"
+                  >
+                    <img
+                      src={
+                        item.tourId?.mainImage?.startsWith("http")
+                          ? item.tourId.mainImage
+                          : item.mainImage?.startsWith("http")
+                          ? item.mainImage
+                          : "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                      }
+                      alt={item.tourId?.title || item.title}
+                      className="w-28 h-20 object-cover rounded-xl"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-gray-900 text-lg">
+                        {item.tourId?.title || item.title}
+                      </h4>
+                      <p className="text-gray-600 text-sm">
+                        <FaCalendarAlt className="inline text-[#e82429] mr-1" />
+                        {item.date
+                          ? new Date(item.date).toDateString()
+                          : "Not selected"}
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        Guests: {item.guests || 1}
+                      </p>
+                      <p className="text-[#e82429] font-bold">
+                        AED{" "}
+                        {(item.tourId?.price || item.price || 0) *
+                          (item.guests || 1)}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
               <div className="flex justify-between pt-4 border-t border-gray-200 text-lg">
                 <span className="font-bold text-gray-800">Total Price:</span>
                 <span className="font-bold text-[#e82429]">

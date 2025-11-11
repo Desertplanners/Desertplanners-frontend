@@ -13,23 +13,30 @@ export default function Cart({ userId }) {
   const [clearing, setClearing] = useState(false);
   const [removingItemId, setRemovingItemId] = useState(null);
 
-  // ✅ Get userId from prop or localStorage
+  // ✅ Get userId from localStorage
   const getUserId = () => {
-    const uid = userId || localStorage.getItem("userId");
-    return uid && /^[0-9a-fA-F]{24}$/.test(uid) ? uid : null;
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?._id || null;
   };
 
-  // ✅ Fetch cart from backend (logged-in users)
+  // ✅ Fetch user cart from backend
   const fetchCart = async (uid) => {
     try {
       setLoading(true);
       const api = DataService("user");
       const res = await api.get(API.GET_CART(uid));
+      const data = res.data;
       const items =
-        res.data?.items || res.data?.cart || res.data?.data || res.data || [];
-      setCart(items);
+        data?.items ||
+        data?.cart?.items ||
+        data?.cart ||
+        data?.data ||
+        data ||
+        [];
+      setCart(Array.isArray(items) ? items : []);
     } catch (err) {
       console.error("Error fetching cart:", err);
+      toast.error("Failed to load your cart. Please try again.");
       setCart([]);
     } finally {
       setLoading(false);
@@ -41,10 +48,13 @@ export default function Cart({ userId }) {
     const uid = getUserId();
 
     if (!uid) {
-      // Guest user
+      // Guest user flow
       let guestCart = JSON.parse(localStorage.getItem("guestCart")) || [];
       guestCart = guestCart.filter(
-        (item) => item._id !== itemId && item.tourId !== itemId
+        (item) =>
+          item._id !== itemId &&
+          item.tourId !== itemId &&
+          item.tourId?._id !== itemId
       );
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
       setCart(guestCart);
@@ -52,17 +62,24 @@ export default function Cart({ userId }) {
       return;
     }
 
-    // Logged-in user
+    // Logged-in user flow
     try {
       setRemovingItemId(itemId);
       const api = DataService("user");
       const res = await api.delete(API.REMOVE_FROM_CART(uid, itemId));
+      const data = res.data;
       const items =
-        res.data?.items || res.data?.cart || res.data?.data || res.data || [];
-      setCart(items);
+        data?.items ||
+        data?.cart?.items ||
+        data?.cart ||
+        data?.data ||
+        data ||
+        [];
+      setCart(Array.isArray(items) ? items : []);
       toast.success("Item removed!");
     } catch (err) {
       console.error("Error removing item:", err);
+      toast.error("Failed to remove item.");
     } finally {
       setRemovingItemId(null);
     }
@@ -83,25 +100,29 @@ export default function Cart({ userId }) {
       setClearing(true);
       const api = DataService("user");
       const res = await api.delete(API.CLEAR_CART(uid));
+      const data = res.data;
       const items =
-        res.data?.items || res.data?.cart || res.data?.data || res.data || [];
-      setCart(items);
+        data?.items ||
+        data?.cart?.items ||
+        data?.cart ||
+        data?.data ||
+        data ||
+        [];
+      setCart(Array.isArray(items) ? items : []);
       toast.success("Cart cleared!");
     } catch (err) {
       console.error("Error clearing cart:", err);
+      toast.error("Failed to clear cart.");
     } finally {
       setClearing(false);
     }
   };
 
-  // ✅ Load cart on mount or after redirect with state
+  // ✅ Load cart on mount
   useEffect(() => {
     const uid = getUserId();
 
-    if (location.state?.newCart) {
-      setCart(location.state.newCart);
-      setLoading(false);
-    } else if (uid) {
+    if (uid) {
       fetchCart(uid);
     } else {
       try {
@@ -113,17 +134,21 @@ export default function Cart({ userId }) {
         setLoading(false);
       }
     }
-  }, [userId, location.state]);
+  }, [userId, location.key]);
 
-  // ✅ Calculate total
-  const totalPrice = cart.reduce(
-    (sum, item) =>
-      sum + (item.tourId?.price || item.price || 0) * (item.guests || 1),
-    0
-  );
+  // ✅ Calculate total price safely
+  const totalPrice = cart.reduce((sum, item) => {
+    const price = Number(item.tourId?.price || item.price || 0);
+    const guests = Number(item.guests || 1);
+    return sum + price * guests;
+  }, 0);
 
   // ✅ Checkout handler
   const handleCheckout = () => {
+    if (cart.length === 0) {
+      toast.error("Your cart is empty!");
+      return;
+    }
     navigate("/checkout", { state: { cart } });
   };
 
@@ -162,61 +187,84 @@ export default function Cart({ userId }) {
       </div>
     );
 
-  // ✅ Cart UI
+  // ✅ Main cart UI
   return (
     <div className="max-w-[1200px] mx-auto p-4">
       <h2 className="text-3xl font-bold mb-6 text-[#721011]">Your Cart</h2>
 
       <div className="grid gap-6">
-        {cart.map((item, index) => (
-          <div
-            key={item._id || index}
-            className="flex flex-col md:flex-row justify-between items-center bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition"
-          >
-            <div className="flex items-center gap-4">
-              <img
-                src={`https://desetplanner-backend.onrender.com/${
-                  item.tourId?.mainImage || item.mainImage
-                }`}
-                alt={item.tourId?.title || item.title}
-                className="w-28 h-20 object-cover rounded-xl"
-              />
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {item.tourId?.title || item.title}
-                </h3>
-                {item.date && (
-                  <p className="text-gray-600 text-sm">
-                    Date: {new Date(item.date).toDateString()}
-                  </p>
-                )}
-                {item.guests && (
-                  <p className="text-gray-600 text-sm">Guests: {item.guests}</p>
-                )}
-                <p className="text-gray-800 font-bold">
-                  AED{" "}
-                  {(item.tourId?.price || item.price || 0) *
-                    (item.guests || 1)}
-                </p>
-              </div>
-            </div>
+        {cart.map((item, index) => {
+          const imageSrc = item.tourId?.mainImage
+            ? `https://desetplanner-backend.onrender.com/${item.tourId.mainImage}`
+            : item.mainImage
+            ? `https://desetplanner-backend.onrender.com/${item.mainImage}`
+            : item.tourId?.image
+            ? `https://desetplanner-backend.onrender.com/${item.tourId.image}`
+            : "https://cdn-icons-png.flaticon.com/512/854/854878.png";
 
-            <button
-              onClick={() => removeItem(item._id || item.tourId)}
-              disabled={removingItemId === (item._id || item.tourId)}
-              className={`mt-3 md:mt-0 bg-red-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-600 transition ${
-                removingItemId === (item._id || item.tourId)
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
-              }`}
+          return (
+            <div
+              key={item._id || index}
+              className="flex flex-col md:flex-row justify-between items-center bg-white rounded-2xl shadow-lg p-4 hover:shadow-xl transition"
             >
-              <FaTrashAlt />
-              {removingItemId === (item._id || item.tourId)
-                ? "Removing..."
-                : "Remove"}
-            </button>
-          </div>
-        ))}
+              <div className="flex items-center gap-4">
+                <img
+                  src={
+                    item.tourId?.mainImage?.startsWith("http")
+                      ? item.tourId.mainImage
+                      : item.mainImage?.startsWith("http")
+                      ? item.mainImage
+                      : "https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                  }
+                  alt={item.tourId?.title || item.title}
+                  className="w-28 h-20 object-cover rounded-xl"
+                />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    {item.tourId?.title || item.title}
+                  </h3>
+                  {item.date && (
+                    <p className="text-gray-600 text-sm">
+                      Date: {new Date(item.date).toDateString()}
+                    </p>
+                  )}
+                  {item.guests && (
+                    <p className="text-gray-600 text-sm">
+                      Guests: {item.guests}
+                    </p>
+                  )}
+                  <p className="text-gray-800 font-bold">
+                    AED{" "}
+                    {Number(item.tourId?.price || item.price || 0) *
+                      Number(item.guests || 1)}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() =>
+                  removeItem(item._id || item.tourId?._id || item.tourId)
+                }
+                disabled={
+                  removingItemId ===
+                  (item._id || item.tourId?._id || item.tourId)
+                }
+                className={`mt-3 md:mt-0 bg-red-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 hover:bg-red-600 transition ${
+                  removingItemId ===
+                  (item._id || item.tourId?._id || item.tourId)
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+              >
+                <FaTrashAlt />
+                {removingItemId ===
+                (item._id || item.tourId?._id || item.tourId)
+                  ? "Removing..."
+                  : "Remove"}
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       <div className="mt-6 flex flex-col md:flex-row justify-between items-center">

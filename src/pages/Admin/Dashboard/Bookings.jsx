@@ -10,12 +10,12 @@ export default function AdminBookings() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
 
-  // ✅ Use admin token while calling API
+  // ✅ Fetch all bookings (admin)
   const fetchBookings = async () => {
     try {
-      const api = DataService("admin"); // ✅ Use admin token
+      const api = DataService("admin");
       const res = await api.get(API.GET_ALL_BOOKINGS);
-      setBookings(res.data.bookings);
+      setBookings(res.data.bookings || []);
     } catch (err) {
       console.error("Error loading bookings:", err);
     } finally {
@@ -28,7 +28,7 @@ export default function AdminBookings() {
       setUpdating(id);
       const api = DataService("admin");
       await api.put(API.UPDATE_BOOKING_STATUS(id), { status });
-      fetchBookings(); // refresh list
+      fetchBookings(); // refresh after update
     } catch (err) {
       console.error("Failed to update status:", err);
     } finally {
@@ -64,7 +64,7 @@ export default function AdminBookings() {
             <thead className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white">
               <tr>
                 <th className="p-4 text-left font-semibold">#</th>
-                <th className="p-4 text-left font-semibold">User</th>
+                <th className="p-4 text-left font-semibold">Customer</th>
                 <th className="p-4 text-left font-semibold">Email</th>
                 <th className="p-4 text-left font-semibold">Tour</th>
                 <th className="p-4 text-left font-semibold">Guests</th>
@@ -73,89 +73,103 @@ export default function AdminBookings() {
                 <th className="p-4 text-left font-semibold">Action</th>
               </tr>
             </thead>
+
             <tbody>
-              {bookings.map((b, index) => (
-                <motion.tr
-                  key={b._id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="border-b hover:bg-[#fdf1f1] transition-all duration-200"
-                >
-                  {/* ✅ Serial number */}
-                  <td className="p-4 text-sm font-medium text-[#404041]">
-                    {index + 1}
-                  </td>
+              {bookings.map((b, index) => {
+                const userName = b.user?.name || b.guestName || "Guest";
+                const userEmail = b.user?.email || b.guestEmail || "—";
+                const contact = b.guestContact || b.user?.phone || "—";
+                const tourTitle = b.items[0]?.tourId?.title || "—";
+                const guests = b.items[0]?.guests || "-";
 
-                  {/* ✅ User name and email */}
-                  <td className="p-4 text-sm text-[#404041]">
-                    {b.user?.name || "—"}
-                  </td>
-                  <td className="p-4 text-sm text-gray-500">
-                    {b.user?.email || "—"}
-                  </td>
+                return (
+                  <motion.tr
+                    key={b._id}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="border-b hover:bg-[#fdf1f1] transition-all duration-200"
+                  >
+                    {/* ✅ Serial number */}
+                    <td className="p-4 text-sm font-medium text-[#404041]">
+                      {index + 1}
+                    </td>
 
-                  {/* ✅ Tour details */}
-                  <td className="p-4 text-sm text-[#404041]">
-                    {b.items[0]?.tourId?.title || "—"}{" "}
-                    <span className="text-gray-400 text-xs">
-                      ({b.items.length} items)
-                    </span>
-                  </td>
+                    {/* ✅ Customer Name */}
+                    <td className="p-4 text-sm text-[#404041] font-semibold">
+                      {userName}
+                      <div className="text-xs text-gray-500">
+                        {b.user ? "Registered User" : "Guest Booking"}
+                      </div>
+                    </td>
 
-                  <td className="p-4 text-sm text-[#404041]">
-                    {b.items[0]?.guests || "-"}
-                  </td>
+                    {/* ✅ Email */}
+                    <td className="p-4 text-sm text-gray-500">{userEmail}</td>
 
-                  <td className="p-4 text-sm font-semibold text-[#721011]">
-                    AED {b.totalPrice}
-                  </td>
-
-                  {/* ✅ Status */}
-                  <td className="p-4">
-                    <span
-                      className={`px-3 py-1 text-xs font-bold rounded-full ${
-                        b.status === "confirmed"
-                          ? "bg-green-100 text-green-700"
-                          : b.status === "cancelled"
-                          ? "bg-[#ffe0e0] text-[#e82429]"
-                          : "bg-yellow-100 text-yellow-700"
-                      }`}
-                    >
-                      {b.status.charAt(0).toUpperCase() + b.status.slice(1)}
-                    </span>
-                  </td>
-
-                  {/* ✅ Action buttons */}
-                  <td className="p-4 flex gap-3">
-                    <button
-                      onClick={() => updateStatus(b._id, "confirmed")}
-                      disabled={updating === b._id}
-                      className="flex items-center gap-1 bg-[#404041] hover:bg-[#721011] text-white px-3 py-1.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-50"
-                    >
-                      {updating === b._id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <CheckCircle className="w-4 h-4" />
+                    {/* ✅ Tour details */}
+                    <td className="p-4 text-sm text-[#404041]">
+                      {tourTitle}
+                      {b.items.length > 1 && (
+                        <span className="text-gray-400 text-xs ml-1">
+                          (+{b.items.length - 1} more)
+                        </span>
                       )}
-                      Confirm
-                    </button>
+                    </td>
 
-                    <button
-                      onClick={() => updateStatus(b._id, "cancelled")}
-                      disabled={updating === b._id}
-                      className="flex items-center gap-1 bg-[#e82429] hover:bg-[#721011] text-white px-3 py-1.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-50"
-                    >
-                      {updating === b._id ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <XCircle className="w-4 h-4" />
-                      )}
-                      Cancel
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
+                    {/* ✅ Guests */}
+                    <td className="p-4 text-sm text-[#404041]">{guests}</td>
+
+                    {/* ✅ Total */}
+                    <td className="p-4 text-sm font-semibold text-[#721011]">
+                      AED {b.totalPrice}
+                    </td>
+
+                    {/* ✅ Status */}
+                    <td className="p-4">
+                      <span
+                        className={`px-3 py-1 text-xs font-bold rounded-full ${
+                          b.status === "confirmed"
+                            ? "bg-green-100 text-green-700"
+                            : b.status === "cancelled"
+                            ? "bg-[#ffe0e0] text-[#e82429]"
+                            : "bg-yellow-100 text-yellow-700"
+                        }`}
+                      >
+                        {b.status.charAt(0).toUpperCase() + b.status.slice(1)}
+                      </span>
+                    </td>
+
+                    {/* ✅ Action Buttons */}
+                    <td className="p-4 flex gap-3">
+                      <button
+                        onClick={() => updateStatus(b._id, "confirmed")}
+                        disabled={updating === b._id}
+                        className="flex items-center gap-1 bg-[#404041] hover:bg-[#721011] text-white px-3 py-1.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-50"
+                      >
+                        {updating === b._id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <CheckCircle className="w-4 h-4" />
+                        )}
+                        Confirm
+                      </button>
+
+                      <button
+                        onClick={() => updateStatus(b._id, "cancelled")}
+                        disabled={updating === b._id}
+                        className="flex items-center gap-1 bg-[#e82429] hover:bg-[#721011] text-white px-3 py-1.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-50"
+                      >
+                        {updating === b._id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <XCircle className="w-4 h-4" />
+                        )}
+                        Cancel
+                      </button>
+                    </td>
+                  </motion.tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
