@@ -272,6 +272,61 @@ export default function VisaDetails() {
             </motion.section>
           )}
 
+          {/* DOCUMENTS */}
+          {visa.documents && visa.documents.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-white/70 backdrop-blur-md rounded-3xl shadow-lg border border-gray-100 p-10 relative overflow-hidden"
+            >
+              {/* gradient glow */}
+              <div className="absolute -top-10 -right-10 w-60 h-60 bg-gradient-to-br from-[#e82429]/10 to-[#721011]/10 blur-3xl rounded-full -z-10" />
+              <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tl from-[#e82429]/10 to-[#721011]/5 blur-3xl rounded-full -z-10" />
+
+              {/* header */}
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-[#e82429]/10 rounded-full">
+                    <FaCheckCircle className="text-[#e82429] text-2xl" />
+                  </div>
+                  <h2 className="text-3xl font-extrabold text-[#2b2b2b]">
+                    Required Documents
+                  </h2>
+                </div>
+                <span className="text-sm uppercase tracking-widest text-[#e82429]/70 font-semibold">
+                  Must Have Before Apply
+                </span>
+              </div>
+
+              {/* documents list */}
+              <ul className="grid sm:grid-cols-1 md:grid-cols-2 gap-5">
+                {visa.documents.map((doc, i) => (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="flex items-start gap-3 bg-white/80 border border-gray-100 rounded-2xl p-5 hover:border-[#e82429]/40 hover:shadow-lg transition-all duration-300"
+                  >
+                    <div className="p-2 bg-gradient-to-br from-[#e82429] to-[#721011] rounded-lg text-white shadow">
+                      <FaCheckCircle className="text-white" />
+                    </div>
+                    <p className="text-gray-800 text-[15.5px] leading-relaxed font-medium">
+                      {doc}
+                    </p>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.section>
+          )}
+
+          {/* fallback message (if empty) */}
+          {(!visa.documents || !visa.documents.length) && (
+            <section className="bg-white/60 backdrop-blur-md rounded-3xl shadow p-8 text-center text-gray-500 italic border">
+              Documents details will be shared after submission.
+            </section>
+          )}
           {/* TERMS & CONDITIONS */}
           {visa.termsAndConditions && visa.termsAndConditions.length > 0 && (
             <motion.section
@@ -323,63 +378,6 @@ export default function VisaDetails() {
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#721011]/5 blur-3xl -z-10" />
             </motion.section>
           )}
-
-          {/* DOCUMENTS */}
-          {visa.documents && visa.documents.length > 0 && (
-  <motion.section
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6 }}
-    className="bg-white/70 backdrop-blur-md rounded-3xl shadow-lg border border-gray-100 p-10 relative overflow-hidden"
-  >
-    {/* gradient glow */}
-    <div className="absolute -top-10 -right-10 w-60 h-60 bg-gradient-to-br from-[#e82429]/10 to-[#721011]/10 blur-3xl rounded-full -z-10" />
-    <div className="absolute bottom-0 left-0 w-72 h-72 bg-gradient-to-tl from-[#e82429]/10 to-[#721011]/5 blur-3xl rounded-full -z-10" />
-
-    {/* header */}
-    <div className="flex items-center justify-between mb-8">
-      <div className="flex items-center gap-3">
-        <div className="p-3 bg-[#e82429]/10 rounded-full">
-          <FaCheckCircle className="text-[#e82429] text-2xl" />
-        </div>
-        <h2 className="text-3xl font-extrabold text-[#2b2b2b]">
-          Required Documents
-        </h2>
-      </div>
-      <span className="text-sm uppercase tracking-widest text-[#e82429]/70 font-semibold">
-        Must Have Before Apply
-      </span>
-    </div>
-
-    {/* documents list */}
-    <ul className="grid sm:grid-cols-1 md:grid-cols-2 gap-5">
-      {visa.documents.map((doc, i) => (
-        <motion.li
-          key={i}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.05 }}
-          className="flex items-start gap-3 bg-white/80 border border-gray-100 rounded-2xl p-5 hover:border-[#e82429]/40 hover:shadow-lg transition-all duration-300"
-        >
-          <div className="p-2 bg-gradient-to-br from-[#e82429] to-[#721011] rounded-lg text-white shadow">
-            <FaCheckCircle className="text-white" />
-          </div>
-          <p className="text-gray-800 text-[15.5px] leading-relaxed font-medium">
-            {doc}
-          </p>
-        </motion.li>
-      ))}
-    </ul>
-  </motion.section>
-)}
-
-{/* fallback message (if empty) */}
-{(!visa.documents || !visa.documents.length) && (
-  <section className="bg-white/60 backdrop-blur-md rounded-3xl shadow p-8 text-center text-gray-500 italic border">
-    Documents details will be shared after submission.
-  </section>
-)}
-
         </div>
 
         {/* RIGHT SIDEBAR */}
