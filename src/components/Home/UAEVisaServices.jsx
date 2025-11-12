@@ -1,92 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import DataService from "../../config/DataService";
-import { API } from "../../config/API";
-import { FaPassport, FaClock, FaChevronRight } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 
-export default function HomeVisaSection() {
-  const [visas, setVisas] = useState([]);
-  const api = DataService();
-
-  useEffect(() => {
-    const fetchVisas = async () => {
-      try {
-        const res = await api.get(API.GET_VISAS);
-        setVisas(res.data.slice(0, 6)); // show only top 6 visas
-      } catch (err) {
-        console.error("Error fetching visas:", err);
-      }
-    };
-    fetchVisas();
-  }, []);
+export default function VisaBanner() {
+  const navigate = useNavigate();
 
   return (
-    <section className="relative py-8 bg-gray-50 overflow-hidden">
-      {/* Decorative background */}
-      <div className="absolute top-0 left-0 w-60 h-60 bg-[#e82429]/5 blur-3xl rounded-full -z-10" />
-      <div className="absolute bottom-0 right-0 w-72 h-72 bg-[#721011]/5 blur-3xl rounded-full -z-10" />
+    <section className="flex justify-center py-10 bg-gradient-to-b from-gray-50 to-white">
+      <div
+        className="relative w-full max-w-[1200px] rounded-3xl overflow-hidden cursor-pointer shadow-xl group"
+        onClick={() => navigate("/visa")}
+      >
+        {/* Background Image */}
+        <img
+  src="/visabanner.png"
+  alt="Visa Services"
+  className="w-full h-[400px] object-contain object-center transition-transform duration-700 bg-black"
+/>
 
-      <div className="max-w-[1200px] mx-auto px-4 text-center">
-        {/* Header */}
-        <motion.h2
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-all duration-500"></div>
+
+        {/* Content */}
+        <motion.div
+          className="absolute inset-0 flex flex-col justify-center items-start px-10 text-white"
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl text-left font-bold text-[#2e2e2e] mb-6"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
         >
-          Explore Global Visa
-        </motion.h2>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight drop-shadow-lg">
+            Explore Dubai Visa Services
+          </h2>
+          <p className="text-lg md:text-xl mb-6 text-gray-100 max-w-[600px] drop-shadow-md">
+            Quick, easy, and hassle-free visa processing for your next adventure.
+          </p>
 
-        {/* Visa Cards Grid */}
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {visas.map((visa, index) => (
-            <motion.div
-              key={visa._id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="group relative bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300"
-            >
-              {/* Image */}
-              <div className="h-48 w-full overflow-hidden">
-                <motion.img
-                  src={visa.img || "/images/visa-default.jpg"}
-                  alt={visa.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-6 text-left space-y-3">
-                <h3 className="text-xl font-bold text-[#2e2e2e] line-clamp-2 group-hover:text-[#e82429] transition">
-                  {visa.title}
-                </h3>
-                <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <FaPassport className="text-[#e82429]" /> {visa.entryType}
-                </div>
-                <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <FaClock className="text-[#e82429]" /> {visa.processingTime}
-                </div>
-
-                <div className="flex justify-between items-center pt-2">
-                  <p className="text-lg font-bold text-[#e82429]">
-                    AED {visa.price}
-                  </p>
-                  <Link
-                    to={`/visa/${visa.visaCategory?.slug || "uae"}/${visa.slug}`}
-                    className="flex items-center gap-1 text-[#721011] font-semibold hover:gap-2 transition-all"
-                  >
-                    View Details <FaChevronRight className="text-sm" />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Glow effect */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-gradient-to-br from-[#e82429] to-[#721011] transition-all duration-500" />
-            </motion.div>
-          ))}
-        </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-full font-semibold shadow-md hover:bg-gray-200 transition-all"
+          >
+            View All Visas <FaArrowRight />
+          </motion.button>
+        </motion.div>
       </div>
     </section>
   );

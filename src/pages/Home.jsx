@@ -18,7 +18,7 @@ function Home() {
     {/* <HolidayPackages /> */}
     <PopularExperiences />
     {/* <TopThingsToDo /> */}
-    <UAEVisaServices />
+    {/* <UAEVisaServices /> */}
     <WhyBookWithUs />
     <TravelInspiration />
     <TestimonialSection />

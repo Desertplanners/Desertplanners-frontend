@@ -17,10 +17,10 @@ const experiences = [
     path: "tours/burj-khalifa/burj-khalifa-at-the-top-124-+-125-floor-non-prime-hours",
   },
   {
-    title: "Dubai Marina Yacht Tour",
+    title: "Marina Dhow Cruise Dinner ",
     desc: "Luxury sailing in Dubai Marina with amazing views.",
     price: "AED 150",
-    img: "https://images.unsplash.com/photo-1600665787589-c970451fc6b1?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2070",
+    img: "https://i.pinimg.com/736x/28/31/7f/28317f22541c238342989585a281bf37.jpg",
     path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers",
   },
   {
