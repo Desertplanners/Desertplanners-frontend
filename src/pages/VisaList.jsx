@@ -87,14 +87,14 @@ export default function VisaList() {
           {visas.map((v) => (
             <div
               key={v._id}
-              className="group relative block rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all transform hover:-translate-y-2 bg-white"
+              className="relative block rounded-3xl overflow-hidden shadow-lg bg-white"
             >
               {/* Image */}
               <div className="relative h-56 w-full overflow-hidden rounded-t-3xl">
                 <img
                   src={v.gallery?.[0] || v.img}
                   alt={v.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
