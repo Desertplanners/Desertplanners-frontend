@@ -73,34 +73,66 @@ export default function Banner() {
                 className="absolute inset-0 w-full h-full object-cover object-center"
               />
             </picture>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
 
             {/* ✅ Text Content (unchanged design) */}
             {index === current && (
-              <div className="absolute bottom-10 sm:bottom-16 left-0 w-full flex justify-start px-4 sm:px-8">
+              <div className="absolute bottom-14 sm:bottom-20 left-0 w-full flex justify-start px-4 sm:px-8">
                 <div className="max-w-[1200px] w-full mx-auto flex flex-col items-start text-white animate-fadeInUp">
-                  <p className="bg-gradient-to-r from-[#e82429]/80 to-[#ff5f5f]/80 backdrop-blur-md px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm md:text-base font-medium tracking-wide mb-3 sm:mb-4 shadow-md border border-white/10">
-                    {slide.subtitle}
+                  {/* Modern Accent Tag */}
+                  <p className="text-[10px] sm:text-xs md:text-sm tracking-[5px] uppercase text-white/80 mb-4">
+                    <span className="relative">
+                      {slide.subtitle}
+                      <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-[#ff4040] to-[#ffb199] rounded-full"></span>
+                    </span>
                   </p>
 
-                  <h2 className="text-3xl sm:text-5xl md:text-6xl font-extrabold mb-3 sm:mb-5 leading-tight drop-shadow-2xl tracking-wide text-left">
-                    {slide.title}
+                  {/* Split Title With Highlight Line */}
+                  <h2 className="text-left font-extrabold text-4xl sm:text-6xl md:text-7xl leading-[1.15] mb-6 tracking-tight drop-shadow-xl">
+                    <span className="block">
+                      {slide.title.split(" ").slice(0, 2).join(" ")}
+                    </span>
+                    <span className="block relative">
+                      {slide.title.split(" ").slice(2).join(" ")}
+                      <span className="absolute left-0 -bottom-2 w-24 h-[3px] bg-[#ff3d3d] rounded-full shadow-[0_0_12px_#ff3d3d]"></span>
+                    </span>
                   </h2>
 
-                  <p className="text-sm sm:text-lg md:text-xl font-medium mb-4 sm:mb-6 text-left">
-                    <span className="text-[#e82429] font-semibold">
-                      Starting from{" "}
-                    </span>
-                    <span className="text-[#ffffff] font-extrabold">
-                      AED {slide.price}
-                    </span>
-                  </p>
+                  {/* Modern Price Badge */}
+                <div className="flex items-center gap-4 mb-6">
 
+  {/* Fancy Label With Icon */}
+  <div className="flex items-center gap-2">
+    <span className="w-2 h-2 bg-[#ff5252] rounded-full shadow-[0_0_10px_#ff5252]"></span>
+
+    <span className="text-white/85 text-xs sm:text-sm md:text-base tracking-[3px] uppercase font-medium">
+      Starting From
+    </span>
+  </div>
+
+  {/* Premium Price With Soft Glow */}
+  <div className="relative">
+    <p className="text-2xl sm:text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-[#ff5050] to-[#ff9090] text-transparent bg-clip-text drop-shadow-[0_0_12px_#ff505055] tracking-tight">
+      AED {slide.price}
+    </p>
+
+    {/* Soft halo glow behind the price */}
+    <span className="absolute inset-0 -z-10 blur-xl bg-[#ff5a5a]/30"></span>
+  </div>
+
+</div>
+
+
+                  {/* CTA Button - Minimal Modern */}
                   {slide.cta && (
                     <a
                       href={slide.link || "#"}
-                      className="text-xs sm:text-sm md:text-base px-5 sm:px-7 md:px-8 py-2 sm:py-3 bg-gradient-to-r from-[#e82429] to-[#ff5151] hover:shadow-[0_0_20px_#e82429aa] text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105"
+                      className="group relative overflow-hidden text-xs sm:text-sm md:text-base px-6 sm:px-8 py-3 rounded-full bg-white text-black font-semibold transition-all duration-300 hover:shadow-[0_0_18px_#ffffffaa]"
                     >
-                      {slide.cta}
+                      <span className="relative z-10">{slide.cta}</span>
+
+                      {/* Hover Fill Animation */}
+                      <span className="absolute inset-0 bg-gradient-to-r from-[#ff3d3d] to-[#ff7a7a] translate-y-full group-hover:translate-y-0 transition-transform duration-300 rounded-full"></span>
                     </a>
                   )}
                 </div>
