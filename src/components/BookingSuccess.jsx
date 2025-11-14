@@ -4,7 +4,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function BookingSuccess() {
   const navigate = useNavigate();
   const search = new URLSearchParams(window.location.search);
-  const reference = search.get("reference");
+  // const reference = search.get("reference");
+  const bookingId = search.get("bookingId");
 
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +14,7 @@ export default function BookingSuccess() {
   useEffect(() => {
     if (!reference) return;
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/bookings/${reference}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}`)
       .then((res) => res.json())
       .then((data) => {
         setBooking(data.booking);
@@ -135,7 +136,8 @@ export default function BookingSuccess() {
             <p>
               <b>Tour Total:</b>{" "}
               <b className="text-[#e82429]">
-                AED {item.adultCount * item.adultPrice +
+                AED{" "}
+                {item.adultCount * item.adultPrice +
                   item.childCount * item.childPrice}
               </b>
             </p>
