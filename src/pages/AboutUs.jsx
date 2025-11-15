@@ -11,14 +11,14 @@ export default function AboutUs() {
   return (
     <div className="bg-white">
       {/* ⭐ HERO BANNER */}
-      <section className="relative h-[55vh] flex items-center justify-center overflow-hidden p-0 m-0 bg-[#7a0f13]">
+      <section className="relative h-[45vh] flex items-center justify-center overflow-hidden p-0 m-0 bg-[#7a0f13]">
 
         {/* Gradient Overlay (Better visibility) */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent"></div>
 
         {/* Floating Blurs */}
-        <div className="absolute w-64 h-64 bg-[#e82429]/30 rounded-full blur-3xl top-10 left-10 animate-pulse"></div>
-        <div className="absolute w-56 h-56 bg-white/10 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
+        <div className="absolute w-64 h-40 bg-[#e82429]/30 rounded-full blur-3xl top-10 left-10 animate-pulse"></div>
+        <div className="absolute w-56 h-46 bg-white/10 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
 
         {/* Content */}
         <div className="relative text-center px-4 z-10 -mt-6">
@@ -37,7 +37,7 @@ export default function AboutUs() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-white/90 max-w-2xl mx-auto mt-3 text-lg leading-relaxed"
           >
-            Discover the story, passion, and vision behind Desert Planners Tourism LLC — your trusted partner for unforgettable UAE travel experiences.
+            Discover the story, passion, and vision behind Desert Planners Tourism LLC - your trusted partner for unforgettable UAE travel experiences.
           </motion.p>
         </div>
       </section>
@@ -56,7 +56,7 @@ export default function AboutUs() {
 
             <p className="text-gray-700 leading-relaxed">
               Desert Planners Tourism LLC, based in Dubai, specializes in
-              creating unforgettable travel experiences — from iconic city tours
+              creating unforgettable travel experiences - from iconic city tours
               and desert adventures to customized holiday packages and smooth
               visa assistance.
             </p>
@@ -117,8 +117,8 @@ export default function AboutUs() {
       </section>
 
       {/* ⭐ WHAT WE OFFER */}
-      <section className="max-w-6xl mx-auto px-6 py-12">
-        <h2 className="text-3xl font-bold text-[#721011] text-center mb-10">
+      <section className="max-w-6xl mx-auto px-6 py-8">
+        <h2 className="text-3xl font-bold text-[#721011] text-center mb-8">
           What We Offer
         </h2>
 
@@ -159,7 +159,7 @@ export default function AboutUs() {
       </section>
 
       {/* ⭐ WHY CHOOSE US */}
-      <section className="bg-gray-50 py-12 border-t">
+      <section className="bg-gray-50 py-8 border-t">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-[#721011] text-center mb-10">
             Why Choose Us?
@@ -188,11 +188,11 @@ export default function AboutUs() {
       </section>
 
       {/* ⭐ CTA */}
-      <section className="py-16 text-center bg-gradient-to-r from-[#721011] to-[#e82429] text-white">
+      <section className="py-8 text-center bg-gradient-to-r from-[#721011] to-[#e82429] text-white">
         <h2 className="text-4xl font-bold mb-3">Plan Your UAE Journey With Us</h2>
 
         <p className="text-white/90 text-lg max-w-2xl mx-auto mb-5">
-          From desert safaris to visa support — we make your UAE travel smooth and unforgettable.
+          From desert safaris to visa support - we make your UAE travel smooth and unforgettable.
         </p>
 
         <button className="px-8 py-4 bg-white text-[#721011] rounded-xl shadow-lg font-semibold hover:scale-105 transition">
