@@ -14,6 +14,7 @@ import {
 export default function Footer() {
   const quickLinks = [
     { name: "Home", path: "/" },
+    { name: "About Us", path: "/about-us" },
     { name: "Tour Packages", path: "/tours" },
     { name: "Holiday Packages", path: "/holidays" },
     { name: "Visa Services", path: "/visa" },

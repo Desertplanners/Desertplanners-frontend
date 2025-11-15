@@ -24,6 +24,7 @@ import PrivacyPolicy from "./components/PrivacyPolicy";
 import CancellationPolicy from "./components/CancellationPolicy";
 import BookingSuccess from "./components/BookingSuccess";
 import GuestBookingLookup from "./components/GuestBookingLookup";
+import AboutUs from "./pages/AboutUs";
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -53,7 +54,7 @@ const AppRouter = () => (
       <Route path="/cancellation-policy" element={<CancellationPolicy />} />
       <Route path="/booking-success" element={<BookingSuccess />} />
       <Route path="/check-booking" element={<GuestBookingLookup />} />
-
+      <Route path="about-us" element={<AboutUs />} />
       <Route
         path="/admin/dashboard"
         element={
