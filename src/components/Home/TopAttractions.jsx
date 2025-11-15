@@ -91,7 +91,7 @@ export default function TopAttractionsCarousel() {
           className="text-3xl sm:text-4xl font-bold mb-6 text-left"
           style={{ color: "#404041" }}
         >
-          Top Attractions
+          Top Attractions To See
         </h2>
 
         <div

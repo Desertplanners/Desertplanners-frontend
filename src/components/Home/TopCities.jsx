@@ -95,7 +95,7 @@ export default function TopCitiesSlider() {
           className="text-3xl sm:text-4xl font-bold mb-6 text-left"
           style={{ color: "#404041" }}
         >
-          Top Cities to Visit
+          Best Cities to Explore
         </h2>
 
         <div className="relative flex items-center justify-center">

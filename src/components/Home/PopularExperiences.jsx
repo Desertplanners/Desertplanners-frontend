@@ -1,49 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const experiences = [
-  {
-    title: "Desert Safari",
-    desc: "Thrilling dune bashing, camel rides & stunning sunsets.",
-    price: "AED 150",
-    img: "https://images.unsplash.com/photo-1588310558566-b983c7d257e4?auto=format&fit=crop&w=800&q=80",
-    path: "tours/desert-safari-with-dinner/desert-safari-with-bbq-dinner-by-4x4-vehicle",
-  },
-  {
-    title: "Burj Khalifa At The Top",
-    desc: "Marvel at Dubai from the tallest observation deck.",
-    price: "AED 179",
-    img: "https://plus.unsplash.com/premium_photo-1694475631307-0f0a85924605?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=1145",
-    path: "tours/burj-khalifa/burj-khalifa-at-the-top-124-+-125-floor-non-prime-hours",
-  },
-  {
-    title: "Marina Dhow Cruise Dinner ",
-    desc: "Luxury sailing in Dubai Marina with amazing views.",
-    price: "AED 150",
-    img: "https://i.pinimg.com/736x/28/31/7f/28317f22541c238342989585a281bf37.jpg",
-    path: "tours/dhow-cruise/marina-dhow-cruise-dinner-with-transfers",
-  },
-  {
-    title: "Dubai City Tour",
-    desc: "Explore the iconic landmarks and hidden gems of Dubai.",
-    price: "AED 75",
-    img: "/TourImg/Dubai-City-Tour.png",
-    path: "tours/dubai-city-tour/dubai-city-tour",
-  },
-];
+import DataService from "../../config/DataService";
+import { API } from "../../config/API";
 
 export default function PopularExperiences() {
+  const [experiences, setExperiences] = useState([]);
   const navigate = useNavigate();
+
+  // ⭐ MongoDB Section ID
+  const sectionId = "69181ace00b088fe8e4fce40";
+
+  // ⭐ Fetch experiences dynamically
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const api = DataService();
+        const res = await api.get(API.GET_SECTION_ITEMS(sectionId));
+        setExperiences(res.data || []);
+      } catch (error) {
+        console.error("Error fetching experiences:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const goToDetails = (path) => {
     navigate(`/${path}`);
   };
 
+  // ⭐ No data? Return nothing
+  if (!experiences.length) return null;
+
   return (
     <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4">
         <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-[#404041]">
-          Most Popular Experiences in Dubai
+          Top Adventure Experiences in the UAE
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -51,7 +43,7 @@ export default function PopularExperiences() {
             <div
               key={idx}
               className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-500 cursor-pointer flex flex-col"
-              onClick={() => goToDetails(exp.path)}
+              onClick={() => goToDetails(exp.link)}
             >
               {/* Image */}
               <div className="relative h-64 overflow-hidden">
@@ -61,7 +53,7 @@ export default function PopularExperiences() {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <span className="absolute top-3 right-3 bg-[#e82429] text-white px-3 py-1 rounded-full font-semibold text-sm shadow-md">
-                  {exp.price}
+                  AED {exp.price}
                 </span>
               </div>
 
@@ -70,7 +62,7 @@ export default function PopularExperiences() {
                 <div>
                   <h3
                     className="text-lg sm:text-xl font-semibold text-gray-800 mb-2 hover:text-[#e82429] transition"
-                    onClick={() => goToDetails(exp.path)}
+                    onClick={() => goToDetails(exp.link)}
                   >
                     {exp.title}
                   </h3>
@@ -81,7 +73,7 @@ export default function PopularExperiences() {
                   className="mt-4 py-3 rounded-lg font-semibold bg-[#e82429] text-white hover:bg-[#d01f23] transition duration-300"
                   onClick={(e) => {
                     e.stopPropagation();
-                    goToDetails(exp.path);
+                    goToDetails(exp.link);
                   }}
                 >
                   Book Now
