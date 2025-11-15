@@ -32,6 +32,8 @@ export default function TourServiceDetails() {
   const [loadingAvailability, setLoadingAvailability] = useState(false);
   const [addingToCart, setAddingToCart] = useState(false);
   const [relatedTours, setRelatedTours] = useState([]);
+  const [adults, setAdults] = useState("");
+  const [children, setChildren] = useState("");
 
   const navigate = useNavigate();
 
@@ -73,9 +75,23 @@ export default function TourServiceDetails() {
 
   // Check Availability
   const checkAvailability = async () => {
-    if (!startDate || !guests) {
-      toast("Please select a date and number of guests");
+    if (!startDate) {
+      toast("Please select a date");
       return;
+    }
+
+    if (tour.priceChild) {
+      // Child price wale tours me adult required
+      if (!adults) {
+        toast("Please select number of adults");
+        return;
+      }
+    } else {
+      // Normal tours me guests required
+      if (!guests) {
+        toast("Please select number of guests");
+        return;
+      }
     }
 
     try {
@@ -83,7 +99,9 @@ export default function TourServiceDetails() {
       const api = DataService();
       const res = await api.post(API.CHECK_AVAILABILITY, {
         date: formatDateToYYYYMMDD(startDate),
-        guests: parseInt(guests),
+        guests: tour.priceChild
+          ? parseInt(adults || 0) + parseInt(children || 0)
+          : parseInt(guests),
         tourId: tour._id,
       });
       setAvailabilityResult(res.data);
@@ -97,99 +115,103 @@ export default function TourServiceDetails() {
   };
 
   // Add to Cart
-const handleAddToCart = async (tour) => {
-  try {
-    setAddingToCart(true);
+  const handleAddToCart = async (tour) => {
+    try {
+      setAddingToCart(true);
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const formattedDate = startDate
-      ? formatDateToYYYYMMDD(startDate)
-      : new Date().toISOString().split("T")[0];
+      const user = JSON.parse(localStorage.getItem("user"));
+      const formattedDate = startDate
+        ? formatDateToYYYYMMDD(startDate)
+        : new Date().toISOString().split("T")[0];
 
-    // Adult = guests, Child = 0 (for now)
-    const adults = Number(guests) || 1;
-    const children = 0;
+      // Adult = guests, Child = 0 (for now)
+      // const adults = Number(guests) || 1;
+      // const children = 0;
 
-    const adultPrice = Number(tour.priceAdult || tour.price || 0);
-    const childPrice = Number(tour.priceChild || 0);
+      const adultCount = tour.priceChild ? Number(adults) : Number(guests);
+      const childCount = tour.priceChild ? Number(children) : 0;
 
-    // ======================================================
-    // 🔐 1️⃣ LOGGED-IN USER
-    // ======================================================
-    if (user?._id) {
-      localStorage.removeItem("guestCart");
+      const adultPrice = Number(tour.priceAdult || tour.price || 0);
+      const childPrice = Number(tour.priceChild || 0);
 
-      const api = DataService("user");
+      // ======================================================
+      // 🔐 1️⃣ LOGGED-IN USER
+      // ======================================================
+      if (user?._id) {
+        localStorage.removeItem("guestCart");
 
-      const payload = {
-        userId: user._id,
-        tourId: tour._id,
-        date: formattedDate,
+        const api = DataService("user");
 
-        guestsAdult: adults,
-        guestsChild: children,
+        const payload = {
+          userId: user._id,
+          tourId: tour._id,
+          date: formattedDate,
 
-        adultPrice,
-        childPrice,
-      };
+          guestsAdult: adultCount,
+          guestsChild: childCount,
 
-      console.log("📤 Cart Payload:", payload);
+          adultPrice,
+          childPrice,
+        };
 
-      const res = await api.post(API.ADD_TO_CART, payload);
+        console.log("📤 Cart Payload:", payload);
 
-      if (res.data?.success) {
-        toast.success("Added to cart!");
-        navigate("/cart", { state: { newCart: res.data.cart } });
-      } else {
-        toast.error("Something went wrong!");
+        const res = await api.post(API.ADD_TO_CART, payload);
+
+        if (res.data?.success) {
+          toast.success("Added to cart!");
+          navigate("/cart", { state: { newCart: res.data.cart } });
+        } else {
+          toast.error("Something went wrong!");
+        }
+
+        return;
       }
 
-      return;
+      // ======================================================
+      // 🧳 2️⃣ GUEST USER FLOW
+      // ======================================================
+      let localCart = JSON.parse(localStorage.getItem("guestCart")) || [];
+
+      // guestCart me item compare always id se karna
+      const existing = localCart.find((item) => item.tourId === tour._id);
+
+      if (existing) {
+        existing.guestsAdult = adults;
+        existing.guestsChild = children;
+        existing.date = formattedDate;
+        existing.adultPrice = adultPrice;
+        existing.childPrice = childPrice;
+        existing.guestsAdult = adultCount;
+        existing.guestsChild = childCount;
+      } else {
+        localCart.push({
+          tourId: tour._id,
+          title: tour.title,
+          mainImage: tour.mainImage,
+          date: formattedDate,
+          guestsAdult: adultCount,
+          guestsChild: childCount,
+          adultPrice,
+          childPrice,
+          quantity: 1,
+        });
+      }
+
+      localStorage.setItem("guestCart", JSON.stringify(localCart));
+
+      toast.success("Added to cart!");
+      navigate("/cart", { state: { newCart: localCart } });
+    } catch (error) {
+      console.error(
+        "Add to cart error:",
+        error.response?.data || error.message
+      );
+      toast.error("Error adding to cart!");
+    } finally {
+      setAddingToCart(false);
     }
-
-    // ======================================================
-    // 🧳 2️⃣ GUEST USER FLOW
-    // ======================================================
-    let localCart = JSON.parse(localStorage.getItem("guestCart")) || [];
-
-    // guestCart me item compare always id se karna
-    const existing = localCart.find((item) => item.tourId === tour._id);
-
-    if (existing) {
-      existing.guestsAdult = adults;
-      existing.guestsChild = children;
-      existing.date = formattedDate;
-      existing.adultPrice = adultPrice;
-      existing.childPrice = childPrice;
-    } else {
-      localCart.push({
-        tourId: tour._id,
-        title: tour.title,
-        mainImage: tour.mainImage, // safe fallback handled in cart
-        date: formattedDate,
-
-        guestsAdult: adults,
-        guestsChild: children,
-
-        adultPrice,
-        childPrice,
-        quantity: 1,
-      });
-    }
-
-    localStorage.setItem("guestCart", JSON.stringify(localCart));
-
-    toast.success("Added to cart!");
-    navigate("/cart", { state: { newCart: localCart } });
-
-  } catch (error) {
-    console.error("Add to cart error:", error.response?.data || error.message);
-    toast.error("Error adding to cart!");
-  } finally {
-    setAddingToCart(false);
-  }
-};
-
+  };
 
   // Yeh function component ke bahar add karo (file ke end mein)
   // 🔄 UPDATED - Array Format Cancellation Policy Render Function
@@ -441,10 +463,21 @@ const handleAddToCart = async (tour) => {
               {/* Guests */}
               <div className="flex flex-col gap-1">
                 <label className="text-gray-600 font-medium">Guests</label>
-                <select
+                {/* <select
                   value={guests}
                   onChange={(e) => setGuests(e.target.value)}
                   className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-[#e82429]"
+                >
+                  <option value="">Select Guests</option>
+                  {[...Array(12)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1} {i + 1 === 1 ? "Person" : "Persons"}
+                    </option>
+                  ))}
+                </select> */}
+                <select
+                  value={guests}
+                  onChange={(e) => setGuests(e.target.value)}
                 >
                   <option value="">Select Guests</option>
                   {[...Array(12)].map((_, i) => (
@@ -796,21 +829,96 @@ const handleAddToCart = async (tour) => {
             </div>
 
             {/* Guests */}
-            <div className="flex flex-col gap-2">
-              <label className="text-gray-700 font-medium">Guests</label>
-              <select
-                value={guests}
-                onChange={(e) => setGuests(e.target.value)}
-                className="w-full border border-gray-200 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none transition-all shadow-sm bg-white cursor-pointer"
-              >
-                <option value="">Select Guests</option>
-                {[...Array(12)].map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1} {i + 1 === 1 ? "Person" : "Persons"}
-                  </option>
-                ))}
-              </select>
-            </div>
+         <div className="flex flex-col gap-4 mt-2">
+
+  {tour.priceChild ? (
+    <>
+      {/* Adults */}
+      <div className="flex flex-col gap-1">
+        <label className="text-gray-700 font-semibold flex items-center gap-2">
+          <span className="text-[#e82429] text-lg">👤</span> Adults
+        </label>
+
+        <div className="relative">
+          <select
+            value={adults}
+            onChange={(e) => setAdults(e.target.value)}
+            className="
+              w-full px-4 py-3 rounded-2xl bg-white border 
+              border-gray-300 shadow-sm text-gray-700
+              focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
+              transition-all duration-300 cursor-pointer
+            "
+          >
+            <option value="">Select Adults</option>
+            {[...Array(12)].map((_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Children */}
+      <div className="flex flex-col gap-1">
+        <label className="text-gray-700 font-semibold flex items-center gap-2">
+          <span className="text-[#e82429] text-lg">🧒</span> Children
+        </label>
+
+        <div className="relative">
+          <select
+            value={children}
+            onChange={(e) => setChildren(e.target.value)}
+            className="
+              w-full px-4 py-3 rounded-2xl bg-white border 
+              border-gray-300 shadow-sm text-gray-700
+              focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
+              transition-all duration-300 cursor-pointer
+            "
+          >
+            <option value="0">0</option>
+            {[...Array(12)].map((_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </>
+  ) : (
+    <>
+      {/* Guests (No child price tours) */}
+      <div className="flex flex-col gap-1">
+        <label className="text-gray-700 font-semibold flex items-center gap-2">
+          <span className="text-[#e82429] text-lg">👥</span> Guests
+        </label>
+
+        <div className="relative">
+          <select
+            value={guests}
+            onChange={(e) => setGuests(e.target.value)}
+            className="
+              w-full px-4 py-3 rounded-2xl bg-white border 
+              border-gray-300 shadow-sm text-gray-700
+              focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
+              transition-all duration-300 cursor-pointer
+            "
+          >
+            <option value="">Select Guests</option>
+            {[...Array(12)].map((_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </>
+  )}
+</div>
+
 
             {/* Button */}
             <div className="mt-2">

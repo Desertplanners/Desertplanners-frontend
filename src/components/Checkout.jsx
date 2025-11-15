@@ -10,6 +10,7 @@ import {
   FaPhoneAlt,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
+import PhoneInput from "./PhoneInput";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -324,14 +325,18 @@ export default function Checkout() {
             </div>
 
             <div className="relative">
-              <FaPhoneAlt className="absolute left-3 top-3 text-gray-400" />
-              <input
-                name="guestContact"
+              <PhoneInput
+                country={"ae"}
                 value={form.guestContact}
-                onChange={handleChange}
-                placeholder="Phone Number"
-                className="w-full pl-10 border p-3 rounded-xl focus:ring-2 focus:ring-[#e82429] outline-none"
-                required
+                onChange={(val) =>
+                  setForm((prev) => ({ ...prev, guestContact: val }))
+                }
+                enableSearch={false}
+                disableSearchIcon={true}
+                countryCodeEditable={false} // <<-- IMPORTANT
+                placeholder="Enter phone number"
+                inputClass="w-full !py-6 !pl-14"
+                buttonClass="!bg-white"
               />
             </div>
 
