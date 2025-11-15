@@ -76,7 +76,7 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
 
-  // 🔥 FINAL TOTAL PRICE CALCULATION (FIXED)
+  // 🔥 TOTAL PRICE FIXED
   const totalPrice = cart.reduce((sum, item) => {
     const t = item.tourId || item;
 
@@ -94,7 +94,7 @@ export default function Checkout() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔥 FINAL — BOOKING SUBMIT (COMPLETE FIXED)
+  // 🔥 FINAL — BOOKING SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -121,9 +121,8 @@ export default function Checkout() {
         "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` }),
       };
-      console.log("🔥 CART BEFORE MAPPING:", cart);
 
-      // 🔥 FIXED — ITEMS MAPPING
+      // FINAL MAPPING
       const items = cart.map((item) => {
         const tourId =
           typeof item.tourId === "object" ? item.tourId._id : item.tourId;
@@ -145,7 +144,7 @@ export default function Checkout() {
         );
 
         return {
-          tourId, // <-- MOST IMPORTANT FIX
+          tourId,
           date: item.date,
           adultCount: Number(item.guestsAdult || item.guests || 0),
           childCount: Number(item.guestsChild || 0),
@@ -156,8 +155,6 @@ export default function Checkout() {
         };
       });
 
-      console.log("🔥 ITEMS AFTER MAPPING:", items);
-      // 🧾 FINAL BOOKING DATA
       const bookingData = {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
@@ -182,7 +179,7 @@ export default function Checkout() {
       const bookingId =
         bookingRes.data.booking?._id || bookingRes.data.bookingId;
 
-      // 💳 PAYMENT
+      // PAYMENT
       const paymentRes = await api.post(
         API.CREATE_PAYMENT,
         { bookingId },
@@ -207,7 +204,7 @@ export default function Checkout() {
     }
   };
 
-  // UI BELOW (UNCHANGED)
+  // UI BELOW
   return (
     <div className="max-w-5xl mx-auto mt-12 p-8 bg-gradient-to-br from-[#ffffff] via-[#f9f7ff] to-[#fff1f3] rounded-3xl shadow-2xl">
       <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-[#8000ff] to-[#e5006e] text-transparent bg-clip-text drop-shadow-lg">
@@ -226,13 +223,22 @@ export default function Checkout() {
               {cart.map((item, i) => {
                 const t = item.tourId || item;
 
-                const adultPrice =
-                  Number(item.adultPrice || t.priceAdult || t.price || 0) *
-                  Number(item.guestsAdult || item.guests || 0);
+                const title =
+                  item.tourId?.title || item.title || "Tour Experience";
 
-                const childPrice =
-                  Number(item.childPrice || t.priceChild || 0) *
-                  Number(item.guestsChild || 0);
+                const adultCount = Number(item.guestsAdult || item.guests || 0);
+                const childCount = Number(item.guestsChild || 0);
+
+                const adultUnitPrice = Number(
+                  item.adultPrice || t.priceAdult || t.price || 0
+                );
+                const childUnitPrice = Number(
+                  item.childPrice || t.priceChild || 0
+                );
+
+                const adultTotal = adultUnitPrice * adultCount;
+                const childTotal = childUnitPrice * childCount;
+                const total = adultTotal + childTotal;
 
                 return (
                   <div
@@ -245,13 +251,13 @@ export default function Checkout() {
                           ? item.tourId.mainImage
                           : item.mainImage || "/no-img.png"
                       }
-                      alt={t.title}
+                      alt={title}
                       className="w-28 h-20 object-cover rounded-xl"
                     />
 
                     <div>
                       <h4 className="font-semibold text-gray-900 text-lg">
-                        {t.title}
+                        {title}
                       </h4>
 
                       <p className="text-gray-600 text-sm">
@@ -261,16 +267,29 @@ export default function Checkout() {
                           : "Not selected"}
                       </p>
 
-                      <p className="text-gray-600 text-sm">
-                        Adults: {item.guestsAdult || item.guests || 0}
-                      </p>
+                      {/* Adult Breakdown */}
+                      {adultCount > 0 && (
+                        <p className="text-gray-700 text-sm">
+                          Adults: {adultCount} × AED {adultUnitPrice} ={" "}
+                          <span className="font-semibold text-[#e82429]">
+                            AED {adultTotal}
+                          </span>
+                        </p>
+                      )}
 
-                      <p className="text-gray-600 text-sm">
-                        Children: {item.guestsChild || 0}
-                      </p>
+                      {/* Child Breakdown */}
+                      {childCount > 0 && (
+                        <p className="text-gray-700 text-sm">
+                          Children: {childCount} × AED {childUnitPrice} ={" "}
+                          <span className="font-semibold text-[#e82429]">
+                            AED {childTotal}
+                          </span>
+                        </p>
+                      )}
 
-                      <p className="text-[#e82429] font-bold">
-                        AED {adultPrice + childPrice}
+                      {/* Total */}
+                      <p className="text-[#e82429] font-bold mt-1">
+                        Total: AED {total}
                       </p>
                     </div>
                   </div>
@@ -279,15 +298,11 @@ export default function Checkout() {
 
               <div className="flex justify-between pt-4 border-t border-gray-200 text-lg">
                 <span className="font-bold text-gray-800">Total Price:</span>
-                <span className="font-bold text-[#e82429]">
-                  AED {totalPrice}
-                </span>
+                <span className="font-bold text-[#e82429]">AED {totalPrice}</span>
               </div>
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-10">
-              No items in cart 🛒
-            </p>
+            <p className="text-gray-500 text-center py-10">No items in cart 🛒</p>
           )}
         </div>
 
@@ -298,7 +313,7 @@ export default function Checkout() {
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Inputs */}
+            {/* Name */}
             <div className="relative">
               <FaUser className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -311,6 +326,7 @@ export default function Checkout() {
               />
             </div>
 
+            {/* Email */}
             <div className="relative">
               <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -324,22 +340,17 @@ export default function Checkout() {
               />
             </div>
 
+            {/* Phone */}
             <div className="relative">
               <PhoneInput
-                country={"ae"}
                 value={form.guestContact}
                 onChange={(val) =>
                   setForm((prev) => ({ ...prev, guestContact: val }))
                 }
-                enableSearch={false}
-                disableSearchIcon={true}
-                countryCodeEditable={false} // <<-- IMPORTANT
-                placeholder="Enter phone number"
-                inputClass="w-full !py-6 !pl-14"
-                buttonClass="!bg-white"
               />
             </div>
 
+            {/* Pickup */}
             <div className="relative">
               <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -352,6 +363,7 @@ export default function Checkout() {
               />
             </div>
 
+            {/* Drop */}
             <div className="relative">
               <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -364,6 +376,7 @@ export default function Checkout() {
               />
             </div>
 
+            {/* Special Request */}
             <textarea
               name="specialRequest"
               value={form.specialRequest}
@@ -372,6 +385,7 @@ export default function Checkout() {
               className="w-full border p-3 rounded-xl h-24 focus:ring-2 focus:ring-[#e82429] outline-none"
             />
 
+            {/* Button */}
             <button
               type="submit"
               disabled={loading}

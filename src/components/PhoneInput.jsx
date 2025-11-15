@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-
-// ---- FULL COUNTRY LIST WITH FLAGS + CODES ----
 import countryData from "./countryData.json";
 
 export default function PhoneInput({ value, onChange }) {
@@ -8,7 +6,7 @@ export default function PhoneInput({ value, onChange }) {
   const [query, setQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // Auto-detect user country based on IP
+  // Auto-select user country based on IP
   useEffect(() => {
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
@@ -21,10 +19,12 @@ export default function PhoneInput({ value, onChange }) {
       .catch(() => setSelectedCountry(countryData[0]));
   }, []);
 
-  // Format: +971 50000000
+  // When user types phone number
   const handlePhoneChange = (e) => {
     const phone = e.target.value.replace(/\D/g, "");
-    onChange(selectedCountry.dial_code + phone);
+    if (selectedCountry) {
+      onChange(selectedCountry.dial_code + phone);
+    }
   };
 
   const filteredCountries = countryData.filter((c) =>
@@ -33,18 +33,28 @@ export default function PhoneInput({ value, onChange }) {
 
   return (
     <div className="relative w-full">
+      {/* Main input box */}
       <div className="flex items-center gap-2 border rounded-xl bg-white p-3">
-        {/* ONLY THIS PART opens dropdown */}
+        
+        {/* COUNTRY FLAG + CODE section (click to open dropdown) */}
         <div
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer select-none"
           onClick={() => setShowDropdown(true)}
         >
-          <span className="text-xl">{selectedCountry?.flag}</span>
-          <span className="font-semibold">{selectedCountry?.dial_code}</span>
+          {selectedCountry && (
+            <img
+              src={selectedCountry.flag}
+              alt="flag"
+              className="w-6 h-4 object-cover rounded-sm"
+            />
+          )}
+          <span className="font-semibold">
+            {selectedCountry?.dial_code}
+          </span>
           <span className="ml-1 text-gray-500">▼</span>
         </div>
 
-        {/* PHONE INPUT — typing DOES NOT open dropdown */}
+        {/* PHONE Number INPUT */}
         <input
           type="text"
           placeholder="Phone Number"
@@ -53,20 +63,21 @@ export default function PhoneInput({ value, onChange }) {
         />
       </div>
 
-      {/* COUNTRY DROPDOWN */}
+      {/* DROPDOWN */}
       {showDropdown && (
         <div className="absolute z-50 top-16 left-0 w-full bg-white border shadow-xl rounded-xl max-h-72 overflow-y-auto">
-          {/* Search box */}
+          
+          {/* Search */}
           <div className="p-2 border-b">
             <input
               type="text"
               placeholder="Search country..."
-              className="w-full p-2 rounded-lg border"
+              className="w-full p-2 rounded-lg border outline-none"
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
 
-          {/* List */}
+          {/* Country List */}
           {filteredCountries.map((country) => (
             <div
               key={country.code2}
@@ -76,9 +87,17 @@ export default function PhoneInput({ value, onChange }) {
                 setShowDropdown(false);
               }}
             >
-              <span className="text-xl">{country.flag}</span>
+              <img
+                src={country.flag}
+                alt={country.name}
+                className="w-6 h-4 object-cover rounded-sm"
+              />
+              
               <span>{country.name}</span>
-              <span className="ml-auto font-semibold">{country.dial_code}</span>
+
+              <span className="ml-auto font-semibold">
+                {country.dial_code}
+              </span>
             </div>
           ))}
         </div>

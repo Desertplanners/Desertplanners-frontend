@@ -99,7 +99,7 @@ export default function WhyBookWithUs() {
         <>
           From thrilling{" "}
           <Link
-            to="/tours/desert-safari"
+            to="/tours/desert-safari-with-bbq-dinner"
             className="text-primary font-semibold hover:underline"
           >
             Desert Safaris
