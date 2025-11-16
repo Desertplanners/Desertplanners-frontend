@@ -25,6 +25,8 @@ import CancellationPolicy from "./components/CancellationPolicy";
 import BookingSuccess from "./components/BookingSuccess";
 import GuestBookingLookup from "./components/GuestBookingLookup";
 import AboutUs from "./pages/AboutUs";
+import VisaBooking from "./components/VisaBooking";
+import VisaSuccess from "./components/VisaSuccess";
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -41,7 +43,13 @@ const AppRouter = () => (
       <Route path="/visa" element={<VisaList />} />
       <Route path="/visa/:categorySlug" element={<VisaList />} /> {/* 👈 new */}
       <Route path="/visa/:categorySlug/:visaSlug" element={<VisaDetails />} />
+      <Route path="/visa-success" element={<VisaSuccess />} />
+
       <Route path="/contact-us" element={<ContactUs />} />
+      <Route
+        path="/visa/:categorySlug/:visaSlug/apply"
+        element={<VisaBooking />}
+      />
       {/* Admin Auth */}
       <Route path="/admin/register" element={<AdminRegister />} />
       <Route path="/admin/login" element={<AdminLogin />} />

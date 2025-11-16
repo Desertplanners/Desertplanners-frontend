@@ -312,28 +312,30 @@ export default function VisaDetails() {
                       className="block bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-gray-200"
                     >
                       {/* IMAGE */}
-                     <div className="relative h-48 w-full overflow-hidden rounded-t-3xl">
-  <img
-    src={
-      rv.gallery?.[0] ||
-      rv.img ||
-      rv.image ||
-      rv.thumbnail ||
-      (rv.images?.length > 0 ? rv.images[0] : "/visa-card.jpg")
-    }
-    alt={rv.title}
-    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-  />
+                      <div className="relative h-48 w-full overflow-hidden rounded-t-3xl">
+                        <img
+                          src={
+                            rv.gallery?.[0] ||
+                            rv.img ||
+                            rv.image ||
+                            rv.thumbnail ||
+                            (rv.images?.length > 0
+                              ? rv.images[0]
+                              : "/visa-card.jpg")
+                          }
+                          alt={rv.title}
+                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                        />
 
-  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
 
-  {rv.processingTime && (
-    <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
-      <FaClock className="inline-block mr-1 text-[10px]" />
-      {rv.processingTime}
-    </span>
-  )}
-</div>
+                        {rv.processingTime && (
+                          <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+                            <FaClock className="inline-block mr-1 text-[10px]" />
+                            {rv.processingTime}
+                          </span>
+                        )}
+                      </div>
 
                       {/* CONTENT */}
                       <div className="p-5 space-y-3">
@@ -395,9 +397,12 @@ export default function VisaDetails() {
               <input type="file" multiple className="hidden" />
             </div>
 
-            <button className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl font-semibold hover:scale-105 transition-all">
+            <Link
+              to={`/visa/${categorySlug}/${visaSlug}/apply?visaId=${visa._id}`}
+              className="w-full block text-center bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl font-semibold hover:scale-105 transition-all"
+            >
               Proceed to Apply
-            </button>
+            </Link>
 
             <a
               href="https://wa.me/918003155718"

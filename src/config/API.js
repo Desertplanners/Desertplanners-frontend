@@ -15,13 +15,14 @@ const visas = "/api/visas";
 const sections = "/api/sections";
 const visaCategories = "/api/visa-categories";
 const payment = "/api/payment";
-const banners = "/api/banner"; // ✅ added banner route base
+const banners = "/api/banner"; 
+const visaBookings = "/api/visa-bookings";
+const visaPayment = "/api/visa-payment";   // ✅ NEW
 
 export const API = {
-  // ✅ BASE_URL switches automatically
   BASE_URL: isLocalhost
-    ? "http://localhost:5000" // 🔹 Local (development)
-    : "https://desetplanner-backend.onrender.com", // 🔹 Render (production)
+    ? "http://localhost:5000"
+    : "https://desetplanner-backend.onrender.com",
 
   // ---- Admin ----
   ADMIN_REGISTER: `${admin}/register`,
@@ -75,15 +76,13 @@ export const API = {
   UPDATE_BOOKING_STATUS: (id) => `${bookings}/${id}/status`,
   GET_MY_BOOKINGS: `${bookings}/my`,
   LOOKUP_BOOKING: (bookingId, email) =>
-  `${bookings}/lookup?bookingId=${bookingId}&email=${email}`,
-INVOICE_DOWNLOAD: (id) => `${bookings}/invoice/${id}`,
+    `${bookings}/lookup?bookingId=${bookingId}&email=${email}`,
+  INVOICE_DOWNLOAD: (id) => `${bookings}/invoice/${id}`,
 
-
-
-  // ---- Payment (💳 NEW) ----
-  CREATE_PAYMENT: `${payment}/create`,       
+  // ---- Payment (Tour Payment) ----
+  CREATE_PAYMENT: `${payment}/create`,
   CONFIRM_PAYMENT: (bookingId) => `${payment}/confirm/${bookingId}`,
-  WEBHOOK_PAYMENT: `${payment}/webhook`,     
+  WEBHOOK_PAYMENT: `${payment}/webhook`,
 
   // ---- Enquiries ----
   CREATE_ENQUIRY: `${enquiries}`,
@@ -91,15 +90,17 @@ INVOICE_DOWNLOAD: (id) => `${bookings}/invoice/${id}`,
   UPDATE_ENQUIRY_STATUS: (id) => `${enquiries}/${id}/status`,
   DELETE_ENQUIRY: (id) => `${enquiries}/${id}`,
 
-  // ---- ✅ Visa ----
+  // ---- Visa ----
   GET_VISAS: `${visas}`,
   GET_VISA_BY_SLUG: (slug) => `${visas}/${slug}`,
   GET_VISAS_BY_CATEGORY: (categorySlug) => `${visas}/category/${categorySlug}`,
   ADD_VISA: `${visas}`,
   UPDATE_VISA: (id) => `${visas}/${id}`,
   DELETE_VISA: (id) => `${visas}/${id}`,
+  GET_VISA_BY_ID: (id) => `${visas}/id/${id}`,
 
-  // ---- ✅ Sections ----
+
+  // ---- Sections ----
   GET_SECTIONS: `${sections}`,
   ADD_SECTION: `${sections}`,
   GET_SECTION_BY_ID: (id) => `${sections}/${id}`,
@@ -107,7 +108,7 @@ INVOICE_DOWNLOAD: (id) => `${bookings}/invoice/${id}`,
   DELETE_SECTION: (id) => `${sections}/${id}`,
   TOGGLE_SECTION_VISIBILITY: (id) => `${sections}/${id}/visibility`,
 
-  // ---- ✅ Section Items ----
+  // ---- Section Items ----
   ADD_SECTION_ITEM: (sectionId) => `${sections}/${sectionId}/items`,
   GET_SECTION_ITEMS: (sectionId) => `${sections}/${sectionId}/items`,
   UPDATE_SECTION_ITEM: (sectionId, itemId) =>
@@ -115,9 +116,21 @@ INVOICE_DOWNLOAD: (id) => `${bookings}/invoice/${id}`,
   DELETE_SECTION_ITEM: (sectionId, itemId) =>
     `${sections}/${sectionId}/items/${itemId}`,
 
-  // ---- 🖼️ ✅ Banners ----
-  ADD_BANNER: `${banners}`, // POST (with form-data)
-  GET_BANNERS: `${banners}`, // GET all banners
-  UPDATE_BANNER: (id) => `${banners}/${id}`, // PUT (form-data)
-  DELETE_BANNER: (id) => `${banners}/${id}`, // DELETE
+  // ---- Banners ----
+  ADD_BANNER: `${banners}`,
+  GET_BANNERS: `${banners}`,
+  UPDATE_BANNER: (id) => `${banners}/${id}`,
+  DELETE_BANNER: (id) => `${banners}/${id}`,
+
+  // ---- Visa Bookings ----
+  CREATE_VISA_BOOKING: `${visaBookings}/`,
+  GET_ALL_VISA_BOOKINGS: `${visaBookings}`,
+  GET_VISA_BOOKING_BY_ID: (id) => `${visaBookings}/${id}`,
+  UPDATE_VISA_BOOKING_STATUS: (id) => `${visaBookings}/${id}/status`,
+  DELETE_VISA_BOOKING: (id) => `${visaBookings}/${id}`,
+
+  // ---- ✅ Visa Payment ----
+  CREATE_VISA_PAYMENT: `${visaPayment}/create`,
+  CONFIRM_VISA_PAYMENT: (id) => `${visaPayment}/confirm/${id}`,
+  WEBHOOK_VISA_PAYMENT: `${visaPayment}/webhook`,
 };
