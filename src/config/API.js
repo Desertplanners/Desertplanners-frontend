@@ -84,7 +84,7 @@ export const API = {
   CONFIRM_PAYMENT: (bookingId) => `${payment}/confirm/${bookingId}`,
   WEBHOOK_PAYMENT: `${payment}/webhook`,
   GET_ALL_PAYMENTS: `${payment}/all`,
-  
+
   // ---- Enquiries ----
   CREATE_ENQUIRY: `${enquiries}`,
   GET_ALL_ENQUIRIES: `${enquiries}`,
@@ -128,6 +128,9 @@ export const API = {
   GET_VISA_BOOKING_BY_ID: (id) => `${visaBookings}/${id}`,
   UPDATE_VISA_BOOKING_STATUS: (id) => `${visaBookings}/${id}/status`,
   DELETE_VISA_BOOKING: (id) => `${visaBookings}/${id}`,
+  LOOKUP_VISA_BOOKING: (bookingId, email) =>
+    `${visaBookings}/lookup?bookingId=${bookingId}&email=${email}`,
+  VISA_INVOICE_DOWNLOAD: (id) => `${visaBookings}/invoice/${id}`,
 
   // ---- ✅ Visa Payment ----
   CREATE_VISA_PAYMENT: `${visaPayment}/create`,

@@ -92,7 +92,7 @@ export default function Payments() {
                         className="text-blue-600 hover:underline"
                       >
                         View Booking
-                      </a>
+                      </a>  
                     </td>
 
                   </tr>

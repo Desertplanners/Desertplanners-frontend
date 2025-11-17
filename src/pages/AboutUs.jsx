@@ -15,7 +15,7 @@ export default function AboutUs() {
   className="relative h-[45vh] flex items-center justify-center overflow-hidden p-0 m-0"
   style={{
     backgroundImage:
-      "url('/about-banner.png')",
+      "url('/travel-header-1.jpg')",
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -79,7 +79,7 @@ export default function AboutUs() {
           <motion.img
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            src="https://images.unsplash.com/photo-1526779259212-939e64788e3c"
+            src="/about1.png"
             className="rounded-3xl shadow-xl w-full"
             alt="Dubai View"
           />
@@ -93,7 +93,7 @@ export default function AboutUs() {
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            src="https://images.unsplash.com/photo-1521295121783-8a321d551ad2"
+            src="/about2.webp"
             alt="Who We Are"
             className="rounded-3xl shadow-xl w-full object-cover"
           />
