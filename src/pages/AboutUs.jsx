@@ -79,7 +79,7 @@ export default function AboutUs() {
           <motion.img
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
-            src="/about1.png"
+            src="/about2.webp"
             className="rounded-3xl shadow-xl w-full"
             alt="Dubai View"
           />
@@ -93,7 +93,7 @@ export default function AboutUs() {
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            src="/about2.webp"
+            src="/about1.png"
             alt="Who We Are"
             className="rounded-3xl shadow-xl w-full object-cover"
           />
