@@ -7,7 +7,6 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaEnvelope,
-  FaPhoneAlt,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import PhoneInput from "./PhoneInput";
@@ -45,9 +44,7 @@ export default function Checkout() {
           const api = DataService("user");
           const res = await api.get(API.USER_PROFILE);
           if (res.data) setUser(res.data);
-        } catch (err) {
-          console.warn("⚠️ Failed to fetch user profile:", err.message);
-        }
+        } catch (err) {}
       }
     };
     fetchUserProfile();
@@ -76,23 +73,34 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
 
-  // 🔥 TOTAL PRICE FIXED
+  // TOTAL PRICE FIXED
   const totalPrice = cart.reduce((sum, item) => {
     const t = item.tourId || item;
 
     const adultPrice = Number(item.adultPrice || t.priceAdult || t.price || 0);
     const childPrice = Number(item.childPrice || t.priceChild || 0);
 
-    const adultCount = Number(item.guestsAdult || item.guests || 0);
-    const childCount = Number(item.guestsChild || 0);
+    const adultCount = Number(
+      item.guestsAdult ??
+        item.adultCount ??
+        item.adults ??
+        item.guests ??
+        0
+    );
+    const childCount = Number(
+      item.guestsChild ??
+        item.childCount ??
+        item.children ??
+        0
+    );
 
     return sum + adultPrice * adultCount + childPrice * childCount;
   }, 0);
 
-  // 🔥 TRANSACTION FEE 3.75%
+  // TRANSACTION FEE 3.75%
   const fee = Number((totalPrice * 0.0375).toFixed(2));
 
-  // 🔥 FINAL PAYABLE AMOUNT
+  // FINAL AMOUNT
   const finalAmount = Number((totalPrice + fee).toFixed(2));
 
   const handleChange = (e) => {
@@ -100,7 +108,7 @@ export default function Checkout() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 🔥 FINAL — BOOKING SUBMIT
+  // FINAL — BOOKING SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -128,7 +136,7 @@ export default function Checkout() {
         ...(token && { Authorization: `Bearer ${token}` }),
       };
 
-      // FINAL MAPPING
+      // ITEMS MAPPING (FIXED)
       const items = cart.map((item) => {
         const tourId =
           typeof item.tourId === "object" ? item.tourId._id : item.tourId;
@@ -152,15 +160,28 @@ export default function Checkout() {
         return {
           tourId,
           date: item.date,
-          adultCount: Number(item.guestsAdult || item.guests || 0),
-          childCount: Number(item.guestsChild || 0),
+
+          adultCount: Number(
+            item.guestsAdult ??
+              item.adultCount ??
+              item.adults ??
+              item.guests ??
+              0
+          ),
+
+          childCount: Number(
+            item.guestsChild ??
+              item.childCount ??
+              item.children ??
+              0
+          ),
+
           adultPrice,
           childPrice,
-          pickupPoint: form.pickupPoint,
-          dropPoint: form.dropPoint,
         };
       });
 
+      // SEND ONLY REQUIRED FIELDS
       const bookingData = {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
@@ -168,9 +189,6 @@ export default function Checkout() {
         pickupPoint: form.pickupPoint,
         dropPoint: form.dropPoint,
         specialRequest: form.specialRequest,
-
-        // IMPORTANT: Final amount with fees
-        totalPrice: finalAmount,
         items,
       };
 
@@ -187,7 +205,7 @@ export default function Checkout() {
       const bookingId =
         bookingRes.data.booking?._id || bookingRes.data.bookingId;
 
-      // PAYMENT — SEND FINAL AMOUNT
+      // PAYMENT — FINAL AMOUNT
       const paymentRes = await api.post(
         API.CREATE_PAYMENT,
         { bookingId, amount: finalAmount },
@@ -201,18 +219,17 @@ export default function Checkout() {
       } else {
         await api.put(API.CONFIRM_PAYMENT(bookingId));
         localStorage.removeItem("guestCart");
-        toast.success("Booking confirmed (local)");
+        toast.success("Booking confirmed!");
         navigate("/booking-success", { state: { bookingId } });
       }
     } catch (err) {
-      console.error(err);
       toast.error("Error processing booking.");
     } finally {
       setLoading(false);
     }
   };
 
-  // UI BELOW
+  // UI
   return (
     <div className="max-w-5xl mx-auto mt-12 p-8 bg-gradient-to-br from-[#ffffff] via-[#f9f7ff] to-[#fff1f3] rounded-3xl shadow-2xl">
       <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-[#8000ff] to-[#e5006e] text-transparent bg-clip-text drop-shadow-lg">
@@ -228,15 +245,25 @@ export default function Checkout() {
 
           {cart.length > 0 ? (
             <div className="space-y-5">
-              {/* ITEMS */}
               {cart.map((item, i) => {
                 const t = item.tourId || item;
 
                 const title =
                   item.tourId?.title || item.title || "Tour Experience";
 
-                const adultCount = Number(item.guestsAdult || item.guests || 0);
-                const childCount = Number(item.guestsChild || 0);
+                const adultCount = Number(
+                  item.guestsAdult ??
+                    item.adultCount ??
+                    item.adults ??
+                    item.guests ??
+                    0
+                );
+                const childCount = Number(
+                  item.guestsChild ??
+                    item.childCount ??
+                    item.children ??
+                    0
+                );
 
                 const adultUnitPrice = Number(
                   item.adultPrice || t.priceAdult || t.price || 0
@@ -261,8 +288,8 @@ export default function Checkout() {
                           ? item.tourId.mainImage
                           : item.mainImage || "/no-img.png"
                       }
-                      alt={title}
                       className="w-28 h-20 object-cover rounded-xl"
+                      alt={title}
                     />
 
                     <div>
@@ -335,7 +362,6 @@ export default function Checkout() {
           </h3>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name */}
             <div className="relative">
               <FaUser className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -348,7 +374,6 @@ export default function Checkout() {
               />
             </div>
 
-            {/* Email */}
             <div className="relative">
               <FaEnvelope className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -362,7 +387,6 @@ export default function Checkout() {
               />
             </div>
 
-            {/* Phone */}
             <PhoneInput
               value={form.guestContact}
               onChange={(val) =>
@@ -370,7 +394,6 @@ export default function Checkout() {
               }
             />
 
-            {/* Pickup */}
             <div className="relative">
               <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -383,7 +406,6 @@ export default function Checkout() {
               />
             </div>
 
-            {/* Drop */}
             <div className="relative">
               <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
               <input
@@ -396,7 +418,6 @@ export default function Checkout() {
               />
             </div>
 
-            {/* Special Request */}
             <textarea
               name="specialRequest"
               value={form.specialRequest}
@@ -405,11 +426,10 @@ export default function Checkout() {
               className="w-full border p-3 rounded-xl h-24"
             />
 
-            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl text-lg font-bold hover:scale-[1.03] transition-transform"
+              className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl text-lg font-bold hover:scale-[1.03]"
             >
               {loading
                 ? "Processing..."
