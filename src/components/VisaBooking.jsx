@@ -268,13 +268,10 @@ export default function VisaBooking() {
 
         <div className="my-10 h-[1px] bg-gray-200" />
 
-        {/* TRAVEL INFO */}
+        {/* TRAVEL INFO (UPDATED) */}
         <div className="grid md:grid-columns-2 gap-8">
           <DateInput label="Entry Date" name="entryDate" value={fields.entryDate} onChange={handleChange} />
           <DateInput label="Return Date" name="returnDate" value={fields.returnDate} onChange={handleChange} />
-
-          <FormInput label="Visa Type" name="visaType" value={fields.visaType} onChange={handleChange} />
-          <FormInput label="Purpose of Visit" name="purpose" value={fields.purpose} onChange={handleChange} />
         </div>
 
         <div className="my-10 h-[1px] bg-gray-200" />
@@ -291,7 +288,7 @@ export default function VisaBooking() {
           <FileUpload label="Emirates ID" name="emiratesId" file={files.emiratesId} onChange={handleFile} />
           <FileUpload label="Additional ID" name="extraId" file={files.extraId} onChange={handleFile} />
           <FileUpload label="Old Visa (Optional)" name="oldVisa" file={files.oldVisa} onChange={handleFile} />
-          <FileUpload label="Return Ticket" name="returnTicket" file={files.returnTicket} onChange={handleFile} />
+          <FileUpload label="Return Ticket" name="flightTicket" file={files.flightTicket} onChange={handleFile} />
         </div>
 
         <div className="mt-14 text-center">
@@ -310,5 +307,3 @@ export default function VisaBooking() {
     </motion.div>
   );
 }
-
-//  commment
