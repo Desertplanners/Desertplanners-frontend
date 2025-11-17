@@ -50,7 +50,7 @@ export default function AboutUs() {
   </div>
 </section>
 
-
+ {/* desertplanners  */}
       {/* ⭐ INTRO SECTION */}
       <section className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid md:grid-cols-2 gap-10 items-center">
