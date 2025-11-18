@@ -27,6 +27,7 @@ import GuestBookingLookup from "./components/GuestBookingLookup";
 import AboutUs from "./pages/AboutUs";
 import VisaBooking from "./components/VisaBooking";
 import VisaSuccess from "./components/VisaSuccess";
+import HolidayPage from "./pages/HolidayPage";
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -63,6 +64,7 @@ const AppRouter = () => (
       <Route path="/booking-success" element={<BookingSuccess />} />
       <Route path="/check-booking" element={<GuestBookingLookup />} />
       <Route path="about-us" element={<AboutUs />} />
+      <Route path="holidays" element={<HolidayPage />} />
       <Route
         path="/admin/dashboard"
         element={
