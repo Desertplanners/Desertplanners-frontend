@@ -206,8 +206,7 @@ export default function GuestBookingLookup() {
 
                     <p className="text-gray-600 flex items-center gap-2">
                       <FaCalendar className="text-[#e82429]" />
-                      <b>Date:</b>{" "}
-                      {new Date(item.date).toLocaleDateString()}
+                      <b>Date:</b> {new Date(item.date).toLocaleDateString()}
                     </p>
 
                     <p className="text-gray-700 mt-1">
@@ -248,6 +247,7 @@ export default function GuestBookingLookup() {
               </>
             )}
 
+
             {/* VISA BOOKING */}
             {mode === "visa" && (
               <>
@@ -265,7 +265,7 @@ export default function GuestBookingLookup() {
                 </div>
 
                 <div className="space-y-3">
-                  {/* 🔥 VISA TITLE FROM Visa MODEL (POPULATED) */}
+                  {/* Visa Title */}
                   {booking.visaId?.title && (
                     <p>
                       <b>Visa Package:</b>{" "}
@@ -284,15 +284,25 @@ export default function GuestBookingLookup() {
                   <p>
                     <b>Phone:</b> {booking.phone}
                   </p>
-                  <p>
-                    <b>Nationality:</b> {booking.nationality}
-                  </p>
+
                   <p>
                     <b>Passport No:</b> {booking.passportNumber}
                   </p>
+
+                  {/* ⭐ NEW: Issue + Expiry Dates */}
                   <p>
-                    <b>Visa Type:</b> {booking.visaType}
+                    <b>Issue Date:</b>{" "}
+                    {booking.issueDate
+                      ? new Date(booking.issueDate).toLocaleDateString()
+                      : "—"}
                   </p>
+                  <p>
+                    <b>Expiry Date:</b>{" "}
+                    {booking.expiryDate
+                      ? new Date(booking.expiryDate).toLocaleDateString()
+                      : "—"}
+                  </p>
+
                   <p>
                     <b>Status:</b> {booking.status}
                   </p>
@@ -310,7 +320,7 @@ export default function GuestBookingLookup() {
                     {booking.photo && <li>Photo</li>}
                     {booking.accommodation && <li>Accommodation</li>}
                     {booking.emiratesId && <li>Emirates ID</li>}
-                    {booking.extraId && <li>Extra ID</li>}
+                    {booking.extraId && <li>Additional ID</li>}
                     {booking.oldVisa && <li>Old Visa</li>}
                     {booking.flightTicket && <li>Flight Ticket</li>}
                   </ul>
