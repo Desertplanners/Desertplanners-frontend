@@ -203,7 +203,7 @@ export default function HolidayPage() {
     ["highlights", "Highlights"],
     ["itinerary", "Itinerary"],
     ["know", "Need to Know"],
-    ["cancel", "Cancellation & Refund"],
+    ["cancel", "Cancellation"],
     ["terms", "Terms & Condition"],
   ].map(([key, label]) => (
     <button
