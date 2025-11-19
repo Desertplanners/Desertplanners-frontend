@@ -100,7 +100,7 @@ function ImageCard({ pkg, categorySlug }) {
       transition-all duration-300
     "
           >
-            <span className="text-sm">🗓️</span>
+            {/* <span className="text-sm">🗓️</span> */}
             <span>{pkg.duration}</span>
           </div>
         )}
