@@ -78,8 +78,10 @@ export default function Navbar() {
         const formatted = await Promise.all(
           holidayCats.map(async (cat) => {
             try {
-              const packagesRes = await api.get(API.GET_PACKAGES_BY_CATEGORY(cat.slug));
-        
+              const packagesRes = await api.get(
+                API.GET_PACKAGES_BY_CATEGORY(cat.slug)
+              );
+
               return {
                 ...cat,
                 slug: cat.slug,
@@ -90,7 +92,6 @@ export default function Navbar() {
             }
           })
         );
-        
 
         setHolidayCategories(formatted);
       } catch (err) {
@@ -175,25 +176,26 @@ export default function Navbar() {
       })),
     },
 
-    { title: "Contact Us", path: "/contact-us" },
+    { title: "About Us", path: "/about-us" },
   ];
 
   // ================================
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-[1200px] mx-auto flex items-center justify-between px-4 py-4">
-
         {/* LOGO */}
         <Link to="/" onClick={() => setMenuOpen(false)}>
-          <img src="/desertplanners_logo.png" alt="Logo" className="h-12 w-auto" />
+          <img
+            src="/desertplanners_logo.png"
+            alt="Logo"
+            className="h-12 w-auto"
+          />
         </Link>
 
         {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center space-x-6">
-
           {navLinks.map((link, i) => (
             <div key={i} className="relative group">
-
               <Link
                 to={link.path}
                 className="flex items-center gap-1 font-medium text-[#404041] hover:text-[#e82429]"
@@ -206,10 +208,8 @@ export default function Navbar() {
               {link.subLinks?.length > 0 && (
                 <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
                   <ul className="py-3">
-
                     {link.subLinks.map((sublink, j) => (
                       <li key={j} className="relative group/sub">
-
                         <Link
                           to={sublink.path}
                           className="flex justify-between items-center px-5 py-2 text-sm text-[#404041] hover:bg-[#f7e6e6]"
@@ -235,13 +235,11 @@ export default function Navbar() {
                             ))}
                           </ul>
                         )}
-
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
-
             </div>
           ))}
 
@@ -249,7 +247,7 @@ export default function Navbar() {
           <form onSubmit={(e) => e.preventDefault()} className="relative ml-4">
             <input
               type="text"
-              className="pl-10 pr-4 py-2 rounded-lg border border-gray-300"
+              className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 w-40"
               placeholder="Search..."
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -280,7 +278,6 @@ export default function Navbar() {
       {menuOpen && (
         <div className="lg:hidden bg-white border-t shadow-md">
           <ul className="flex flex-col p-4 space-y-2">
-
             {navLinks.map((link, i) => (
               <li key={i}>
                 <div className="flex justify-between items-center">
@@ -293,9 +290,13 @@ export default function Navbar() {
                   </Link>
 
                   {link.subLinks?.length > 0 && (
-                    <button onClick={() => setOpenIndex(openIndex === i ? null : i)}>
+                    <button
+                      onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                    >
                       <FiChevronDown
-                        className={`transition ${openIndex === i ? "rotate-180" : ""}`}
+                        className={`transition ${
+                          openIndex === i ? "rotate-180" : ""
+                        }`}
                       />
                     </button>
                   )}
@@ -323,7 +324,9 @@ export default function Navbar() {
             <li className="border-t pt-3">
               {userLoggedIn ? (
                 <>
-                  <Link to="/profile" className="block py-2">Profile</Link>
+                  <Link to="/profile" className="block py-2">
+                    Profile
+                  </Link>
                   <button
                     onClick={() => {
                       localStorage.clear();
@@ -337,8 +340,12 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="block py-2">Sign In</Link>
-                  <Link to="/register" className="block py-2">Sign Up</Link>
+                  <Link to="/login" className="block py-2">
+                    Sign In
+                  </Link>
+                  <Link to="/register" className="block py-2">
+                    Sign Up
+                  </Link>
                 </>
               )}
             </li>
