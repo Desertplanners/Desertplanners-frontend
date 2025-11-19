@@ -44,7 +44,10 @@ export default function HolidayPage() {
         // backend returns the tour object (we saw res.json(tour) in controller)
         const data = res.data || res; // adapt if wrapper differs
         setPackageData(data);
-        setForm((prev) => ({ ...prev, selectedTour: data?.title || prev.selectedTour }));
+        setForm((prev) => ({
+          ...prev,
+          selectedTour: data?.title || prev.selectedTour,
+        }));
         setLoading(false);
       })
       .catch((err) => {
@@ -89,14 +92,15 @@ export default function HolidayPage() {
   if (!packageData) return null;
 
   // convenience vars with safe fallbacks
-  const slides = packageData.sliderImages && packageData.sliderImages.length > 0
-    ? packageData.sliderImages
-    : [
-        "https://images.unsplash.com/photo-1559599101-f09722fb4948?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1200&q=80",
-      ];
+  const slides =
+    packageData.sliderImages && packageData.sliderImages.length > 0
+      ? packageData.sliderImages
+      : [
+          "https://images.unsplash.com/photo-1559599101-f09722fb4948?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&w=1200&q=80",
+          "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1200&q=80",
+        ];
 
   const title = packageData.title || "Package";
   const duration = packageData.duration || "N/A";
@@ -120,27 +124,42 @@ export default function HolidayPage() {
       {/* LEFT SIDE */}
       <div className="md:col-span-2 space-y-10">
         {/* MAIN IMAGE / SLIDER HERO */}
-        <div className="rounded-3xl overflow-hidden shadow-xl relative h-[420px] md:h-[480px]">
+        {/* MAIN IMAGE / SLIDER HERO */}
+        <div
+          className="
+  relative 
+  w-full 
+  h-[260px]      /* mobile perfect height */
+  sm:h-[320px] 
+  md:h-[420px] 
+  lg:h-[480px]
+  rounded-3xl 
+  overflow-hidden 
+  shadow-xl
+"
+        >
           {slides.map((src, index) => (
             <img
               key={index}
               src={src}
-              alt={`${title} slide ${index + 1}`}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1200ms] ease-in-out ${
-                activeSlide === index ? "opacity-100" : "opacity-0"
-              }`}
+              alt={title}
+              className={`absolute inset-0 w-full h-full 
+        object-cover 
+        object-center   /* ⭐ ensures image stays centered */
+        transition-opacity duration-[1200ms] ease-in-out 
+        ${activeSlide === index ? "opacity-100" : "opacity-0"}
+      `}
             />
           ))}
 
-          {/* DOTS INDICATORS */}
-          <div className="absolute bottom-5 left-0 right-0 flex justify-center gap-2">
+          {/* Dots */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
             {slides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setActiveSlide(i)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  activeSlide === i ? "bg-[#e82429] scale-125" : "bg-white/60"
-                }`}
+                className={`w-3 h-3 rounded-full transition-all 
+          ${activeSlide === i ? "bg-[#e82429] scale-125" : "bg-white/60"}`}
               />
             ))}
           </div>
@@ -150,7 +169,9 @@ export default function HolidayPage() {
         <div className="bg-white rounded-3xl shadow-lg p-7 border border-[#e82429]/10">
           <div className="flex flex-col md:flex-row justify-between gap-8">
             <div className="flex-1">
-              <h1 className="text-4xl font-extrabold text-[#721011]">{title}</h1>
+              <h1 className="text-4xl font-extrabold text-[#721011]">
+                {title}
+              </h1>
 
               <div className="mt-4 flex flex-wrap gap-3">
                 <span className="bg-[#ffe4e4] px-4 py-1.5 rounded-full flex items-center gap-2 font-semibold">
@@ -166,7 +187,9 @@ export default function HolidayPage() {
             {/* PRICE */}
             <div className="flex flex-col items-start md:items-end">
               <p className="text-4xl font-black text-[#e82429]">
-                {typeof priceAdult === "number" ? `$   ${priceAdult}` : priceAdult}
+                {typeof priceAdult === "number"
+                  ? `$   ${priceAdult}`
+                  : priceAdult}
               </p>
 
               <p className="text-gray-500 text-sm">(Per Person)</p>
@@ -201,7 +224,9 @@ export default function HolidayPage() {
       <aside className="md:col-span-1 space-y-8">
         {/* WHY BOOK WITH US (STATIC) */}
         <div className="bg-white rounded-3xl shadow-xl p-5 border border-[#e82429]/20">
-          <h3 className="text-lg font-bold text-[#721011] mb-4">⭐ Why Book With Us?</h3>
+          <h3 className="text-lg font-bold text-[#721011] mb-4">
+            ⭐ Why Book With Us?
+          </h3>
 
           <div className="grid grid-cols-2 gap-3 text-center">
             {[
@@ -212,7 +237,10 @@ export default function HolidayPage() {
               ["🏆", "Quality", "Service"],
               ["😊", "Happy", "Clients"],
             ].map(([icon, title, sub], idx) => (
-              <div key={idx} className="p-4 bg-[#fff4f4] rounded-xl border border-[#e82429]/20">
+              <div
+                key={idx}
+                className="p-4 bg-[#fff4f4] rounded-xl border border-[#e82429]/20"
+              >
                 <div className="text-2xl mb-1">{icon}</div>
                 <p className="font-semibold">{title}</p>
                 <p className="text-xs text-gray-600">{sub}</p>
@@ -223,7 +251,9 @@ export default function HolidayPage() {
 
         {/* ENQUIRY FORM (STATIC layout but selected tour filled dynamically) */}
         <div className="bg-white rounded-3xl shadow-xl p-7 border border-[#e82429]/20">
-          <h3 className="text-2xl font-extrabold text-[#721011] mb-6">Enquire Now</h3>
+          <h3 className="text-2xl font-extrabold text-[#721011] mb-6">
+            Enquire Now
+          </h3>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
@@ -294,11 +324,17 @@ export default function HolidayPage() {
 
         {/* NEED HELP (STATIC) */}
         <div className="bg-white rounded-3xl shadow-xl p-5 border border-[#e82429]/20">
-          <h3 className="text-lg font-bold text-[#721011] mb-3">🆘 Need Help?</h3>
+          <h3 className="text-lg font-bold text-[#721011] mb-3">
+            🆘 Need Help?
+          </h3>
 
-          <div className="p-3 bg-[#fff4f4] rounded-xl mb-3 border">📞 <b>+971 50 000 0000</b></div>
+          <div className="p-3 bg-[#fff4f4] rounded-xl mb-3 border">
+            📞 <b>+97143546677</b>
+          </div>
 
-          <div className="p-3 bg-[#fff4f4] rounded-xl border">📧 support@desertplanners.com</div>
+          <div className="p-3 bg-[#fff4f4] rounded-xl border">
+            📧 info@desertplanners.net
+          </div>
         </div>
       </aside>
     </div>
@@ -320,14 +356,18 @@ function TabsArea({
   const [activeTab, setActiveTab] = useState("highlights");
 
   // safe extractors with fallbacks
-  const nights = highlights?.nights || highlights?.night || highlights?.noOfNights || "—";
+  const nights =
+    highlights?.nights || highlights?.night || highlights?.noOfNights || "—";
   const persons = highlights?.persons || highlights?.person || "—";
   const room = highlights?.room || "—";
   const mealPlan = highlights?.mealPlan || highlights?.meals || "—";
 
   // normalize terms: could be array or string
-  const termsArray =
-    Array.isArray(terms) ? terms : typeof terms === "string" ? terms.split("•").filter((t) => t.trim()) : [];
+  const termsArray = Array.isArray(terms)
+    ? terms
+    : typeof terms === "string"
+    ? terms.split("•").filter((t) => t.trim())
+    : [];
 
   return (
     <div>
@@ -344,7 +384,9 @@ function TabsArea({
             key={key}
             onClick={() => setActiveTab(key)}
             className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-[0.95rem] font-semibold transition-all shrink-0 ${
-              activeTab === key ? "bg-[#e82429] text-white shadow" : "bg-[#fff4f4] text-[#721011]"
+              activeTab === key
+                ? "bg-[#e82429] text-white shadow"
+                : "bg-[#fff4f4] text-[#721011]"
             }`}
           >
             {label}
@@ -356,7 +398,9 @@ function TabsArea({
         {/* HIGHLIGHTS */}
         {activeTab === "highlights" && (
           <div className="space-y-5">
-            <h3 className="text-xl font-bold text-[#721011]">Package Highlights</h3>
+            <h3 className="text-xl font-bold text-[#721011]">
+              Package Highlights
+            </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="flex gap-3">
@@ -396,28 +440,66 @@ function TabsArea({
 
         {/* ITINERARY */}
         {activeTab === "itinerary" && (
-          <div className="space-y-16">
+          <div className="space-y-10">
             {itinerary.length === 0 ? (
               <p className="text-gray-600">No itinerary available.</p>
             ) : (
               itinerary.map((d, i) => (
-                <div key={i} className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#e82429]/20 group">
+                <div
+                  key={i}
+                  className="rounded-3xl overflow-hidden shadow-xl border border-[#e82429]/20 bg-white"
+                >
+                  {/* IMAGE SECTION */}
                   <div className="relative">
                     <img
                       src={d.image || d.img || ""}
                       alt={d.title || `Day ${i + 1}`}
-                      className="w-full h-[380px] md:h-[450px] object-cover transform group-hover:scale-105 transition-all duration-700"
+                      className="
+                w-full
+                h-[260px]
+                sm:h-[320px]
+                md:h-[430px]
+                lg:h-[480px]
+                object-cover object-center
+                transition-all duration-700
+              "
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-
-                    <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md px-5 py-2 rounded-full shadow-xl border border-white">
-                      <p className="text-[#721011] font-bold text-lg">DAY {d.day ?? i + 1}</p>
+                    {/* DAY BADGE */}
+                    <div
+                      className="
+              absolute top-4 left-4 
+              bg-white/90 backdrop-blur-md
+              px-4 py-1.5 
+              rounded-full 
+              shadow-lg 
+              border
+              text-[#721011] 
+              font-bold 
+              text-sm md:text-base
+            "
+                    >
+                      DAY {d.day ?? i + 1}
                     </div>
+                  </div>
 
-                    <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-lg p-6 rounded-2xl shadow-2xl border border-[#e82429]/20">
-                      <h3 className="text-2xl font-bold text-[#721011] mb-2">{d.title || `Day ${i + 1}`}</h3>
-                    </div>
+                  {/* DETAILS CARD BELOW IMAGE */}
+                  <div className="p-6 sm:p-7 md:p-8 bg-white">
+                    {/* Accent Line */}
+                    <div className="w-12 h-1.5 bg-gradient-to-r from-[#e82429] to-[#721011] rounded-full mb-4"></div>
+
+                    {/* Modern Title */}
+                    <h3
+                      className="
+      text-xl md:text-2xl 
+      font-extrabold 
+      text-[#2a2a2a]
+      tracking-wide
+      leading-snug
+    "
+                    >
+                      {d.title || `Day ${i + 1}`}
+                    </h3>
                   </div>
                 </div>
               ))
@@ -435,31 +517,42 @@ function TabsArea({
                 <li className="text-gray-600">No notes available.</li>
               ) : (
                 knowBefore.map((x, i) => (
-                  <li key={i} className="bg-[#fff4f4] p-3 rounded-xl border flex gap-3">
+                  <li
+                    key={i}
+                    className="bg-[#fff4f4] p-3 rounded-xl border flex gap-3"
+                  >
                     <span className="text-xl">ℹ️</span> {x}
                   </li>
                 ))
               )}
             </ul>
 
-            <h3 className="text-xl font-bold text-[#e82429] mt-5">Inclusions</h3>
+            <h3 className="text-xl font-bold text-[#e82429] mt-5">
+              Inclusions
+            </h3>
             <ul className="space-y-2">
               {inclusions.length === 0 ? (
                 <li className="text-gray-600">N/A</li>
               ) : (
                 inclusions.map((x, i) => (
-                  <li key={i} className="bg-[#fff4f4] p-2 rounded-lg border">✅ {x}</li>
+                  <li key={i} className="bg-[#fff4f4] p-2 rounded-lg border">
+                    ✅ {x}
+                  </li>
                 ))
               )}
             </ul>
 
-            <h3 className="text-xl font-bold text-[#e82429] mt-5">Exclusions</h3>
+            <h3 className="text-xl font-bold text-[#e82429] mt-5">
+              Exclusions
+            </h3>
             <ul className="space-y-2">
               {exclusions.length === 0 ? (
                 <li className="text-gray-600">N/A</li>
               ) : (
                 exclusions.map((x, i) => (
-                  <li key={i} className="bg-[#fff4f4] p-2 rounded-lg border">❌ {x}</li>
+                  <li key={i} className="bg-[#fff4f4] p-2 rounded-lg border">
+                    ❌ {x}
+                  </li>
                 ))
               )}
             </ul>
@@ -468,68 +561,69 @@ function TabsArea({
 
         {/* CANCELLATION */}
         {activeTab === "cancel" && (
-  <div className="space-y-4">
-    <h3 className="text-xl font-bold text-[#721011] mb-3">
-      Cancellation Policy
-    </h3>
+          <div className="space-y-4">
+            <h3 className="text-xl font-bold text-[#721011] mb-3">
+              Cancellation Policy
+            </h3>
 
-    {cancellationPolicy.length === 0 ? (
-      <p className="text-gray-600 bg-[#fff4f4] p-4 rounded-xl border text-center">
-        No cancellation policy provided.
-      </p>
-    ) : (
-      <div className="space-y-4">
-        {cancellationPolicy.map((c, idx) => (
-          <div
-            key={idx}
-            className="flex gap-4 bg-[#fff4f4] p-4 rounded-xl border border-[#e82429]/20 items-start shadow-sm hover:shadow-md transition"
-          >
-            {/* ICON CIRCLE */}
-            <div className="min-w-[40px] min-h-[40px] bg-[#e82429] text-white flex items-center justify-center rounded-full font-bold">
-              {idx + 1}
-            </div>
+            {cancellationPolicy.length === 0 ? (
+              <p className="text-gray-600 bg-[#fff4f4] p-4 rounded-xl border text-center">
+                No cancellation policy provided.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {cancellationPolicy.map((c, idx) => (
+                  <div
+                    key={idx}
+                    className="flex gap-4 bg-[#fff4f4] p-4 rounded-xl border border-[#e82429]/20 items-start shadow-sm hover:shadow-md transition"
+                  >
+                    {/* ICON CIRCLE */}
+                    <div className="min-w-[40px] min-h-[40px] bg-[#e82429] text-white flex items-center justify-center rounded-full font-bold">
+                      {idx + 1}
+                    </div>
 
-            {/* TEXT */}
-            <p className="text-gray-700 leading-relaxed">{c}</p>
+                    {/* TEXT */}
+                    <p className="text-gray-700 leading-relaxed">{c}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-)}
+        )}
 
-      {/* ⭐ TERMS & CONDITIONS */}
-{activeTab === "terms" && (
-  <div className="space-y-5">
-    <h3 className="text-xl font-bold text-[#721011]">Terms & Conditions</h3>
+        {/* ⭐ TERMS & CONDITIONS */}
+        {activeTab === "terms" && (
+          <div className="space-y-5">
+            <h3 className="text-xl font-bold text-[#721011]">
+              Terms & Conditions
+            </h3>
 
-    {termsArray.length === 0 ? (
-      <p className="text-gray-600 bg-[#fff4f4] p-4 rounded-xl border text-center">
-        No terms provided.
-      </p>
-    ) : (
-      <div className="space-y-4">
-        {termsArray.map((line, index) => (
-          <div
-            key={index}
-            className="flex gap-4 bg-[#fff7f7] p-5 rounded-2xl border border-[#e82429]/20 shadow-sm hover:shadow-md transition-all items-start"
-          >
-            {/* NUMBER BADGE */}
-            <div className="min-w-[42px] min-h-[42px] bg-[#e82429] text-white flex items-center justify-center rounded-full font-bold text-lg shadow">
-              {index + 1}
-            </div>
+            {termsArray.length === 0 ? (
+              <p className="text-gray-600 bg-[#fff4f4] p-4 rounded-xl border text-center">
+                No terms provided.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                {termsArray.map((line, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-4 bg-[#fff7f7] p-5 rounded-2xl border border-[#e82429]/20 shadow-sm hover:shadow-md transition-all items-start"
+                  >
+                    {/* NUMBER BADGE */}
+                    <div className="min-w-[42px] min-h-[42px] bg-[#e82429] text-white flex items-center justify-center rounded-full font-bold text-lg shadow">
+                      {index + 1}
+                    </div>
 
-            {/* TERM TEXT */}
-            <p className="text-gray-700 leading-relaxed text-[15px]">
-              {line.trim()}
-            </p>
+                    {/* TERM TEXT */}
+                    <p className="text-gray-700 leading-relaxed text-[15px]">
+                      {line.trim()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    )}
-  </div>
-)}
-
+        )}
       </div>
     </div>
   );
