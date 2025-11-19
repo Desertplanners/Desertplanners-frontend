@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FiMenu, FiX, FiChevronDown, FiSearch, FiUser } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown, FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
@@ -14,19 +14,20 @@ export default function Navbar() {
   const [visaCategories, setVisaCategories] = useState([]);
 
   const [openIndex, setOpenIndex] = useState(null);
-  const [openSubIndex, setOpenSubIndex] = useState(null);
 
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
-  // ------------------------------------------------------------------
+  // ================================
   // CHECK IF USER LOGGED IN
-  // ------------------------------------------------------------------
+  // ================================
   useEffect(() => {
     const checkLogin = () => {
       const token = localStorage.getItem("userToken");
       setUserLoggedIn(!!token);
     };
+
     checkLogin();
+
     window.addEventListener("userLoginChange", checkLogin);
     window.addEventListener("storage", checkLogin);
 
@@ -36,9 +37,9 @@ export default function Navbar() {
     };
   }, []);
 
-  // ------------------------------------------------------------------
+  // ================================
   // FETCH ALL CATEGORIES
-  // ------------------------------------------------------------------
+  // ================================
   useEffect(() => {
     const api = DataService();
 
@@ -48,7 +49,6 @@ export default function Navbar() {
         const res = await api.get(API.GET_CATEGORIES);
         const categories = res.data || [];
 
-        // Fetch tours inside each category
         const formatted = await Promise.all(
           categories.map(async (cat) => {
             const slug =
@@ -69,25 +69,28 @@ export default function Navbar() {
       }
     };
 
-    // ⭐ 2. Fetch Holiday Categories
+    // ⭐ 2. Fetch Holiday Categories (FIXED)
     const getHolidayCategories = async () => {
       try {
         const res = await api.get(API.GET_HOLIDAY_CATEGORIES);
         const holidayCats = res.data || [];
 
-        // Fetch holiday packages by category
         const formatted = await Promise.all(
           holidayCats.map(async (cat) => {
             try {
-              const packages = await api.get(
-                API.GET_HOLIDAY_PACKAGES_BY_CATEGORY(cat.slug)
-              );
-              return { ...cat, packages: packages.data || [] };
+              const packagesRes = await api.get(API.GET_PACKAGES_BY_CATEGORY(cat.slug));
+        
+              return {
+                ...cat,
+                slug: cat.slug,
+                packages: packagesRes.data?.tours || [],
+              };
             } catch {
-              return { ...cat, packages: [] };
+              return { ...cat, slug: cat.slug, packages: [] };
             }
           })
         );
+        
 
         setHolidayCategories(formatted);
       } catch (err) {
@@ -125,82 +128,72 @@ export default function Navbar() {
     getVisaCategories();
   }, []);
 
-  // ------------------------------------------------------------------
+  // ================================
   // NAV STRUCTURE
-  // ------------------------------------------------------------------
+  // ================================
   const navLinks = [
     {
       title: "Tours",
       path: "/tours",
-      subLinks:
-        tourCategories.map((cat) => ({
-          name: cat.name,
-          path: `/tours/${cat.slug}`,
-          subSubLinks:
-            cat.tours?.map((tour) => ({
-              name: tour.title,
-              path: `/tours/${cat.slug}/${tour.slug}`,
-            })) || [],
-        })) || [],
+      subLinks: tourCategories.map((cat) => ({
+        name: cat.name,
+        path: `/tours/${cat.slug}`,
+        subSubLinks:
+          cat.tours?.map((tour) => ({
+            name: tour.title,
+            path: `/tours/${cat.slug}/${tour.slug}`,
+          })) || [],
+      })),
     },
 
-    // ⭐ NEW — Holiday Packages
+    // ⭐ FIXED HOLIDAY SECTION
     {
       title: "Holiday Packages",
       path: "/holidays",
-      subLinks:
-        holidayCategories.map((cat) => ({
-          name: cat.name,
-          path: `/holidays/${cat.slug}`,
-          subSubLinks:
-            cat.packages?.map((pkg) => ({
-              name: pkg.title,
-              path: `/holidays/${cat.slug}/${pkg.slug}`,
-            })) || [],
-        })) || [],
+      subLinks: holidayCategories.map((cat) => ({
+        name: cat.name,
+        path: `/holidays/${cat.slug}`,
+        subSubLinks:
+          cat.packages?.map((pkg) => ({
+            name: pkg.title,
+            path: `/holidays/${cat.slug}/${pkg.slug}`,
+          })) || [],
+      })),
     },
 
     {
       title: "Visa Services",
       path: "/visa",
-      subLinks:
-        visaCategories.map((vCat) => ({
-          name: vCat.name,
-          path: `/visa/${vCat.slug}`,
-          subSubLinks:
-            vCat.visas?.map((visa) => ({
-              name: visa.title,
-              path: `/visa/${vCat.slug}/${visa.slug}`,
-            })) || [],
-        })) || [],
+      subLinks: visaCategories.map((vCat) => ({
+        name: vCat.name,
+        path: `/visa/${vCat.slug}`,
+        subSubLinks:
+          vCat.visas?.map((visa) => ({
+            name: visa.title,
+            path: `/visa/${vCat.slug}/${visa.slug}`,
+          })) || [],
+      })),
     },
+
     { title: "Contact Us", path: "/contact-us" },
   ];
 
-  // ------------------------------------------------------------------
-  // UI HANDLERS
-  // ------------------------------------------------------------------
-  const handleSearch = (e) => {
-    e.preventDefault();
-  };
-
+  // ================================
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-[1200px] mx-auto flex items-center justify-between px-4 py-4">
-        
-        {/* Logo */}
+
+        {/* LOGO */}
         <Link to="/" onClick={() => setMenuOpen(false)}>
-          <img
-            src="/desertplanners_logo.png"
-            alt="Logo"
-            className="h-12 w-auto"
-          />
+          <img src="/desertplanners_logo.png" alt="Logo" className="h-12 w-auto" />
         </Link>
 
-        {/* Desktop Menu */}
+        {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center space-x-6">
+
           {navLinks.map((link, i) => (
             <div key={i} className="relative group">
+
               <Link
                 to={link.path}
                 className="flex items-center gap-1 font-medium text-[#404041] hover:text-[#e82429]"
@@ -209,12 +202,14 @@ export default function Navbar() {
                 {link.subLinks?.length > 0 && <FiChevronDown size={16} />}
               </Link>
 
-              {/* Dropdown */}
+              {/* DROPDOWN */}
               {link.subLinks?.length > 0 && (
                 <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
                   <ul className="py-3">
+
                     {link.subLinks.map((sublink, j) => (
                       <li key={j} className="relative group/sub">
+
                         <Link
                           to={sublink.path}
                           className="flex justify-between items-center px-5 py-2 text-sm text-[#404041] hover:bg-[#f7e6e6]"
@@ -225,7 +220,7 @@ export default function Navbar() {
                           )}
                         </Link>
 
-                        {/* Nested */}
+                        {/* NESTED SUBMENU */}
                         {sublink.subSubLinks?.length > 0 && (
                           <ul className="absolute left-full top-0 ml-2 w-56 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all">
                             {sublink.subSubLinks.map((sub, k) => (
@@ -240,16 +235,18 @@ export default function Navbar() {
                             ))}
                           </ul>
                         )}
+
                       </li>
                     ))}
                   </ul>
                 </div>
               )}
+
             </div>
           ))}
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="relative ml-4">
+          {/* SEARCH */}
+          <form onSubmit={(e) => e.preventDefault()} className="relative ml-4">
             <input
               type="text"
               className="pl-10 pr-4 py-2 rounded-lg border border-gray-300"
@@ -259,7 +256,7 @@ export default function Navbar() {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           </form>
 
-          {/* Contact */}
+          {/* CONTACT */}
           <Link
             to="/contact"
             className="ml-4 px-6 py-2 rounded-lg bg-[#e82429] text-white shadow hover:bg-[#c51b22]"
@@ -270,7 +267,7 @@ export default function Navbar() {
           <ProfileMenu />
         </div>
 
-        {/* Mobile Button */}
+        {/* MOBILE MENU BUTTON */}
         <button
           className="lg:hidden text-[#404041]"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -279,10 +276,11 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="lg:hidden bg-white border-t shadow-md">
           <ul className="flex flex-col p-4 space-y-2">
+
             {navLinks.map((link, i) => (
               <li key={i}>
                 <div className="flex justify-between items-center">
@@ -295,21 +293,14 @@ export default function Navbar() {
                   </Link>
 
                   {link.subLinks?.length > 0 && (
-                    <button
-                      onClick={() =>
-                        setOpenIndex(openIndex === i ? null : i)
-                      }
-                    >
+                    <button onClick={() => setOpenIndex(openIndex === i ? null : i)}>
                       <FiChevronDown
-                        className={`transition ${
-                          openIndex === i ? "rotate-180" : ""
-                        }`}
+                        className={`transition ${openIndex === i ? "rotate-180" : ""}`}
                       />
                     </button>
                   )}
                 </div>
 
-                {/* Submenu */}
                 {openIndex === i && link.subLinks?.length > 0 && (
                   <ul className="pl-4 mt-2 space-y-1">
                     {link.subLinks.map((sublink, j) => (
@@ -328,13 +319,11 @@ export default function Navbar() {
               </li>
             ))}
 
-            {/* Profile */}
+            {/* PROFILE */}
             <li className="border-t pt-3">
               {userLoggedIn ? (
                 <>
-                  <Link to="/profile" className="block py-2">
-                    Profile
-                  </Link>
+                  <Link to="/profile" className="block py-2">Profile</Link>
                   <button
                     onClick={() => {
                       localStorage.clear();
@@ -348,12 +337,8 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="block py-2">
-                    Sign In
-                  </Link>
-                  <Link to="/register" className="block py-2">
-                    Sign Up
-                  </Link>
+                  <Link to="/login" className="block py-2">Sign In</Link>
+                  <Link to="/register" className="block py-2">Sign Up</Link>
                 </>
               )}
             </li>

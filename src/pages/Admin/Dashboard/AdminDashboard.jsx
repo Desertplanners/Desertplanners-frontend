@@ -16,7 +16,9 @@ import Visa from "./Visa";
 import SectionsManagement from "./SectionsManagement";
 import BannerManagement from "./BannerManagement";
 import VisaBookings from "./VisaBookings";
+import HolidayManagement from "./HolidayManagement";
 
+// ⭐ NEW FILE
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -28,7 +30,8 @@ export default function AdminDashboard() {
     visaCategory: VisaCategory,
 
     holidayCategory: HolidayCategory, // ⭐ NEW
-
+    // ⭐ NEW TAB
+    holidayManagement: HolidayManagement,
     category: TourCategory,
     sections: SectionsManagement,
     bookings: Bookings,

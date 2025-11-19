@@ -19,6 +19,7 @@ const banners = "/api/banner";
 const visaBookings = "/api/visa-bookings";
 const visaPayment = "/api/visa-payment"; // ✅ NEW
 const holidayCategories = "/api/holiday-categories";
+const holidayTours = "/api/holiday-tour";
 
 export const API = {
   BASE_URL: isLocalhost
@@ -144,4 +145,14 @@ export const API = {
   DELETE_HOLIDAY_CATEGORY: (id) => `${holidayCategories}/${id}`,
   UPDATE_HOLIDAY_CATEGORY: (id) => `${holidayCategories}/${id}`,
   GET_PACKAGES_BY_CATEGORY: (slug) => `${holidayCategories}/category/${slug}`,
+
+  // ---- Holiday Tours ----
+  ADD_HOLIDAY_TOUR: `${holidayTours}/create`,
+  GET_ALL_HOLIDAY_TOURS: `${holidayTours}/all`,
+  GET_HOLIDAY_TOUR_BY_ID: (id) => `${holidayTours}/${id}`,
+  UPDATE_HOLIDAY_TOUR: (id) => `${holidayTours}/update/${id}`,
+  DELETE_HOLIDAY_TOUR: (id) => `${holidayTours}/delete/${id}`,
+  GET_PACKAGES_BY_CATEGORY: (slug) => `${holidayTours}/category/${slug}`,
+  GET_HOLIDAY_PACKAGE_BY_SLUG: (category, slug) =>
+    `${holidayTours}/category/${category}/${slug}`,
 };

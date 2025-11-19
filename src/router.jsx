@@ -27,6 +27,8 @@ import GuestBookingLookup from "./components/GuestBookingLookup";
 import AboutUs from "./pages/AboutUs";
 import VisaBooking from "./components/VisaBooking";
 import VisaSuccess from "./components/VisaSuccess";
+import HolidayCategoryPage from "./pages/HolidayCategoryPage";
+import HolidayPackageDetails from "./pages/HolidayPackageDetails";
 import HolidayPage from "./pages/HolidayPage";
 const AppRouter = () => (
   <>
@@ -45,7 +47,6 @@ const AppRouter = () => (
       <Route path="/visa/:categorySlug" element={<VisaList />} /> {/* 👈 new */}
       <Route path="/visa/:categorySlug/:visaSlug" element={<VisaDetails />} />
       <Route path="/visa-success" element={<VisaSuccess />} />
-
       <Route path="/contact-us" element={<ContactUs />} />
       <Route
         path="/visa/:categorySlug/:visaSlug/apply"
@@ -64,7 +65,12 @@ const AppRouter = () => (
       <Route path="/booking-success" element={<BookingSuccess />} />
       <Route path="/check-booking" element={<GuestBookingLookup />} />
       <Route path="about-us" element={<AboutUs />} />
-      <Route path="holidays" element={<HolidayPage />} />
+      <Route path="/holidays" element={<HolidayPage />} />
+      <Route path="/holidays/:categorySlug" element={<HolidayCategoryPage />} />
+      <Route
+        path="/holidays/:categorySlug/:packageSlug"
+        element={<HolidayPackageDetails />}
+      />
       <Route
         path="/admin/dashboard"
         element={

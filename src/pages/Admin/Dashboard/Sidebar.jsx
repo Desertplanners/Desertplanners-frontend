@@ -24,10 +24,25 @@ const ITEMS = [
 
   // Visa Section
   { tab: "visa", label: "Visa", icon: <Plane size={18} /> },
-  { tab: "visaCategory", label: "Visa Categories", icon: <FileSpreadsheet size={18} /> },
+
+  {
+    tab: "holidayManagement",
+    label: "Holiday Tours",
+    icon: <Briefcase size={18} />,
+  },
+
+  {
+    tab: "visaCategory",
+    label: "Visa Categories",
+    icon: <FileSpreadsheet size={18} />,
+  },
 
   // ⭐ NEW Holiday Categories
-  { tab: "holidayCategory", label: "Holiday Categories", icon: <Grid size={18} /> },
+  {
+    tab: "holidayCategory",
+    label: "Holiday Categories",
+    icon: <Grid size={18} />,
+  },
 
   // Tour Categories
   { tab: "category", label: "Tour Categories", icon: <Grid size={18} /> },
@@ -36,10 +51,18 @@ const ITEMS = [
   { tab: "sections", label: "Sections", icon: <Layers size={18} /> },
 
   // Bookings
-  { tab: "bookings", label: "Tour Bookings", icon: <CalendarCheck size={18} /> },
+  {
+    tab: "bookings",
+    label: "Tour Bookings",
+    icon: <CalendarCheck size={18} />,
+  },
 
   // ⭐ NEW Visa Bookings
-  { tab: "visaBookings", label: "Visa Bookings", icon: <CalendarCheck size={18} /> },
+  {
+    tab: "visaBookings",
+    label: "Visa Bookings",
+    icon: <CalendarCheck size={18} />,
+  },
 
   // Payments
   { tab: "payments", label: "Payments", icon: <CreditCard size={18} /> },
@@ -57,7 +80,12 @@ const ITEMS = [
   { tab: "settings", label: "Settings", icon: <Settings size={18} /> },
 ];
 
-export default function Sidebar({ activeTab, setActiveTab, sidebarOpen, setSidebarOpen }) {
+export default function Sidebar({
+  activeTab,
+  setActiveTab,
+  sidebarOpen,
+  setSidebarOpen,
+}) {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
@@ -128,7 +156,8 @@ export default function Sidebar({ activeTab, setActiveTab, sidebarOpen, setSideb
       <div className="mt-auto p-3 border-t border-gray-200 text-center">
         {sidebarOpen ? (
           <div className="text-xs text-gray-400">
-            Made with <span className="text-[#721011] font-semibold">❤️</span> by Desert Planners
+            Made with <span className="text-[#721011] font-semibold">❤️</span>{" "}
+            by Desert Planners
           </div>
         ) : (
           <div className="text-xs text-gray-400">DP</div>
