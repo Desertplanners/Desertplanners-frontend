@@ -256,7 +256,7 @@ export default function Navbar() {
 
           {/* CONTACT */}
           <Link
-            to="/contact"
+            to="/contact-us"
             className="ml-4 px-6 py-2 rounded-lg bg-[#e82429] text-white shadow hover:bg-[#c51b22]"
           >
             Contact Us
