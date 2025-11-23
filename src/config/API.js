@@ -24,7 +24,7 @@ const holidayTours = "/api/holiday-tour";
 export const API = {
   BASE_URL: isLocalhost
     ? "http://localhost:5000"
-    : "https://desetplanner-backend.onrender.com",
+    : "https://desertplanners-backend.onrender.com",
 
   // ---- Admin ----
   ADMIN_REGISTER: `${admin}/register`,

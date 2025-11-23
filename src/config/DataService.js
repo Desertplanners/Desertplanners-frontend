@@ -6,7 +6,7 @@ const isLocalhost =
 
 const API_BASE_URL = isLocalhost
   ? "http://localhost:5000"
-  : "https://desetplanner-backend.onrender.com";
+  : "https://desertplanners-backend.onrender.com";
 
 const DataService = (type = "guest") => {
   let token = null;
