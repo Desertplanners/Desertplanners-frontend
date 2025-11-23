@@ -35,7 +35,7 @@ export default function PopularExperiences() {
     <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-4">
         <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-[#404041]">
-          Top Adventure Experiences in the UAE
+          Adventure Trips in the UAE
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
