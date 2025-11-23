@@ -569,7 +569,7 @@ export default function TourServiceDetails() {
             </div>
           </div>
 
-          {/* HIGHLIGHTS */}
+          {/* HIGHLIGHTS */}  
           <section className="bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] rounded-2xl shadow p-8">
             <h2 className="text-2xl font-bold text-[#721011] mb-4 flex items-center gap-2">
               <FaInfoCircle className="text-[#e82429]" /> Highlights
