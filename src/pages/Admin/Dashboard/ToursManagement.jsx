@@ -146,7 +146,7 @@ export default function ToursManagement() {
                 </p>
 
                 <div className="flex justify-between items-center mt-3">
-                  <span className="bg-[var(--color-light-gray)] text-[var(--color-neutral)] text-xs font-semibold px-2 py-1 rounded-full">
+                  <span className="text-[var(--color-neutral)] text-xs font-semibold px-2 py-1 rounded-full">
                     {tour.duration || "N/A"}
                   </span>
                   <div className="flex gap-2">
