@@ -478,8 +478,24 @@ export default function TourServiceDetails() {
                 <select
                   value={guests}
                   onChange={(e) => setGuests(e.target.value)}
+                  className="
+    w-full 
+    border border-gray-300 
+    rounded-2xl 
+    px-4 py-3 
+    bg-white
+    shadow-sm 
+    text-gray-700 
+    focus:ring-2 
+    focus:ring-[#e82429] 
+    focus:border-[#e82429]
+    transition-all
+  "
                 >
-                  <option value="">Select Guests</option>
+                  <option value="" disabled>
+                    Select Guests
+                  </option>
+
                   {[...Array(12)].map((_, i) => (
                     <option key={i + 1} value={i + 1}>
                       {i + 1} {i + 1 === 1 ? "Person" : "Persons"}
@@ -829,96 +845,95 @@ export default function TourServiceDetails() {
             </div>
 
             {/* Guests */}
-         <div className="flex flex-col gap-4 mt-2">
+            <div className="flex flex-col gap-4 mt-2">
+              {tour.priceChild ? (
+                <>
+                  {/* Adults */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-700 font-semibold flex items-center gap-2">
+                      <span className="text-[#e82429] text-lg">👤</span> Adults
+                    </label>
 
-  {tour.priceChild ? (
-    <>
-      {/* Adults */}
-      <div className="flex flex-col gap-1">
-        <label className="text-gray-700 font-semibold flex items-center gap-2">
-          <span className="text-[#e82429] text-lg">👤</span> Adults
-        </label>
-
-        <div className="relative">
-          <select
-            value={adults}
-            onChange={(e) => setAdults(e.target.value)}
-            className="
+                    <div className="relative">
+                      <select
+                        value={adults}
+                        onChange={(e) => setAdults(e.target.value)}
+                        className="
               w-full px-4 py-3 rounded-2xl bg-white border 
               border-gray-300 shadow-sm text-gray-700
               focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
               transition-all duration-300 cursor-pointer
             "
-          >
-            <option value="">Select Adults</option>
-            {[...Array(12)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
+                      >
+                        <option value="">Select Adults</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
 
-      {/* Children */}
-      <div className="flex flex-col gap-1">
-        <label className="text-gray-700 font-semibold flex items-center gap-2">
-          <span className="text-[#e82429] text-lg">🧒</span> Children
-        </label>
+                  {/* Children */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-700 font-semibold flex items-center gap-2">
+                      <span className="text-[#e82429] text-lg">🧒</span>{" "}
+                      Children
+                    </label>
 
-        <div className="relative">
-          <select
-            value={children}
-            onChange={(e) => setChildren(e.target.value)}
-            className="
+                    <div className="relative">
+                      <select
+                        value={children}
+                        onChange={(e) => setChildren(e.target.value)}
+                        className="
               w-full px-4 py-3 rounded-2xl bg-white border 
               border-gray-300 shadow-sm text-gray-700
               focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
               transition-all duration-300 cursor-pointer
             "
-          >
-            <option value="0">0</option>
-            {[...Array(12)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-    </>
-  ) : (
-    <>
-      {/* Guests (No child price tours) */}
-      <div className="flex flex-col gap-1">
-        <label className="text-gray-700 font-semibold flex items-center gap-2">
-          <span className="text-[#e82429] text-lg">👥</span> Guests
-        </label>
+                      >
+                        <option value="0">0</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Guests (No child price tours) */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-700 font-semibold flex items-center gap-2">
+                      <span className="text-[#e82429] text-lg">👥</span> Guests
+                    </label>
 
-        <div className="relative">
-          <select
-            value={guests}
-            onChange={(e) => setGuests(e.target.value)}
-            className="
+                    <div className="relative">
+                      <select
+                        value={guests}
+                        onChange={(e) => setGuests(e.target.value)}
+                        className="
               w-full px-4 py-3 rounded-2xl bg-white border 
               border-gray-300 shadow-sm text-gray-700
               focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
               transition-all duration-300 cursor-pointer
             "
-          >
-            <option value="">Select Guests</option>
-            {[...Array(12)].map((_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {i + 1}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-    </>
-  )}
-</div>
-
+                      >
+                        <option value="">Select Guests</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Button */}
             <div className="mt-2">

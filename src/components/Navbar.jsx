@@ -322,11 +322,33 @@ export default function Navbar() {
 
             {/* PROFILE */}
             <li className="border-t pt-3">
+              {/* ⭐ CHECK BOOKING (Always show) */}
+              <Link
+                to="/check-booking"
+                className="block py-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                Check Booking
+              </Link>
+
               {userLoggedIn ? (
                 <>
-                  <Link to="/profile" className="block py-2">
-                    Profile
+                  <Link
+                    to="/profile"
+                    className="block py-2"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    My Profile
                   </Link>
+
+                  <Link
+                    to="/my-orders"
+                    className="block py-2"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    My Orders
+                  </Link>
+
                   <button
                     onClick={() => {
                       localStorage.clear();
@@ -340,10 +362,19 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link to="/login" className="block py-2">
+                  <Link
+                    to="/login"
+                    className="block py-2"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Sign In
                   </Link>
-                  <Link to="/register" className="block py-2">
+
+                  <Link
+                    to="/register"
+                    className="block py-2"
+                    onClick={() => setMenuOpen(false)}
+                  >
                     Sign Up
                   </Link>
                 </>
