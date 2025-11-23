@@ -439,6 +439,7 @@ export default function TourServiceDetails() {
           {/* Mobile / Tablet Check Availability */}
           <div className="block lg:hidden">
             <div className="bg-white rounded-3xl shadow-xl p-6 mt-4 flex flex-col gap-5">
+              {/* Header */}
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-[#404041]">
                   Check Availability
@@ -456,52 +457,77 @@ export default function TourServiceDetails() {
                   onChange={(date) => setStartDate(date)}
                   minDate={new Date(Date.now() + 24 * 60 * 60 * 1000)}
                   placeholderText="Select a date"
-                  className="w-full border rounded-2xl px-4 py-2 focus:ring-2 focus:ring-[#e82429] focus:outline-none shadow-sm"
+                  className="w-full border rounded-2xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none shadow-sm"
                 />
               </div>
 
-              {/* Guests */}
-              <div className="flex flex-col gap-1">
-                <label className="text-gray-600 font-medium">Guests</label>
-                {/* <select
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-[#e82429]"
-                >
-                  <option value="">Select Guests</option>
-                  {[...Array(12)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1} {i + 1 === 1 ? "Person" : "Persons"}
-                    </option>
-                  ))}
-                </select> */}
-                <select
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  className="
-    w-full 
-    border border-gray-300 
-    rounded-2xl 
-    px-4 py-3 
-    bg-white
-    shadow-sm 
-    text-gray-700 
-    focus:ring-2 
-    focus:ring-[#e82429] 
-    focus:border-[#e82429]
-    transition-all
-  "
-                >
-                  <option value="" disabled>
-                    Select Guests
-                  </option>
+              {/* Guests Section */}
+              <div className="flex flex-col gap-4">
+                {tour.priceChild ? (
+                  <>
+                    {/* Adults */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-gray-700 font-semibold flex items-center gap-2">
+                        <span className="text-[#e82429] text-lg">👤</span>{" "}
+                        Adults
+                      </label>
+                      <select
+                        value={adults}
+                        onChange={(e) => setAdults(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-700 focus:ring-2 focus:ring-[#e82429] focus:border-[#e82429] transition-all"
+                      >
+                        <option value="">Select Adults</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                  {[...Array(12)].map((_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {i + 1} {i + 1 === 1 ? "Person" : "Persons"}
-                    </option>
-                  ))}
-                </select>
+                    {/* Children */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-gray-700 font-semibold flex items-center gap-2">
+                        <span className="text-[#e82429] text-lg">🧒</span>{" "}
+                        Children
+                      </label>
+                      <select
+                        value={children}
+                        onChange={(e) => setChildren(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-700 focus:ring-2 focus:ring-[#e82429] focus:border-[#e82429] transition-all"
+                      >
+                        <option value="0">0</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Guests (no child price) */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-gray-700 font-semibold flex items-center gap-2">
+                        <span className="text-[#e82429] text-lg">👥</span>{" "}
+                        Guests
+                      </label>
+                      <select
+                        value={guests}
+                        onChange={(e) => setGuests(e.target.value)}
+                        className="w-full border border-gray-300 rounded-2xl px-4 py-3 bg-white shadow-sm text-gray-700 focus:ring-2 focus:ring-[#e82429] focus:border-[#e82429]"
+                      >
+                        <option value="">Select Guests</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Button */}
@@ -529,7 +555,6 @@ export default function TourServiceDetails() {
                     : "Check Availability"}
                 </button>
 
-                {/* Status messages */}
                 {availabilityResult && !availabilityResult.available && (
                   <div className="mt-3 p-3 bg-red-50 text-red-800 rounded-xl border border-red-200 text-center">
                     Not available on selected date or for selected guests
@@ -537,8 +562,7 @@ export default function TourServiceDetails() {
                 )}
                 {availabilityResult?.available && (
                   <div className="mt-3 p-3 bg-green-50 text-green-800 rounded-xl border border-green-200 text-center">
-                    Available for {guests} guest(s) on{" "}
-                    {startDate.toDateString()}
+                    Available on {startDate.toDateString()}
                   </div>
                 )}
               </div>

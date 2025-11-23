@@ -69,24 +69,26 @@ export default function GuestBookingLookup() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 via-gray-100 to-gray-300 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-2xl bg-white/50 backdrop-blur-2xl shadow-2xl rounded-3xl border border-white/30 p-10"
+        className="w-full max-w-xl bg-white/60 backdrop-blur-2xl shadow-2xl rounded-3xl border border-white/30 p-6 md:p-10"
       >
-        <motion.h1 className="text-4xl font-extrabold text-center bg-gradient-to-r from-[#e82429] to-[#721011] bg-clip-text text-transparent mb-3">
+        {/* Title */}
+        <motion.h1 className="text-3xl md:text-4xl font-extrabold text-center bg-gradient-to-r from-[#e82429] to-[#721011] bg-clip-text text-transparent mb-3 leading-tight">
           Check Your Booking
         </motion.h1>
 
-        <p className="text-center text-gray-600 mb-10">
-          Enter your Booking ID and Email to check details.
+        <p className="text-center text-gray-600 mb-8 text-sm md:text-base">
+          Enter your Booking ID and Email to check your booking details.
         </p>
 
-        <div className="flex justify-center gap-4 mb-8">
+        {/* Mode Switch */}
+        <div className="flex justify-center gap-3 mb-8 flex-wrap">
           <button
             onClick={() => setMode("tour")}
-            className={`px-5 py-2 rounded-full font-semibold ${
+            className={`px-4 py-2 rounded-full font-semibold text-sm md:text-base ${
               mode === "tour"
                 ? "bg-[#e82429] text-white"
                 : "bg-white text-gray-700 border"
@@ -97,7 +99,7 @@ export default function GuestBookingLookup() {
 
           <button
             onClick={() => setMode("visa")}
-            className={`px-5 py-2 rounded-full font-semibold ${
+            className={`px-4 py-2 rounded-full font-semibold text-sm md:text-base ${
               mode === "visa"
                 ? "bg-[#e82429] text-white"
                 : "bg-white text-gray-700 border"
@@ -107,9 +109,10 @@ export default function GuestBookingLookup() {
           </button>
         </div>
 
-        <div className="space-y-7">
+        {/* Input Fields */}
+        <div className="space-y-6">
           <div>
-            <label className="text-gray-700 font-medium flex items-center gap-2">
+            <label className="text-gray-700 font-medium flex items-center gap-2 text-sm md:text-base">
               <FaHashtag className="text-[#e82429]" /> Booking ID
             </label>
             <input
@@ -117,12 +120,12 @@ export default function GuestBookingLookup() {
               placeholder="e.g. 67ab3f92c98d4"
               value={bookingId}
               onChange={(e) => setBookingId(e.target.value)}
-              className="w-full mt-2 px-4 py-3 rounded-xl bg-white/70 border"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-white border text-sm md:text-base"
             />
           </div>
 
           <div>
-            <label className="text-gray-700 font-medium flex items-center gap-2">
+            <label className="text-gray-700 font-medium flex items-center gap-2 text-sm md:text-base">
               <FaEnvelope className="text-[#e82429]" /> Email Address
             </label>
             <input
@@ -130,46 +133,50 @@ export default function GuestBookingLookup() {
               placeholder="Email used during booking"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full mt-2 px-4 py-3 rounded-xl bg-white/70 border"
+              className="w-full mt-2 px-4 py-3 rounded-xl bg-white border text-sm md:text-base"
             />
           </div>
 
           <motion.button
             whileTap={{ scale: 0.96 }}
             onClick={handleLookup}
-            className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 shadow-lg"
+            className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl text-base md:text-lg font-semibold flex items-center justify-center gap-2 shadow-lg"
           >
             <FaSearch /> {loading ? "Searching..." : "Check Booking"}
           </motion.button>
 
           {error && (
-            <p className="text-center text-red-600 font-semibold">{error}</p>
+            <p className="text-center text-red-600 font-semibold text-sm md:text-base">
+              {error}
+            </p>
           )}
         </div>
 
+        {/* Booking Result */}
         {booking && (
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-10 bg-white/70 backdrop-blur-xl border shadow-xl rounded-3xl p-8"
+            className="mt-10 bg-white/80 backdrop-blur-xl border shadow-xl rounded-2xl p-5 md:p-8"
           >
             {/* TOUR BOOKING */}
             {mode === "tour" && (
               <>
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-[#2e2e2e]">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-5">
+                  <h2 className="text-xl md:text-2xl font-bold text-[#2e2e2e]">
                     Booking Summary
                   </h2>
 
                   <button
                     onClick={handleDownloadInvoice}
-                    className="flex items-center gap-2 bg-[#e82429] hover:bg-[#721011] text-white px-4 py-2 rounded-full text-sm"
+                    className="flex items-center gap-2 bg-[#e82429] hover:bg-[#721011] text-white px-4 py-2 rounded-full text-sm md:text-base"
                   >
                     <FaDownload /> Download Invoice
                   </button>
                 </div>
 
-                <div className="space-y-2 mb-6">
+                {/* Guest Info */}
+                <div className="space-y-2 mb-6 text-sm md:text-base">
                   <div className="flex items-center gap-2 text-gray-700">
                     <FaUser className="text-[#e82429]" />
                     <b>Name:</b> {booking.guestName}
@@ -186,9 +193,9 @@ export default function GuestBookingLookup() {
                   </div>
                 </div>
 
-                <hr className="my-4" />
+                <hr />
 
-                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                <h3 className="font-bold text-lg md:text-xl mb-4 flex items-center gap-2">
                   <FaListUl className="text-[#e82429]" /> Tours Booked
                 </h3>
 
@@ -198,15 +205,16 @@ export default function GuestBookingLookup() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-white shadow-md border p-5 rounded-2xl mb-4"
+                    className="bg-white shadow-md border p-4 rounded-xl mb-4 text-sm md:text-base"
                   >
-                    <p className="text-gray-800 text-lg font-semibold mb-1">
+                    <p className="text-gray-800 font-semibold mb-1 text-base md:text-lg">
                       {item.tourId?.title}
                     </p>
 
                     <p className="text-gray-600 flex items-center gap-2">
                       <FaCalendar className="text-[#e82429]" />
-                      <b>Date:</b> {new Date(item.date).toLocaleDateString()}
+                      <b>Date:</b>{" "}
+                      {new Date(item.date).toLocaleDateString()}
                     </p>
 
                     <p className="text-gray-700 mt-1">
@@ -219,7 +227,7 @@ export default function GuestBookingLookup() {
                   </motion.div>
                 ))}
 
-                <div className="mt-5">
+                <div className="mt-5 text-sm md:text-base">
                   <p className="font-bold text-2xl text-[#e82429]">
                     Total: AED {booking.totalPrice}
                   </p>
@@ -247,24 +255,23 @@ export default function GuestBookingLookup() {
               </>
             )}
 
-
             {/* VISA BOOKING */}
             {mode === "visa" && (
               <>
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-2xl font-bold text-[#2e2e2e]">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-5">
+                  <h2 className="text-xl md:text-2xl font-bold text-[#2e2e2e]">
                     Visa Booking Summary
                   </h2>
 
                   <button
                     onClick={handleDownloadVisaInvoice}
-                    className="flex items-center gap-2 bg-[#e82429] hover:bg-[#721011] text-white px-4 py-2 rounded-full text-sm"
+                    className="flex items-center gap-2 bg-[#e82429] hover:bg-[#721011] text-white px-4 py-2 rounded-full text-sm md:text-base"
                   >
                     <FaDownload /> Download Invoice
                   </button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3 text-sm md:text-base">
                   {/* Visa Title */}
                   {booking.visaId?.title && (
                     <p>
@@ -289,13 +296,14 @@ export default function GuestBookingLookup() {
                     <b>Passport No:</b> {booking.passportNumber}
                   </p>
 
-                  {/* ⭐ NEW: Issue + Expiry Dates */}
+                  {/* Issue + Expiry Dates */}
                   <p>
                     <b>Issue Date:</b>{" "}
                     {booking.issueDate
                       ? new Date(booking.issueDate).toLocaleDateString()
                       : "—"}
                   </p>
+
                   <p>
                     <b>Expiry Date:</b>{" "}
                     {booking.expiryDate
@@ -309,11 +317,11 @@ export default function GuestBookingLookup() {
 
                   <hr className="my-3" />
 
-                  <h3 className="font-bold flex items-center gap-2 text-[#e82429]">
+                  <h3 className="font-bold flex items-center gap-2 text-[#e82429] text-base md:text-lg">
                     <FaPassport /> Uploaded Documents
                   </h3>
 
-                  <ul className="text-gray-700">
+                  <ul className="text-gray-700 space-y-1">
                     {booking.passportFront && <li>Passport Front</li>}
                     {booking.passportBack && <li>Passport Back</li>}
                     {booking.passportCover && <li>Passport Cover</li>}
