@@ -72,9 +72,9 @@ export default function HolidayPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const api = DataService();
-  
+
     // convert form to backend required structure
     const payload = {
       name: `${form.firstName} ${form.lastName}`,
@@ -83,13 +83,13 @@ export default function HolidayPage() {
       services: form.selectedTour || title,
       message: `Location: ${form.location} , \nMessage: ${form.message}`,
     };
-  
+
     try {
       const res = await api.post(API.CREATE_ENQUIRY, payload);
-  
+
       if (res.status === 200 || res.status === 201) {
         alert("Enquiry submitted successfully!");
-  
+
         // Reset form
         setForm({
           firstName: "",
@@ -106,7 +106,6 @@ export default function HolidayPage() {
       alert("Failed to submit enquiry!");
     }
   };
-  
 
   if (loading)
     return (
@@ -200,7 +199,8 @@ export default function HolidayPage() {
         <div className="bg-white rounded-3xl shadow-lg p-7 border border-[#e82429]/10">
           <div className="flex flex-col md:flex-row justify-between gap-8">
             <div className="flex-1">
-              <h1 className="text-4xl font-extrabold text-[#721011]">
+              {/* TITLE - smaller */}
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011]">
                 {title}
               </h1>
 
@@ -215,12 +215,10 @@ export default function HolidayPage() {
               </div>
             </div>
 
-            {/* PRICE */}
+            {/* PRICE - smaller */}
             <div className="flex flex-col items-start md:items-end">
-              <p className="text-4xl font-black text-[#e82429]">
-                {typeof priceAdult === "number"
-                  ? `$   ${priceAdult}`
-                  : priceAdult}
+              <p className="text-2xl md:text-3xl font-black text-[#e82429]">
+                $ {priceAdult}
               </p>
 
               <p className="text-gray-500 text-sm">(Per Person)</p>

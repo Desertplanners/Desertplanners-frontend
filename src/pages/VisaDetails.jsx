@@ -3,6 +3,12 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
+
 import {
   FaClock,
   FaMapMarkerAlt,
@@ -299,73 +305,89 @@ export default function VisaDetails() {
                 Related Visa Options
               </h3>
 
-              <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4">
-                {relatedVisas.slice(0, 4).map((rv, i) => (
-                  <motion.div
-                    key={rv._id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                  >
-                    <Link
-                      to={`/visa/${rv.visaCategory?.slug}/${rv.slug}`}
-                      className="block bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-gray-200"
+              <Swiper
+                modules={[Autoplay]} // 👈 Navigation hat gaya
+                navigation={false} // 👈 Left-Right buttons hide
+                loop={true} // 👈 Infinite loop ON
+                spaceBetween={20}
+                slidesPerView={1}
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
+                }}
+                breakpoints={{
+                  640: { slidesPerView: 1 },
+                  768: { slidesPerView: 2 },
+                  1024: { slidesPerView: 3 },
+                }}
+                className="pb-10"
+              >
+                {relatedVisas.map((rv, i) => (
+                  <SwiperSlide key={rv._id}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
                     >
-                      {/* IMAGE */}
-                      <div className="relative h-48 w-full overflow-hidden rounded-t-3xl">
-                        <img
-                          src={
-                            rv.gallery?.[0] ||
-                            rv.img ||
-                            rv.image ||
-                            rv.thumbnail ||
-                            (rv.images?.length > 0
-                              ? rv.images[0]
-                              : "/visa-card.jpg")
-                          }
-                          alt={rv.title}
-                          className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                        />
+                      <Link
+                        to={`/visa/${rv.visaCategory?.slug}/${rv.slug}`}
+                        className="block bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all overflow-hidden border border-gray-200"
+                      >
+                        {/* IMAGE */}
+                        <div className="relative h-48 w-full overflow-hidden rounded-t-3xl">
+                          <img
+                            src={
+                              rv.gallery?.[0] ||
+                              rv.img ||
+                              rv.image ||
+                              rv.thumbnail ||
+                              (rv.images?.length > 0
+                                ? rv.images[0]
+                                : "/visa-card.jpg")
+                            }
+                            alt={rv.title}
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                          />
 
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
 
-                        {rv.processingTime && (
-                          <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
-                            <FaClock className="inline-block mr-1 text-[10px]" />
-                            {rv.processingTime}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* CONTENT */}
-                      <div className="p-5 space-y-3">
-                        <h4 className="text-lg font-semibold text-[#404041] line-clamp-2">
-                          {rv.title}
-                        </h4>
-
-                        <p className="text-gray-600 text-sm line-clamp-2">
-                          {rv.overview}
-                        </p>
-
-                        <div className="flex items-center justify-between mt-3">
-                          <div>
-                            <div className="text-[#e82429] font-bold text-lg">
-                              AED {rv.price}
-                            </div>
-                            <p className="text-gray-500 text-xs">
-                              per application
-                            </p>
-                          </div>
-
-                          <span className="text-[#721011] font-bold text-sm flex items-center gap-1">
-                            View Details <FaInfoCircle />
-                          </span>
+                          {rv.processingTime && (
+                            <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+                              <FaClock className="inline-block mr-1 text-[10px]" />
+                              {rv.processingTime}
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    </Link>
-                  </motion.div>
+
+                        {/* CONTENT */}
+                        <div className="p-5 space-y-3">
+                          <h4 className="text-lg font-semibold text-[#404041] line-clamp-2">
+                            {rv.title}
+                          </h4>
+
+                          <p className="text-gray-600 text-sm line-clamp-2">
+                            {rv.overview}
+                          </p>
+
+                          <div className="flex items-center justify-between mt-3">
+                            <div>
+                              <div className="text-[#e82429] font-bold text-lg">
+                                AED {rv.price}
+                              </div>
+                              <p className="text-gray-500 text-xs">
+                                per application
+                              </p>
+                            </div>
+
+                            <span className="text-[#721011] font-bold text-sm flex items-center gap-1">
+                              View Details <FaInfoCircle />
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  </SwiperSlide>
                 ))}
-              </div>
+              </Swiper>
             </div>
           )}
         </div>
