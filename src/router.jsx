@@ -30,6 +30,7 @@ import VisaSuccess from "./components/VisaSuccess";
 import HolidayCategoryPage from "./pages/HolidayCategoryPage";
 import HolidayPackageDetails from "./pages/HolidayPackageDetails";
 import HolidayPage from "./pages/HolidayPage";
+import  Admin from "./pages/Admin/Dashboard/Admin";
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -53,6 +54,7 @@ const AppRouter = () => (
         element={<VisaBooking />}
       />
       {/* Admin Auth */}
+      <Route path="/admin" element={<Admin />} />
       <Route path="/admin/register" element={<AdminRegister />} />
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/login" element={<UserLogin />} />

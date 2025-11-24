@@ -5,7 +5,8 @@ export default function BookingSuccess() {
   const navigate = useNavigate();
   const search = new URLSearchParams(window.location.search);
 
-  const bookingId = search.get("bookingId");
+  const bookingId =
+  search.get("bookingId") || search.get("id");   // ← Admin support added
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
 

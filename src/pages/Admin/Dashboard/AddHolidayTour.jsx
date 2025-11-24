@@ -54,6 +54,7 @@ export default function AdminAddHolidayTour({
   // slider images
   const [sliderFiles, setSliderFiles] = useState([]);
   const [sliderPreviews, setSliderPreviews] = useState([]);
+  const [removeSliderImages, setRemoveSliderImages] = useState([]);
 
   // blob url cleanup registry
   const createdUrlsRef = useRef([]);
@@ -176,7 +177,7 @@ export default function AdminAddHolidayTour({
     setter((prev) => prev.filter((p) => p.id !== id));
 
   // -----------------------
-  // Itinerary add/remove 
+  // Itinerary add/remove
   // -----------------------
   const updateItineraryTitle = (id, value) =>
     setItinerary((prev) =>
@@ -228,43 +229,41 @@ export default function AdminAddHolidayTour({
   const onSliderFilesChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-
-    createdUrlsRef.current.forEach((u) => {
-      if (u.startsWith("blob:")) URL.revokeObjectURL(u);
-    });
-    createdUrlsRef.current = [];
-
-    setSliderFiles(files);
-
-    const previews = files.map((file) => {
+  
+    // NEW PREVIEWS
+    const newPreviews = files.map((file) => {
       const url = URL.createObjectURL(file);
       registerUrl(url);
       return url;
     });
-
-    setSliderPreviews(previews);
+  
+    // 1️⃣ Append new files with old files
+    setSliderFiles((prev) => [...prev, ...files]);
+  
+    // 2️⃣ Append new previews with old previews
+    setSliderPreviews((prev) => [...prev, ...newPreviews]);
   };
-
+  
   const onItineraryImageChange = (e, index) => {
     const file = e.target.files?.[0];
     if (!file) return;
-  
+
     setItineraryFiles((prev) => {
       const arr = [...prev];
       arr[index] = file;
       return arr;
     });
-  
+
     const url = URL.createObjectURL(file);
     registerUrl(url);
-  
+
     setItineraryPreviews((prev) => {
       const arr = [...prev];
       arr[index] = url;
       return arr;
     });
   };
-  
+
   const preventStealFocus = (e) => e.preventDefault();
 
   // -----------------------
@@ -307,20 +306,24 @@ export default function AdminAddHolidayTour({
 
       itinerary.forEach((it) => fd.append("itineraryTitle[]", it.title));
 
-      sliderPreviews.forEach((url) => {
-        if (!url.startsWith("blob:")) fd.append("existingSliderImages", url);
-      });
+      // 1️⃣ existing old images (user kept)
+      fd.append(
+        "existingSliderImages",
+        JSON.stringify(sliderPreviews.filter((u) => !u.startsWith("blob:")))
+      );
+
+      // 2️⃣ old images user removed
+      fd.append("removeSliderImages", JSON.stringify(removeSliderImages));
 
       sliderFiles.forEach((file) => fd.append("sliderImages", file));
 
       itineraryFiles.forEach((file, index) => {
         if (file) {
-          fd.append(`itineraryImages_${index}`, file);  
+          fd.append(`itineraryImages_${index}`, file);
         } else {
           fd.append(`itineraryImages_${index}`, "__KEEP_OLD__");
         }
       });
-      
 
       if (editHoliday) {
         await api.put(API.UPDATE_HOLIDAY_TOUR(editHoliday._id), fd);
@@ -479,8 +482,22 @@ export default function AdminAddHolidayTour({
                   type="button"
                   onMouseDown={preventStealFocus}
                   onClick={() => {
-                    setSliderPreviews((p) => p.filter((_, idx) => idx !== i));
-                    setSliderFiles((p) => p.filter((_, idx) => idx !== i));
+                    // 1️⃣ If it's OLD image → add to remove list
+                    if (!src.startsWith("blob:")) {
+                      setRemoveSliderImages((prev) => [...prev, src]);
+                    }
+
+                    // 2️⃣ Remove from UI preview
+                    setSliderPreviews((prev) =>
+                      prev.filter((_, idx) => idx !== i)
+                    );
+
+                    // 3️⃣ Remove from new uploaded files
+                    setSliderFiles((prev) =>
+                      prev.filter((_, idx) => idx !== i)
+                    );
+
+                    // 4️⃣ Cleanup blob URLs
                     if (src.startsWith("blob:")) URL.revokeObjectURL(src);
                   }}
                   className="absolute top-1 right-1 bg-white text-red-600 p-1 rounded-full shadow"
@@ -780,6 +797,6 @@ export default function AdminAddHolidayTour({
             : "Save Holiday"}
         </button>
       </form>
-    </div>  
+    </div>
   );
 }

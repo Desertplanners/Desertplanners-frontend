@@ -57,7 +57,12 @@ export default function VisaBookings() {
                   <td className="p-3">{b.fullName}</td>
                   <td className="p-3">{b.email}</td>
                   <td className="p-3">{b.phone}</td>
-                  <td className="p-3">{b.visaType || "---"}</td>
+
+                  {/* ⭐ UPDATED → Show Visa Package Title */}
+                  <td className="p-3">
+                    {b.visaTitle || b.visaType || "---"}
+                  </td>
+
                   <td className="p-3 font-semibold text-[#e82429]">
                     AED {b.totalPrice || 0}
                   </td>

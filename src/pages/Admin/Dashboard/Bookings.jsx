@@ -3,14 +3,13 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { motion } from "framer-motion";
-import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(null);
 
-  // ✅ Fetch all bookings (admin)
+  // Fetch all bookings
   const fetchBookings = async () => {
     try {
       const api = DataService("admin");
@@ -20,19 +19,6 @@ export default function AdminBookings() {
       console.error("Error loading bookings:", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const updateStatus = async (id, status) => {
-    try {
-      setUpdating(id);
-      const api = DataService("admin");
-      await api.put(API.UPDATE_BOOKING_STATUS(id), { status });
-      fetchBookings(); // refresh after update
-    } catch (err) {
-      console.error("Failed to update status:", err);
-    } finally {
-      setUpdating(null);
     }
   };
 
@@ -70,7 +56,7 @@ export default function AdminBookings() {
                 <th className="p-4 text-left font-semibold">Guests</th>
                 <th className="p-4 text-left font-semibold">Total</th>
                 <th className="p-4 text-left font-semibold">Status</th>
-                <th className="p-4 text-left font-semibold">Action</th>
+                <th className="p-4 text-left font-semibold">Date</th>
               </tr>
             </thead>
 
@@ -78,9 +64,29 @@ export default function AdminBookings() {
               {bookings.map((b, index) => {
                 const userName = b.user?.name || b.guestName || "Guest";
                 const userEmail = b.user?.email || b.guestEmail || "—";
-                const contact = b.guestContact || b.user?.phone || "—";
                 const tourTitle = b.items[0]?.tourId?.title || "—";
-                const guests = b.items[0]?.guests || "-";
+
+                const firstItem = b.items[0];
+                const adultCount = Number(firstItem?.adultCount || 0);
+                const childCount = Number(firstItem?.childCount || 0);
+
+                const guests =
+                  adultCount > 0 || childCount > 0
+                    ? `${adultCount} Adult${adultCount > 1 ? "s" : ""}${
+                        childCount > 0
+                          ? `, ${childCount} Child${childCount > 1 ? "ren" : ""}`
+                          : ""
+                      }`
+                    : "0";
+
+                const bookingDate = new Date(b.createdAt).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }
+                );
 
                 return (
                   <motion.tr
@@ -90,12 +96,10 @@ export default function AdminBookings() {
                     transition={{ delay: index * 0.05 }}
                     className="border-b hover:bg-[#fdf1f1] transition-all duration-200"
                   >
-                    {/* ✅ Serial number */}
                     <td className="p-4 text-sm font-medium text-[#404041]">
                       {index + 1}
                     </td>
 
-                    {/* ✅ Customer Name */}
                     <td className="p-4 text-sm text-[#404041] font-semibold">
                       {userName}
                       <div className="text-xs text-gray-500">
@@ -103,10 +107,8 @@ export default function AdminBookings() {
                       </div>
                     </td>
 
-                    {/* ✅ Email */}
                     <td className="p-4 text-sm text-gray-500">{userEmail}</td>
 
-                    {/* ✅ Tour details */}
                     <td className="p-4 text-sm text-[#404041]">
                       {tourTitle}
                       {b.items.length > 1 && (
@@ -116,15 +118,12 @@ export default function AdminBookings() {
                       )}
                     </td>
 
-                    {/* ✅ Guests */}
                     <td className="p-4 text-sm text-[#404041]">{guests}</td>
 
-                    {/* ✅ Total */}
                     <td className="p-4 text-sm font-semibold text-[#721011]">
                       AED {b.totalPrice}
                     </td>
 
-                    {/* ✅ Status */}
                     <td className="p-4">
                       <span
                         className={`px-3 py-1 text-xs font-bold rounded-full ${
@@ -139,33 +138,9 @@ export default function AdminBookings() {
                       </span>
                     </td>
 
-                    {/* ✅ Action Buttons */}
-                    <td className="p-4 flex gap-3">
-                      <button
-                        onClick={() => updateStatus(b._id, "confirmed")}
-                        disabled={updating === b._id}
-                        className="flex items-center gap-1 bg-[#404041] hover:bg-[#721011] text-white px-3 py-1.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-50"
-                      >
-                        {updating === b._id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <CheckCircle className="w-4 h-4" />
-                        )}
-                        Confirm
-                      </button>
-
-                      <button
-                        onClick={() => updateStatus(b._id, "cancelled")}
-                        disabled={updating === b._id}
-                        className="flex items-center gap-1 bg-[#e82429] hover:bg-[#721011] text-white px-3 py-1.5 rounded-lg text-sm transition-all duration-200 disabled:opacity-50"
-                      >
-                        {updating === b._id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <XCircle className="w-4 h-4" />
-                        )}
-                        Cancel
-                      </button>
+                    {/* UPDATED DATE COLUMN */}
+                    <td className="p-4 text-sm text-[#404041]">
+                      {bookingDate}
                     </td>
                   </motion.tr>
                 );

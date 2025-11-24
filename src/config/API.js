@@ -34,10 +34,10 @@ export const API = {
   ADMIN_OVERVIEW: `${admin}/overview`,
 
   // ---- Admin Users ----
-  ADMIN_GET_USERS: `${admin}/users`,
-  ADMIN_UPDATE_USER: (id) => `${admin}/users/${id}`,
-  ADMIN_DELETE_USER: (id) => `${admin}/users/${id}`,
-
+  ADMIN_GET_USERS: `${user}/users`,
+  ADMIN_UPDATE_USER: (id) => `${user}/users/${id}`,
+  ADMIN_DELETE_USER: (id) => `${user}/users/${id}`,
+  
   // ---- User ----
   USER_REGISTER: `${user}/register`,
   USER_LOGIN: `${user}/login`,
