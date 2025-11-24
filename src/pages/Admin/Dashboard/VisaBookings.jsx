@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
-import { FaFilePdf } from "react-icons/fa";
 
 export default function VisaBookings() {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState(""); // ⭐ NEW SEARCH
 
   const api = DataService("admin");
 
@@ -25,17 +25,76 @@ export default function VisaBookings() {
     fetchData();
   }, []);
 
+  // ⭐ SEARCH FILTER
+  const filteredList = list.filter((b) => {
+    const text = `
+      ${b.fullName}
+      ${b.email}
+      ${b.phone}
+      ${b.visaTitle}
+      ${b.visaType}
+      ${b.status}
+      ${b.totalPrice}
+      ${new Date(b.createdAt).toLocaleDateString()}
+    `.toLowerCase();
+
+    return text.includes(search.toLowerCase());
+  });
+
   if (loading)
     return <div className="text-center p-10">Loading visa bookings...</div>;
 
   return (
     <div className="bg-white p-6 rounded-xl shadow">
-      <h2 className="text-2xl font-bold text-[#721011] mb-6">
-        Visa Bookings
-      </h2>
+      
+      {/* HEADER WITH RIGHT-SIDE SEARCH BAR */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        
+        {/* Title */}
+        <h2 className="text-2xl font-bold text-[#721011]">
+          Visa Bookings
+        </h2>
 
-      {list.length === 0 ? (
-        <p className="text-gray-500 text-center">No visa bookings found.</p>
+        {/* ⭐ PREMIUM SEARCH BAR */}
+        <div className="relative w-full md:w-1/3">
+          <input
+            type="text"
+            placeholder="Search visa bookings..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="
+              w-full px-12 py-2
+              rounded-full
+              bg-white/70 backdrop-blur-md
+              border border-gray-300
+              shadow-md
+              hover:shadow-lg
+              focus:ring-2 focus:ring-red-500
+              outline-none
+              transition-all duration-300
+            "
+          />
+
+          {/* Left Icon */}
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">
+            🔍
+          </span>
+
+          {/* Clear Button */}
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-red-600 transition text-lg"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* LIST */}
+      {filteredList.length === 0 ? (
+        <p className="text-gray-500 text-center">No matching visa bookings found.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full border rounded-xl">
@@ -52,20 +111,18 @@ export default function VisaBookings() {
             </thead>
 
             <tbody>
-              {list.map((b) => (
+              {filteredList.map((b) => (
                 <tr key={b._id} className="border-b hover:bg-gray-50">
                   <td className="p-3">{b.fullName}</td>
                   <td className="p-3">{b.email}</td>
                   <td className="p-3">{b.phone}</td>
 
-                  {/* ⭐ UPDATED → Show Visa Package Title */}
-                  <td className="p-3">
-                    {b.visaTitle || b.visaType || "---"}
-                  </td>
+                  <td className="p-3">{b.visaTitle || b.visaType || "---"}</td>
 
                   <td className="p-3 font-semibold text-[#e82429]">
                     AED {b.totalPrice || 0}
                   </td>
+
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 rounded-full text-sm ${
@@ -81,6 +138,7 @@ export default function VisaBookings() {
                       {b.status}
                     </span>
                   </td>
+
                   <td className="p-3">
                     {new Date(b.createdAt).toLocaleDateString()}
                   </td>

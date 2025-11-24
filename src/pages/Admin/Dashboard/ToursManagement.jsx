@@ -8,9 +8,10 @@ import toast from "react-hot-toast";
 export default function ToursManagement() {
   const [open, setOpen] = useState(false);
   const [tours, setTours] = useState([]);
-  const [editTour, setEditTour] = useState(null); // For editing
+  const [editTour, setEditTour] = useState(null);
+  const [search, setSearch] = useState(""); // ⭐ Search State
 
-  // Fetch all tours
+  // Fetch Tours
   const fetchTours = async () => {
     try {
       const api = DataService();
@@ -28,12 +29,12 @@ export default function ToursManagement() {
   const handleSuccess = async () => {
     setOpen(false);
     setEditTour(null);
-    await fetchTours(); // refresh list after add/update
+    await fetchTours();
   };
 
   const handleEdit = (tour) => {
-    setEditTour(tour); // pass selected tour
-    setOpen(true); // open modal
+    setEditTour(tour);
+    setOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -49,13 +50,61 @@ export default function ToursManagement() {
     }
   };
 
+  // ⭐ Apply Search Filter
+  const filteredTours = tours.filter((t) => {
+    const text = `${t.title} ${t.category?.name} ${t.duration}`.toLowerCase();
+    return text.includes(search.toLowerCase());
+  });
+
   return (
     <Section title="Manage Tours">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+
         <h2 className="text-2xl font-bold text-[var(--color-neutral)]">
           All Tours
         </h2>
+
+        {/* ⭐ SUPER PREMIUM SEARCH BAR */}
+        <div className="relative w-full sm:w-1/3">
+          <input
+            type="text"
+            placeholder="Search tours..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="
+              w-full px-12 py-2
+              rounded-full
+              bg-white/70 backdrop-blur-md
+              border border-gray-200
+              shadow-md
+              focus:ring-2 focus:ring-[var(--color-primary)]
+              focus:border-[var(--color-primary)]
+              outline-none
+              transition-all duration-300
+              hover:shadow-lg
+              placeholder:text-gray-400
+            "
+          />
+
+          {/* Search Icon */}
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-[18px]">
+            🔍
+          </span>
+
+          {/* Clear Button */}
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg hover:text-red-500 transition"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Add Button */}
         <button
           onClick={() => {
             setOpen(true);
@@ -67,11 +116,11 @@ export default function ToursManagement() {
         </button>
       </div>
 
-      {/* Add/Edit Tour Modal */}
+      {/* Add/Edit Modal */}
       {open && (
         <div className="fixed top-0 left-0 w-full h-full flex items-start justify-center z-50 bg-black/30">
           <div className="bg-[var(--color-white)] rounded-3xl shadow-2xl w-full max-w-4xl max-h-[80vh] p-6 overflow-y-auto relative animate-slide-down mt-10">
-            {/* Close Button */}
+
             <button
               onClick={() => {
                 setOpen(false);
@@ -82,27 +131,24 @@ export default function ToursManagement() {
               &times;
             </button>
 
-            {/* Admin Add/Edit Tour Form */}
             <AdminAddTour
-              tour={editTour} // pass selected tour for editing
+              tour={editTour}
               onClose={() => {
                 setOpen(false);
                 setEditTour(null);
               }}
-              onSuccess={handleSuccess} // refresh list after add/update
+              onSuccess={handleSuccess}
             />
           </div>
         </div>
       )}
 
-      {/* Tours Grid */}
+      {/* TOURS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tours.length === 0 ? (
-          <p className="text-gray-500 col-span-full text-center">
-            No tours available
-          </p>
+        {filteredTours.length === 0 ? (
+          <p className="text-gray-500 col-span-full text-center">No matching tours found</p>
         ) : (
-          tours.map((tour) => (
+          filteredTours.map((tour) => (
             <div
               key={tour._id}
               className="bg-[var(--color-white)] rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 relative"
@@ -126,6 +172,7 @@ export default function ToursManagement() {
                 <span className="absolute top-3 left-3 bg-[var(--color-accent)] text-[var(--color-white)] text-xs font-semibold px-2 py-1 rounded-full shadow">
                   {tour.category?.name || "Uncategorized"}
                 </span>
+
                 <span
                   className={`absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full shadow ${
                     tour.status === "active"
@@ -141,6 +188,7 @@ export default function ToursManagement() {
                 <h3 className="text-lg font-bold text-[var(--color-neutral)] hover:text-[var(--color-primary)] transition-colors cursor-pointer">
                   {tour.title}
                 </h3>
+
                 <p className="text-gray-500 text-sm">
                   {tour.description?.slice(0, 80)}...
                 </p>
@@ -149,6 +197,7 @@ export default function ToursManagement() {
                   <span className="text-[var(--color-neutral)] text-xs font-semibold px-2 py-1 rounded-full">
                     {tour.duration || "N/A"}
                   </span>
+
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(tour)}
@@ -156,6 +205,7 @@ export default function ToursManagement() {
                     >
                       Edit
                     </button>
+
                     <button
                       onClick={() => handleDelete(tour._id)}
                       className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition-all"
@@ -170,16 +220,17 @@ export default function ToursManagement() {
         )}
       </div>
 
-      {/* Tailwind Slide Down Animation */}
+      {/* Animation */}
       <style>{`
-          @keyframes slide-down {
-            0% { transform: translateY(-20px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-          }
-          .animate-slide-down {
-            animation: slide-down 0.3s ease-out forwards;
-          }
-        `}</style>
+        @keyframes slide-down {
+          0% { transform: translateY(-20px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slide-down {
+          animation: slide-down 0.3s ease-out forwards;
+        }
+      `}</style>
+
     </Section>
   );
 }

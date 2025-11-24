@@ -18,6 +18,12 @@ import { Link } from "react-router-dom";
 import TourGallery from "../components/TourGallery";
 import toast from "react-hot-toast";
 import { Suspense, lazy } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { motion } from "framer-motion";
+import { Navigation } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 export default function TourServiceDetails() {
   const { categorySlug, tourSlug } = useParams();
@@ -569,7 +575,7 @@ export default function TourServiceDetails() {
             </div>
           </div>
 
-          {/* HIGHLIGHTS */}  
+          {/* HIGHLIGHTS */}
           <section className="bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] rounded-2xl shadow p-8">
             <h2 className="text-2xl font-bold text-[#721011] mb-4 flex items-center gap-2">
               <FaInfoCircle className="text-[#e82429]" /> Highlights
@@ -774,52 +780,97 @@ export default function TourServiceDetails() {
             </ul>
           </div>
 
-          {/* RELATED TOURS SECTION */}
+          {/* RELATED TOURS SECTION - SLIDER VERSION */}
           {relatedTours && relatedTours.length > 0 && (
             <section className="mt-12">
               <h2 className="text-3xl font-bold text-[#721011] mb-8 text-center">
                 Related Tours
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <Swiper
+                modules={[Autoplay]}
+                navigation={false}
+                loop={true}
+                spaceBetween={20}
+                slidesPerView={1}
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
+                }}
+                breakpoints={{
+                  640: { slidesPerView: 1 },
+                  768: { slidesPerView: 2 },
+                  1024: { slidesPerView: 3 },
+                }}
+                className="pb-10"
+              >
                 {relatedTours.map((t) => {
-                  // safe image path
                   const imageUrl = t.mainImage?.startsWith("http")
                     ? t.mainImage
                     : `${API.BASE_URL}/${t.mainImage}`;
 
                   return (
-                    <Link
-                      key={t._id}
-                      to={`/tours/${t.category?.slug}/${t.slug}`}
-                      className="group block rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500"
-                    >
-                      {/* Image */}
-                      <div className="relative h-56 overflow-hidden">
-                        <img
-                          src={imageUrl || "/no-image.jpg"}
-                          alt={t.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-500"></div>
-                      </div>
+                    <SwiperSlide key={t._id}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                      >
+                        <Link
+                          to={`/tours/${t.category?.slug}/${t.slug}`}
+                          className="
+                  block bg-white rounded-3xl shadow-lg hover:shadow-xl 
+                  transition-all overflow-hidden border border-gray-200 
+                  h-[380px] flex flex-col     /* ⭐ FIXED CARD HEIGHT */
+                "
+                        >
+                          {/* IMAGE */}
+                          <div className="relative h-48 w-full overflow-hidden rounded-t-3xl">
+                            <img
+                              src={imageUrl || "/no-image.jpg"}
+                              alt={t.title}
+                              className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                            />
 
-                      {/* Content */}
-                      <div className="p-5 bg-white">
-                        <h3 className="text-xl font-semibold text-[#e82429] mb-2 group-hover:underline">
-                          {t.title}
-                        </h3>
-                        <p className="text-gray-600">
-                          Starting from{" "}
-                          <span className="font-semibold text-[#721011]">
-                            AED {t.priceAdult || t.price}
-                          </span>
-                        </p>
-                      </div>
-                    </Link>
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+
+                            {/* Duration Tag */}
+                            {t.duration && (
+                              <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+                                ⏳ {t.duration}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* CONTENT */}
+                          <div className="p-5 flex flex-col justify-between flex-1">
+                            {/* Title — fixed height */}
+                            <h4 className="text-lg font-semibold text-[#404041] line-clamp-2 min-h-[48px]">
+                              {t.title}
+                            </h4>
+
+                            {/* BOTTOM SECTION */}
+                            <div className="flex items-center justify-between mt-auto pt-3">
+                              <div>
+                                <div className="text-[#e82429] font-bold text-lg">
+                                  AED {t.priceAdult || t.price}
+                                </div>
+                                <p className="text-gray-500 text-xs">
+                                  per person
+                                </p>
+                              </div>
+
+                              <span className="text-[#721011] font-bold text-sm flex items-center gap-1">
+                                View Details →
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    </SwiperSlide>
                   );
                 })}
-              </div>
+              </Swiper>
             </section>
           )}
 

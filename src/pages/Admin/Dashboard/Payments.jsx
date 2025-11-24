@@ -5,6 +5,7 @@ import { API } from "../../../config/API";
 export default function Payments() {
   const [loading, setLoading] = useState(true);
   const [payments, setPayments] = useState([]);
+  const [search, setSearch] = useState(""); // ⭐ NEW SEARCH
 
   const fetchPayments = async () => {
     try {
@@ -16,7 +17,6 @@ export default function Payments() {
       if (data.success) {
         setPayments(data.payments);
       }
-
       setLoading(false);
     } catch (err) {
       console.error("Payment Fetch Error:", err);
@@ -28,14 +28,73 @@ export default function Payments() {
     fetchPayments();
   }, []);
 
+  // ⭐ FILTER SEARCH
+  const filteredPayments = payments.filter((p) => {
+    const text = `
+      ${p._id}
+      ${p.bookingId?.guestName}
+      ${p.bookingId?.guestEmail}
+      ${p.amount}
+      ${p.status}
+      ${new Date(p.createdAt).toLocaleDateString()}
+    `.toLowerCase();
+
+    return text.includes(search.toLowerCase());
+  });
+
   return (
     <Section title="Payments & Transactions">
       <div className="bg-white shadow-md rounded-xl p-6">
 
+        {/* ⭐ HEADER WITH RIGHT-SIDE SEARCH BAR */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+
+          <h2 className="text-xl font-bold text-gray-800">
+            All Payments
+          </h2>
+
+          {/* SEARCH BAR */}
+          <div className="relative w-full md:w-1/3">
+            <input
+              type="text"
+              placeholder="Search payments..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="
+                w-full px-12 py-2
+                rounded-full
+                bg-white/70 backdrop-blur-md
+                border border-gray-300
+                shadow-md
+                hover:shadow-lg
+                focus:ring-2 focus:ring-red-500
+                outline-none
+                transition-all duration-300
+              "
+            />
+
+            {/* Icon */}
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">
+              🔍
+            </span>
+
+            {/* Clear */}
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 hover:text-red-600 transition text-lg"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* TABLE */}
         {loading ? (
           <p className="text-center py-10 text-gray-500">Loading payments...</p>
-        ) : payments.length === 0 ? (
-          <p className="text-center py-10 text-gray-400">No payments found.</p>
+        ) : filteredPayments.length === 0 ? (
+          <p className="text-center py-10 text-gray-400">No matching payments found.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full border-collapse min-w-[900px]">
@@ -51,7 +110,7 @@ export default function Payments() {
               </thead>
 
               <tbody>
-                {payments.map((p) => (
+                {filteredPayments.map((p) => (
                   <tr key={p._id} className="text-sm border-b hover:bg-gray-50">
 
                     <td className="p-3">{p._id}</td>
@@ -92,7 +151,7 @@ export default function Payments() {
                         className="text-blue-600 hover:underline"
                       >
                         View Booking
-                      </a>  
+                      </a>
                     </td>
 
                   </tr>
