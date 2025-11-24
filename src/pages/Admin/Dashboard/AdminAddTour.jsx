@@ -21,6 +21,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
   const [relatedTours, setRelatedTours] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
+  const [removedOldImages, setRemovedOldImages] = useState([]);
 
   // Array fields
   const [highlights, setHighlights] = useState([]);
@@ -245,6 +246,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
       }
     });
     console.log("📤 Sending FormData:", Object.fromEntries(formData.entries()));
+    formData.append("removeGalleryImages", JSON.stringify(removedOldImages));
     formData.append("highlights", JSON.stringify(highlights));
     formData.append("inclusions", JSON.stringify(inclusions));
     formData.append("exclusions", JSON.stringify(exclusions));
@@ -406,6 +408,38 @@ export default function AdminAddTour({ tour, onSuccess }) {
               }}
               className="w-full"
             />
+
+            {/* SHOW OLD GALLERY IMAGES IN EDIT MODE */}
+            {tour && tour.galleryImages && tour.galleryImages.length > 0 && (
+              <div className="grid grid-cols-3 gap-4 my-4">
+                {tour.galleryImages.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={img}
+                      className="w-full h-24 object-cover rounded-lg border"
+                      alt=""
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRemovedOldImages((prev) => [...prev, img]);
+
+                        // ⭐ Remove image from preview also
+                        tour.galleryImages = tour.galleryImages.filter(
+                          (i) => i !== img
+                        );
+
+                        // ⭐ Trigger re-render
+                        setGalleryImages((prev) => [...prev]);
+                      }}
+                      className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full"
+                    >
+                      <FaTrash size={12} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Highlights / Inclusions / Exclusions */}
