@@ -15,9 +15,9 @@ function Home() {
     <BannerSection />
     <TopCities />
     <TopAttractions />
-    {/* <HolidayPackages /> */}
     <PopularExperiences />
     {/* <TopThingsToDo /> */}
+    <HolidayPackages />
     <UAEVisaServices />
     <WhyBookWithUs />
     <TravelInspiration />

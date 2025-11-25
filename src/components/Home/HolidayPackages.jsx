@@ -1,150 +1,168 @@
 import React, { useEffect, useState } from "react";
-import { FiCalendar } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
-import DataService from "../../config/DataService";
 import { API } from "../../config/API";
+import DataService from "../../config/DataService";
 
+/* -------------------------------------------------------
+   SLIDER COMPONENT (CHILD) – SAFE FOR HOOKS
+---------------------------------------------------------*/
+function ImageSlider({ images, category, isReversed }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (!images || images.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1 < images.length ? prev + 1 : 0));
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [images]);
+
+  return (
+    <div className="relative h-[260px] sm:h-[300px] lg:h-[380px]
+                    w-full lg:w-1/2 rounded-2xl overflow-hidden bg-gray-200">
+
+      {/* Slider Image */}
+      <img
+        src={images?.[index] || "/no-image.png"}
+        className="absolute inset-0 w-full h-full object-cover transition duration-700"
+        alt="slider"
+      />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/25 to-transparent"></div>
+
+      {/* CATEGORY BADGE — now zig-zag dynamic */}
+      <div className={`
+        absolute top-4 
+        ${isReversed ? "right-4" : "left-4"} 
+        bg-white/90 backdrop-blur-md px-3 py-1 rounded-full
+        text-[#b40303] text-xs sm:text-sm font-semibold shadow-lg
+      `}>
+        ✦ {category || "Holiday Package"}
+      </div>
+
+      {/* Dots */}
+      {images?.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+          {images.map((_, d) => (
+            <div
+              key={d}
+              className={`w-2 h-2 rounded-full ${
+                index === d ? "bg-white" : "bg-white/50"
+              }`}
+            ></div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* -------------------------------------------------------
+   MAIN HOLIDAY PACKAGES SECTION
+---------------------------------------------------------*/
 export default function HolidayPackages() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  // 🆔 Replace with actual section id
-  const sectionId = "69084852dda693d673b55be3";
-
-  useEffect(() => {
-    const fetchPackages = async () => {
-      try {
-        const api = DataService();
-        const res = await api.get(API.GET_SECTION_ITEMS(sectionId));
-        setPackages(res.data || []);
-      } catch (err) {
-        console.error("❌ Error fetching holiday packages:", err);
-        setError("Unable to load holiday packages. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPackages();
-  }, []);
-
-  const handleEnquiry = () => navigate("/contact");
-
-  const handleViewTrip = (title) => {
-    const slug = title
-      ?.toLowerCase()
-      ?.trim()
-      ?.replace(/[^a-z0-9]+/g, "-")
-      ?.replace(/^-+|-+$/g, "");
-    navigate(`/holidays/${slug}`);
+  const fetchHolidayTours = async () => {
+    try {
+      const res = await DataService().get(API.GET_ALL_HOLIDAY_TOURS);
+      setPackages(res.data?.tours || []);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error loading holiday tours:", error);
+      setLoading(false);
+    }
   };
 
-  // ✅ Skeleton Loader Component
-  const SkeletonCard = () => (
-    <div className="animate-pulse bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="h-64 bg-gray-200" />
-      <div className="p-6 space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-        <div className="h-6 bg-gray-300 rounded w-3/4"></div>
-        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        <div className="flex gap-4">
-          <div className="h-10 bg-gray-200 rounded w-1/2"></div>
-          <div className="h-10 bg-gray-200 rounded w-1/2"></div>
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    fetchHolidayTours();
+  }, []);
 
-  // ✅ Error state
-  if (error) {
+  if (loading) {
     return (
-      <div className="py-16 text-center text-red-500 font-medium">{error}</div>
+      <div className="max-w-[1200px] mx-auto px-2 py-16 text-center text-gray-500">
+        Loading holiday tours...
+      </div>
     );
   }
 
-  // ✅ Main render
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-[1200px] mx-auto px-4">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-left bg-clip-text">
+    <section className="py-8 bg-gray-50">
+      <div className="max-w-[1200px] mx-auto px-2 relative">
+
+        <h2 className="text-4xl font-bold text-left mb-6 text-[#404041]">
           Holiday Packages
         </h2>
 
-        {/* ✅ Skeleton Loader while fetching */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(6)].map((_, i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
-        ) : packages.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg, idx) => (
+        <div className="flex flex-col gap-28">
+
+          {packages.map((item, i) => {
+            const isReversed = i % 2 !== 0;
+
+            return (
               <div
-                key={idx}
-                className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
+                key={item._id}
+                className={`
+                  flex flex-col lg:flex-row
+                  ${isReversed ? "lg:flex-row-reverse" : ""}
+                  items-start lg:items-center
+                  relative
+                `}
               >
-                {/* Image */}
+
+                {/* LEFT / RIGHT SLIDER (auto zig-zag) */}
+                <ImageSlider
+                  images={item.sliderImages}
+                  category={item.category?.name}
+                  isReversed={isReversed}
+                />
+
+                {/* RIGHT / LEFT CONTENT BOX */}
                 <div
-                  className="relative h-64 overflow-hidden cursor-pointer"
-                  onClick={() => handleViewTrip(pkg.name || pkg.title)}
+                  className={`
+                    bg-[#b40303] text-white rounded-2xl border border-white/10
+                    p-7 sm:p-8 lg:p-10 
+                    shadow-[0_10px_35px_rgba(0,0,0,0.30)]
+                    -mt-6 sm:-mt-8 lg:mt-0
+                    w-full lg:w-[53%]
+                    relative z-20
+                    ${isReversed ? "lg:-mr-10" : "lg:-ml-10"}
+                  `}
                 >
-                  <img
-                    src={pkg.img}
-                    alt={pkg.name || pkg.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                  {pkg.label && (
-                    <span className="absolute top-3 left-3 bg-[#e82429] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
-                      {pkg.label}
-                    </span>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-6 flex flex-col justify-between flex-1">
-                  <div className="flex items-center text-gray-500 text-sm font-medium mb-1">
-                    <FiCalendar className="mr-2" />{" "}
-                    {pkg.duration || "Duration N/A"}
-                  </div>
-
-                  <h3
-                    className="text-xl font-semibold text-gray-800 mb-3 hover:text-[#e82429] transition cursor-pointer"
-                    onClick={() => handleViewTrip(pkg.name || pkg.title)}
-                  >
-                    {pkg.name || pkg.title}
+                  <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">
+                    {item.title}
                   </h3>
 
-                  <p className="text-[#e82429] font-bold mb-5">
-                    From AED {pkg.price || "—"} / Person
+                  <p className="text-white/80 text-sm sm:text-base leading-relaxed mb-4">
+                    {item.description}
                   </p>
 
-                  <div className="flex gap-4 mt-auto">
-                    <button
-                      onClick={handleEnquiry}
-                      className="flex-1 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#e82429] to-[#ff5a4d] text-white hover:opacity-90 transition duration-300"
-                    >
-                      Enquiry Now
-                    </button>
-                    <button
-                      onClick={() => handleViewTrip(pkg.name || pkg.title)}
-                      className="flex-1 py-3 rounded-lg font-semibold border-2 border-[#e82429] text-[#e82429] hover:bg-[#e82429] hover:text-white transition duration-300"
-                    >
-                      View Trip
-                    </button>
-                  </div>
+                  <div className="flex flex-row items-center justify-between gap-4">
+  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+    ${" "}{item.priceAdult}
+  </p>
+
+  <button
+    className="
+      px-6 py-3 bg-white text-[#b40303] font-semibold 
+      rounded-xl shadow-lg hover:scale-105 transition-all
+      w-auto
+    "
+  >
+    View Details
+  </button>
+</div>
+
                 </div>
+
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="py-16 text-center text-gray-500 text-lg">
-            No holiday packages found.
-          </div>
-        )}
+            );
+          })}
+
+        </div>
       </div>
     </section>
   );
