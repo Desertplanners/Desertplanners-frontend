@@ -19,9 +19,10 @@ function ImageSlider({ images, category, isReversed }) {
   }, [images]);
 
   return (
-    <div className="relative h-[260px] sm:h-[300px] lg:h-[380px]
-                    w-full lg:w-1/2 rounded-2xl overflow-hidden bg-gray-200">
-
+    <div
+      className="relative h-[260px] sm:h-[300px] lg:h-[380px]
+                    w-full lg:w-1/2 rounded-2xl overflow-hidden bg-gray-200"
+    >
       {/* Slider Image */}
       <img
         src={images?.[index] || "/no-image.png"}
@@ -33,12 +34,14 @@ function ImageSlider({ images, category, isReversed }) {
       <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-black/25 to-transparent"></div>
 
       {/* CATEGORY BADGE — now zig-zag dynamic */}
-      <div className={`
+      <div
+        className={`
         absolute top-4 
         ${isReversed ? "right-4" : "left-4"} 
         bg-white/90 backdrop-blur-md px-3 py-1 rounded-full
         text-[#b40303] text-xs sm:text-sm font-semibold shadow-lg
-      `}>
+      `}
+      >
         ✦ {category || "Holiday Package"}
       </div>
 
@@ -92,13 +95,11 @@ export default function HolidayPackages() {
   return (
     <section className="py-8 bg-gray-50">
       <div className="max-w-[1200px] mx-auto px-2 relative">
-
         <h2 className="text-4xl font-bold text-left mb-6 text-[#404041]">
           Holiday Packages
         </h2>
 
         <div className="flex flex-col gap-28">
-
           {packages.map((item, i) => {
             const isReversed = i % 2 !== 0;
 
@@ -112,7 +113,6 @@ export default function HolidayPackages() {
                   relative
                 `}
               >
-
                 {/* LEFT / RIGHT SLIDER (auto zig-zag) */}
                 <ImageSlider
                   images={item.sliderImages}
@@ -141,27 +141,24 @@ export default function HolidayPackages() {
                   </p>
 
                   <div className="flex flex-row items-center justify-between gap-4">
-  <p className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-    ${" "}{item.priceAdult}
-  </p>
+                    <p className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                      $ {item.priceAdult}
+                    </p>
 
-  <button
-    className="
+                    <button
+                      className="
       px-6 py-3 bg-white text-[#b40303] font-semibold 
       rounded-xl shadow-lg hover:scale-105 transition-all
       w-auto
     "
-  >
-    View Details
-  </button>
-</div>
-
+                    >
+                      View Details
+                    </button>
+                  </div>
                 </div>
-
               </div>
             );
           })}
-
         </div>
       </div>
     </section>
