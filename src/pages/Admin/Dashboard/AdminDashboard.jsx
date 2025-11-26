@@ -57,12 +57,14 @@ export default function AdminDashboard() {
     // ⭐ SEO Editor Screen
     seoEditor: () =>
       selectedSEO ? (
-        <AdminSEOEditor data={selectedSEO} />
+        <AdminSEOEditor 
+          data={selectedSEO}
+          setActiveTab={setActiveTab}
+        />
       ) : (
-        <div className="p-8 text-center text-red-600">
-          No SEO Selected
-        </div>
+        <div className="p-8 text-center text-red-600">No SEO Selected</div>
       ),
+    
 
     settings: Settings,
   };

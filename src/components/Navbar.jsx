@@ -85,7 +85,7 @@ export default function Navbar() {
               return {
                 ...cat,
                 slug: cat.slug,
-                packages: packagesRes.data?.tours || [],
+                packages: packagesRes.data || [],
               };
             } catch {
               return { ...cat, slug: cat.slug, packages: [] };

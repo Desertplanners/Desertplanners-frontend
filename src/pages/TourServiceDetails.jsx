@@ -24,6 +24,7 @@ import "swiper/css/navigation";
 import { motion } from "framer-motion";
 import { Navigation } from "swiper/modules";
 import { Autoplay } from "swiper/modules";
+import { Helmet } from "react-helmet-async";
 
 export default function TourServiceDetails() {
   const { categorySlug, tourSlug } = useParams();
@@ -40,9 +41,23 @@ export default function TourServiceDetails() {
   const [relatedTours, setRelatedTours] = useState([]);
   const [adults, setAdults] = useState("");
   const [children, setChildren] = useState("");
+  const [seo, setSeo] = useState(null);
 
   const navigate = useNavigate();
+  const pageUrl = window.location.href;
 
+  const fetchSEO = async (tourId) => {
+    try {
+      const api = DataService();
+      const res = await api.get(API.GET_SEO("tour", tourId));
+
+      if (res.data?.seo) {
+        setSeo(res.data.seo);
+      }
+    } catch (err) {
+      console.log("SEO Fetch Error", err);
+    }
+  };
   // Reset availabilityResult when date or guests change
   useEffect(() => {
     setAvailabilityResult(null);
@@ -56,17 +71,18 @@ export default function TourServiceDetails() {
         const res = await api.get(API.GET_TOUR(tourSlug));
         console.log("🎯 API GET_TOUR Response:", res.data); // <-- ADD THIS
         if (res.data?.tour) {
-          setTour(res.data.tour);
-        
+          setTour(res.data.tour); // ⭐ FIX ADDED
+
+          fetchSEO(res.data.tour._id);
+
           setMainImage(
             res.data.tour.mainImage?.startsWith("http")
               ? res.data.tour.mainImage
               : `${API.BASE_URL}/${res.data.tour.mainImage}`
           );
-        
+
           setRelatedTours(res.data.tour.relatedTours || []);
         }
-        
       } catch (err) {
         console.error("Error fetching tour:", err);
       } finally {
@@ -377,6 +393,132 @@ export default function TourServiceDetails() {
 
   return (
     <div className="bg-gray-50 py-10">
+      <Helmet>
+        <title>{seo?.seoTitle || tour.title}</title>
+
+        <meta
+          name="description"
+          content={seo?.seoDescription || tour.shortDescription}
+        />
+
+        <meta
+          name="keywords"
+          content={
+            seo?.seoKeywords || "dubai tours, desert safari, luxury travel"
+          }
+        />
+
+        <link rel="canonical" href={pageUrl} />
+
+        {/* OG Tags */}
+        <meta property="og:title" content={seo?.seoTitle || tour.title} />
+        <meta
+          property="og:description"
+          content={seo?.seoDescription || tour.shortDescription}
+        />
+        <meta property="og:image" content={seo?.seoOgImage || mainImage} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:type" content="article" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo?.seoTitle || tour.title} />
+        <meta
+          name="twitter:description"
+          content={seo?.seoDescription || tour.shortDescription}
+        />
+        <meta name="twitter:image" content={seo?.seoOgImage || mainImage} />
+
+        {/* ⭐⭐ PRODUCT SCHEMA ⭐⭐ */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: seo?.seoTitle || tour.title,
+            image: [seo?.seoOgImage || mainImage],
+            description: seo?.seoDescription || tour.shortDescription,
+            brand: { "@type": "Brand", name: "Desert Planners" },
+            offers: {
+              "@type": "Offer",
+              url: pageUrl,
+              priceCurrency: "AED",
+              price: tour.priceAdult || tour.price,
+              availability: "https://schema.org/InStock",
+            },
+          })}
+        </script>
+
+        {/* ⭐⭐ TOURIST TRIP SCHEMA ⭐⭐ */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TouristTrip",
+            name: seo?.seoTitle || tour.title,
+            description: seo?.seoDescription || tour.shortDescription,
+            image: [seo?.seoOgImage || mainImage],
+            itinerary: tour.highlights || [],
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "AED",
+              price: tour.priceAdult || tour.price,
+            },
+          })}
+        </script>
+
+        {/* ⭐⭐ BREADCRUMB SCHEMA ⭐⭐ */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://desertplanners.net",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Tours",
+                item: "https://desertplanners.net/tours",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: tour.title,
+                item: pageUrl,
+              },
+            ],
+          })}
+        </script>
+
+        {/* ⭐⭐ FAQ SCHEMA ⭐⭐ */}
+        {seo?.faqs?.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: seo.faqs.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: { "@type": "Answer", text: f.answer },
+              })),
+            })}
+          </script>
+        )}
+
+        {/* ⭐⭐ IMAGEOBJECT SCHEMA ⭐⭐ */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ImageObject",
+            contentUrl: seo?.seoOgImage || mainImage,
+            name: seo?.seoTitle || tour.title,
+          })}
+        </script>
+      </Helmet>
+
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 px-4">
         {/* LEFT SECTION — IMAGES + DETAILS */}
         <div className="lg:col-span-8 order-1 lg:order-1 space-y-8">

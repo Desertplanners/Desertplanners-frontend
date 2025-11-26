@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast"; // 👈 Add this
 import FixedWhatsApp from "./components/WhatsAppButton"; // 👈 Import the FixedWhatsApp component
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
       <AppRouter /> {/* Main content routed here */}
       <Footer />
@@ -23,7 +23,7 @@ function App() {
           },
         }}
       />
-    </BrowserRouter>
+    </>
   );
 }
 

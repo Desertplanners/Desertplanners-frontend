@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
 import { FaPlus, FaTrash } from "react-icons/fa";
+import { ArrowLeft, FileText, Image, HelpCircle, Tags } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function AdminSEOEditor({ data }) {
+export default function AdminSEOEditor({ data, setActiveTab }) {
   const { type, id } = data;
 
   const [loading, setLoading] = useState(true);
@@ -18,47 +19,40 @@ export default function AdminSEOEditor({ data }) {
 
   const [faqs, setFaqs] = useState([]);
 
-  // ⭐ item title
   const [itemTitle, setItemTitle] = useState("Loading...");
-
   const api = DataService();
 
-  // ⭐ FETCH CORRECT ITEM TITLE
+  // ⭐ Fetch correct item title
   const fetchItemTitle = async () => {
     try {
-      if (type === "tour") {
-        const res = await api.get(API.GET_TOUR_BY_ID(id));
-setItemTitle(res.data?.title || "Untitled Tour");
-      } 
-      else if (type === "visa") {
-        const res = await api.get(API.GET_VISA_BY_ID(id));
-        setItemTitle(res.data?.title || "Untitled Visa");
-      } 
-      else if (type === "holiday") {
-        const res = await api.get(API.GET_HOLIDAY_TOUR_BY_ID(id));
-        setItemTitle(res.data?.title || "Untitled Holiday");
-      }
+      let res;
+      if (type === "tour") res = await api.get(API.GET_TOUR_BY_ID(id));
+      else if (type === "visa") res = await api.get(API.GET_VISA_BY_ID(id));
+      else res = await api.get(API.GET_HOLIDAY_TOUR_BY_ID(id));
+
+      setItemTitle(res.data?.title || "Untitled");
     } catch (err) {
-      console.log("❌ Title Load Error:", err);
+      console.log(err);
       setItemTitle("Not Found");
     }
   };
 
-  // ⭐ FETCH SEO DATA
+  // ⭐ Fetch SEO data
   const fetchSEO = async () => {
     try {
       const res = await api.get(API.GET_SEO(type, id));
-      if (res.data) {
-        const d = res.data;
-        setSeoId(d._id);
-        setSeoTitle(d.seoTitle || "");
-        setSeoDescription(d.seoDescription || "");
-        setSeoKeywords(d.seoKeywords || "");
-        setSeoOgImage(d.seoOgImage || "");
-        setFaqs(d.faqs || []);
+
+      if (res.data?.seo) {
+        const s = res.data.seo;
+        setSeoId(s._id);
+        setSeoTitle(s.seoTitle || "");
+        setSeoDescription(s.seoDescription || "");
+        setSeoKeywords(s.seoKeywords || "");
+        setSeoOgImage(s.seoOgImage || "");
+        setFaqs(s.faqs || []);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -69,18 +63,20 @@ setItemTitle(res.data?.title || "Untitled Tour");
     fetchSEO();
   }, [type, id]);
 
+  // ⭐ Add FAQ
   const addFAQ = () => setFaqs([...faqs, { question: "", answer: "" }]);
 
-  const removeFAQ = (i) => {
-    setFaqs(faqs.filter((_, idx) => idx !== i));
-  };
+  // ⭐ Remove FAQ
+  const removeFAQ = (i) => setFaqs(faqs.filter((_, idx) => idx !== i));
 
+  // ⭐ Update FAQ
   const updateFAQ = (i, key, value) => {
-    const newFaqs = [...faqs];
-    newFaqs[i][key] = value;
-    setFaqs(newFaqs);
+    const arr = [...faqs];
+    arr[i][key] = value;
+    setFaqs(arr);
   };
 
+  // ⭐ Handle Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -104,9 +100,9 @@ setItemTitle(res.data?.title || "Untitled Tour");
       }
 
       toast.success("SEO Saved Successfully!");
-    } catch (e) {
-      toast.error("Error while saving SEO");
-      console.log(e);
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to save SEO");
     } finally {
       setLoading(false);
     }
@@ -117,102 +113,143 @@ setItemTitle(res.data?.title || "Untitled Tour");
 
   return (
     <div className="p-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow p-6">
 
-        <h1 className="text-3xl text-center font-bold text-[#721011] mb-2">
-          Edit SEO ({type.toUpperCase()})
-        </h1>
+      {/* HEADER — TITLE + CANCEL BUTTON */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-extrabold text-[#721011]">
+            Edit SEO ({type.toUpperCase()})
+          </h1>
+          <p className="text-gray-600 text-lg mt-1 font-medium">{itemTitle}</p>
+        </div>
 
-        <h2 className="text-xl text-center text-gray-700 mb-6 font-semibold">
-          {itemTitle}
-        </h2>
+        {/* Cancel Button */}
+        <button
+          onClick={() => setActiveTab("seo")}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100
+                     hover:bg-gray-200 transition border shadow-sm text-gray-700"
+        >
+          <ArrowLeft size={18} /> Cancel
+        </button>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Title */}
-          <div>
-            <label>SEO Title</label>
-            <input
-              value={seoTitle}
-              onChange={(e) => setSeoTitle(e.target.value)}
-              className="w-full border rounded-lg p-2"
-            />
-          </div>
+      {/* MAIN FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-8 border"
+      >
+        {/* SEO Title */}
+        <div>
+          <label className="font-semibold text-gray-700 flex gap-2 mb-1">
+            <FileText size={18} className="text-[#e82429]" /> Meta Title
+          </label>
+          <input
+            value={seoTitle}
+            onChange={(e) => setSeoTitle(e.target.value)}
+            className="w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-[#e82429]"
+          />
+        </div>
 
-          {/* Description */}
-          <div>
-            <label>SEO Description</label>
-            <textarea
-              value={seoDescription}
-              onChange={(e) => setSeoDescription(e.target.value)}
-              className="w-full border rounded-lg p-2"
-              rows={4}
-            />
-          </div>
+        {/* Meta Description */}
+        <div>
+          <label className="font-semibold text-gray-700 flex gap-2 mb-1">
+            <FileText size={18} className="text-[#e82429]" /> Meta Description
+          </label>
+          <textarea
+            value={seoDescription}
+            onChange={(e) => setSeoDescription(e.target.value)}
+            rows={4}
+            className="w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-[#e82429]"
+          />
+        </div>
 
-          {/* Keywords */}
-          <div>
-            <label>SEO Keywords</label>
-            <input
-              value={seoKeywords}
-              onChange={(e) => setSeoKeywords(e.target.value)}
-              className="w-full border rounded-lg p-2"
-            />
-          </div>
+        {/* Meta Keywords */}
+        <div>
+          <label className="font-semibold text-gray-700 flex gap-2 mb-1">
+            <Tags className="text-[#e82429]" /> Meta Keywords
+          </label>
+          <input
+            value={seoKeywords}
+            onChange={(e) => setSeoKeywords(e.target.value)}
+            className="w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-[#e82429]"
+          />
+        </div>
 
-          {/* OG Image */}
+        {/* OG IMAGE */}
+        <div>
+          <label className="font-semibold text-gray-700 flex gap-2 mb-2">
+            <Image className="text-[#e82429]" /> OG Image
+          </label>
+
           {seoOgImage && (
             <img
               src={seoOgImage}
-              className="w-40 h-40 rounded-xl object-cover mb-2"
+              className="w-40 h-40 rounded-xl object-cover border mb-3 shadow"
             />
           )}
 
-          <input type="file" onChange={(e) => setOgFile(e.target.files[0])} />
+          <input
+            type="file"
+            onChange={(e) => setOgFile(e.target.files[0])}
+            className="text-sm"
+          />
+        </div>
 
-          {/* FAQ */}
-          <div className="border p-4 bg-gray-50 rounded-xl">
-            <h3 className="font-semibold text-lg mb-3">FAQs</h3>
+        {/* FAQ Section */}
+        <div className="border p-6 rounded-2xl bg-gray-50 shadow-sm">
+          <h3 className="font-bold text-lg mb-4 flex gap-2">
+            <HelpCircle className="text-[#e82429]" /> FAQs
+          </h3>
 
-            {faqs.map((faq, i) => (
-              <div key={i} className="bg-white p-4 rounded-xl shadow mb-3">
-                <input
-                  value={faq.question}
-                  onChange={(e) => updateFAQ(i, "question", e.target.value)}
-                  placeholder="Question"
-                  className="w-full border p-2 mb-2"
-                />
+          {faqs.length === 0 && (
+            <p className="text-gray-500 mb-3">No FAQ added yet.</p>
+          )}
 
-                <textarea
-                  value={faq.answer}
-                  onChange={(e) => updateFAQ(i, "answer", e.target.value)}
-                  placeholder="Answer"
-                  className="w-full border p-2"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => removeFAQ(i)}
-                  className="bg-red-500 text-white px-3 py-1 rounded-lg mt-2"
-                >
-                  <FaTrash />
-                </button>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              onClick={addFAQ}
-              className="bg-[#e82429] text-white px-4 py-2 rounded-lg"
+          {faqs.map((faq, i) => (
+            <div
+              key={i}
+              className="bg-white p-4 rounded-xl shadow mb-3 border"
             >
-              <FaPlus /> Add FAQ
-            </button>
-          </div>
+              <input
+                value={faq.question}
+                onChange={(e) => updateFAQ(i, "question", e.target.value)}
+                placeholder="FAQ Question"
+                className="w-full border rounded-xl p-3 mb-3"
+              />
+              <textarea
+                value={faq.answer}
+                onChange={(e) => updateFAQ(i, "answer", e.target.value)}
+                placeholder="FAQ Answer"
+                className="w-full border rounded-xl p-3"
+              />
+              <button
+                type="button"
+                onClick={() => removeFAQ(i)}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg mt-3 flex gap-2 items-center"
+              >
+                <FaTrash /> Remove
+              </button>
+            </div>
+          ))}
 
-          <button className="w-full bg-[#e82429] text-white py-3 rounded-xl font-bold">
-            Save SEO
+          {/* Add FAQ */}
+          <button
+            type="button"
+            onClick={addFAQ}
+            className="bg-[#e82429] text-white px-5 py-2 rounded-xl shadow flex items-center gap-2"
+          >
+            <FaPlus /> Add FAQ
           </button>
-        </form>
-      </div>
+        </div>
+
+        {/* Save Button */}
+        <button
+          type="submit"
+          className="w-full bg-[#e82429] text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition"
+        >
+          Save SEO
+        </button>
+      </form>
     </div>
   );
 }

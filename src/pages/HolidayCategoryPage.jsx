@@ -10,7 +10,7 @@ export default function HolidayCategoryPage() {
   useEffect(() => {
     const api = DataService();
     api.get(API.GET_PACKAGES_BY_CATEGORY(categorySlug)).then((res) => {
-      setPackages(res.data?.tours || []);
+      setPackages(res.data || []);
     });
   }, [categorySlug]);
 
