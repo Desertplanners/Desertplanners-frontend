@@ -8,7 +8,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { Autoplay } from "swiper/modules";
-
+import { Helmet } from "react-helmet-async";
 import {
   FaClock,
   FaMapMarkerAlt,
@@ -27,6 +27,7 @@ export default function VisaDetails() {
   const [relatedVisas, setRelatedVisas] = useState([]);
   const [loading, setLoading] = useState(true);
   const api = DataService();
+  const [seo, setSeo] = useState(null);
 
   // ✅ Static banner path (use your own image if you want)
   const staticBanner = "/visa_details_banner.jpg";
@@ -36,7 +37,9 @@ export default function VisaDetails() {
     const fetchVisa = async () => {
       try {
         const res = await api.get(API.GET_VISA_BY_SLUG(visaSlug));
-        setVisa(res.data);
+
+        setVisa(res.data.visa); // 👈 Correct
+        setSeo(res.data.seo); // 👈 Optional: For SEO later
       } catch (err) {
         console.error("❌ Error fetching visa:", err);
       } finally {
@@ -78,6 +81,111 @@ export default function VisaDetails() {
 
   return (
     <div className="bg-gray-50 pb-20">
+      <Helmet>
+        <title>{seo?.seoTitle || visa.title}</title>
+
+        <meta
+          name="description"
+          content={seo?.seoDescription || visa.overview?.[0] || ""}
+        />
+
+        <meta
+          name="keywords"
+          content={
+            seo?.seoKeywords || "uae visa, dubai visa, dubai tourist visa"
+          }
+        />
+
+        <link
+          rel="canonical"
+          href={`https://www.desertplanners.net/visa/${categorySlug}/${visaSlug}`}
+        />
+
+        {/* OG Tags */}
+        <meta property="og:title" content={seo?.seoTitle || visa.title} />
+        <meta
+          property="og:description"
+          content={seo?.seoDescription || visa.overview?.[0]}
+        />
+        <meta property="og:image" content={seo?.seoOgImage || visa.img} />
+        <meta
+          property="og:url"
+          content={`https://www.desertplanners.net/visa/${categorySlug}/${visaSlug}`}
+        />
+        <meta property="og:type" content="article" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo?.seoTitle || visa.title} />
+        <meta
+          name="twitter:description"
+          content={seo?.seoDescription || visa.overview?.[0]}
+        />
+        <meta name="twitter:image" content={seo?.seoOgImage || visa.img} />
+
+        {/* ⭐ PRODUCT SCHEMA for Visa ⭐ */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: seo?.seoTitle || visa.title,
+            description: seo?.seoDescription || visa.overview?.[0],
+            image: [seo?.seoOgImage || visa.img],
+            brand: { "@type": "Brand", name: "Desert Planners" },
+            offers: {
+              "@type": "Offer",
+              url: window.location.href,
+              priceCurrency: "AED",
+              price: visa.price,
+              availability: "https://schema.org/InStock",
+            },
+          })}
+        </script>
+
+        {/* ⭐ FAQ Schema (if available) ⭐ */}
+        {seo?.faqs?.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: seo.faqs.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: { "@type": "Answer", text: f.answer },
+              })),
+            })}
+          </script>
+        )}
+
+        {/* ⭐ Breadcrumb ⭐ */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://desertplanners.net",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Visa",
+                item: "https://desertplanners.net/visa",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: visa.title,
+                item: window.location.href,
+              },
+            ],
+          })}
+        </script>
+      </Helmet>
+
       {/* ✅ STATIC HERO SECTION */}
       <div className="relative h-96 w-full overflow-hidden">
         <img
