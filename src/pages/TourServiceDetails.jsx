@@ -408,7 +408,10 @@ export default function TourServiceDetails() {
           }
         />
 
-        <link rel="canonical" href={pageUrl} />
+        <link
+          rel="canonical"
+          href={`https://www.desertplanners.net/tours/${categorySlug}/${tourSlug}`}
+        />
 
         {/* OG Tags */}
         <meta property="og:title" content={seo?.seoTitle || tour.title} />
