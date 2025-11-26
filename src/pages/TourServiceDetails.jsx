@@ -55,12 +55,18 @@ export default function TourServiceDetails() {
       try {
         const res = await api.get(API.GET_TOUR(tourSlug));
         console.log("🎯 API GET_TOUR Response:", res.data); // <-- ADD THIS
-        if (res.data) {
-          setTour(res.data);
-          setMainImage(`${API.BASE_URL}/${res.data.mainImage}`);
-          console.log("🖼️ Related tours:", res.data.relatedTours); // <-- ADD THIS
-          setRelatedTours(res.data.relatedTours || []);
+        if (res.data?.tour) {
+          setTour(res.data.tour);
+        
+          setMainImage(
+            res.data.tour.mainImage?.startsWith("http")
+              ? res.data.tour.mainImage
+              : `${API.BASE_URL}/${res.data.tour.mainImage}`
+          );
+        
+          setRelatedTours(res.data.tour.relatedTours || []);
         }
+        
       } catch (err) {
         console.error("Error fetching tour:", err);
       } finally {

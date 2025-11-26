@@ -14,6 +14,7 @@ import {
   Layers,
   FileSpreadsheet,
   ImageIcon,
+  Search,
 } from "lucide-react";
 
 const ITEMS = [
@@ -25,44 +26,26 @@ const ITEMS = [
   // Visa Section
   { tab: "visa", label: "Visa", icon: <Plane size={18} /> },
 
-  {
-    tab: "holidayManagement",
-    label: "Holiday Tours",
-    icon: <Briefcase size={18} />,
-  },
+  // Holiday
+  { tab: "holidayManagement", label: "Holiday Tours", icon: <Briefcase size={18} /> },
 
-  {
-    tab: "visaCategory",
-    label: "Visa Categories",
-    icon: <FileSpreadsheet size={18} />,
-  },
+  // Visa Categories
+  { tab: "visaCategory", label: "Visa Categories", icon: <FileSpreadsheet size={18} /> },
 
-  // ⭐ NEW Holiday Categories
-  {
-    tab: "holidayCategory",
-    label: "Holiday Categories",
-    icon: <Grid size={18} />,
-  },
+  // Holiday categories
+  { tab: "holidayCategory", label: "Holiday Categories", icon: <Grid size={18} /> },
 
   // Tour Categories
   { tab: "category", label: "Tour Categories", icon: <Grid size={18} /> },
 
-  // Sections
+  // Home Section Editor
   { tab: "sections", label: "Sections", icon: <Layers size={18} /> },
 
   // Bookings
-  {
-    tab: "bookings",
-    label: "Tour Bookings",
-    icon: <CalendarCheck size={18} />,
-  },
+  { tab: "bookings", label: "Tour Bookings", icon: <CalendarCheck size={18} /> },
 
-  // ⭐ NEW Visa Bookings
-  {
-    tab: "visaBookings",
-    label: "Visa Bookings",
-    icon: <CalendarCheck size={18} />,
-  },
+  // Visa Bookings
+  { tab: "visaBookings", label: "Visa Bookings", icon: <CalendarCheck size={18} /> },
 
   // Payments
   { tab: "payments", label: "Payments", icon: <CreditCard size={18} /> },
@@ -75,6 +58,9 @@ const ITEMS = [
 
   // Banners
   { tab: "banner", label: "Banners", icon: <ImageIcon size={18} /> },
+
+  // ⭐ NEW — SEO Manager
+  { tab: "seo", label: "SEO Manager", icon: <Search size={18} /> },
 
   // Settings
   { tab: "settings", label: "Settings", icon: <Settings size={18} /> },
@@ -114,7 +100,6 @@ export default function Sidebar({
         <button
           onClick={toggleSidebar}
           className="text-[#404041] hover:text-[#e82429] transition-colors"
-          aria-label="Toggle sidebar"
         >
           {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
         </button>

@@ -6,7 +6,7 @@ import Overview from "./Overview";
 import ToursManagement from "./ToursManagement";
 import TourCategory from "./TourCategory";
 import VisaCategory from "./VisaCategory";
-import HolidayCategory from "./HolidayCategory"; // ⭐ NEW
+import HolidayCategory from "./HolidayCategory";
 import Bookings from "./Bookings";
 import Payments from "./Payments";
 import Users from "./Users";
@@ -18,20 +18,25 @@ import BannerManagement from "./BannerManagement";
 import VisaBookings from "./VisaBookings";
 import HolidayManagement from "./HolidayManagement";
 
-// ⭐ NEW FILE
+import SEOManagement from "./SEOManagement";
+import AdminSEOEditor from "./AdminSEOEditor";
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+
+  // ⭐ REQUIRED FOR SIDEBAR TOGGLE
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // ⭐ for SEO editor
+  const [selectedSEO, setSelectedSEO] = useState(null);
 
   const TABS = {
     overview: Overview,
     tours: ToursManagement,
     visa: Visa,
     visaCategory: VisaCategory,
-
-    holidayCategory: HolidayCategory, // ⭐ NEW
-    // ⭐ NEW TAB
     holidayManagement: HolidayManagement,
+    holidayCategory: HolidayCategory,
     category: TourCategory,
     sections: SectionsManagement,
     bookings: Bookings,
@@ -40,6 +45,25 @@ export default function AdminDashboard() {
     users: Users,
     enquiries: Enquiries,
     banner: BannerManagement,
+
+    // ⭐ SEO list screen
+    seo: () => (
+      <SEOManagement
+        setActiveTab={setActiveTab}
+        setSelectedSEO={setSelectedSEO}
+      />
+    ),
+
+    // ⭐ SEO Editor Screen
+    seoEditor: () =>
+      selectedSEO ? (
+        <AdminSEOEditor data={selectedSEO} />
+      ) : (
+        <div className="p-8 text-center text-red-600">
+          No SEO Selected
+        </div>
+      ),
+
     settings: Settings,
   };
 
@@ -47,6 +71,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex h-screen bg-[var(--color-light-gray)]">
+      {/* ⭐ FIX – sidebarOpen & setSidebarOpen pass karo */}
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -55,13 +80,7 @@ export default function AdminDashboard() {
       />
 
       <main className="flex-1 p-6 overflow-y-auto">
-        {ActiveComponent ? (
-          <ActiveComponent />
-        ) : (
-          <div className="p-8 bg-white rounded-2xl shadow">
-            <p>No component found</p>
-          </div>
-        )}
+        {ActiveComponent ? <ActiveComponent /> : <p>Component not found</p>}
       </main>
     </div>
   );

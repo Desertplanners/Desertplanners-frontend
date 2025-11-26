@@ -17,14 +17,23 @@ const visaCategories = "/api/visa-categories";
 const payment = "/api/payment";
 const banners = "/api/banner";
 const visaBookings = "/api/visa-bookings";
-const visaPayment = "/api/visa-payment"; // ✅ NEW
+const visaPayment = "/api/visa-payment";
 const holidayCategories = "/api/holiday-categories";
 const holidayTours = "/api/holiday-tour";
+
+// ⭐ NEW SEO BASE ROUTE
+const seo = "/api/seo";
 
 export const API = {
   BASE_URL: isLocalhost
     ? "http://localhost:5000"
     : "https://desertplanners-backend.onrender.com",
+
+  // ---- SEO ----
+  GET_SEO: (type, id) => `${seo}/get?parentType=${type}&parentId=${id}`,
+  CREATE_SEO: `${seo}/create`,
+  UPDATE_SEO: `${seo}/update`,
+  DELETE_SEO: `${seo}/delete`,
 
   // ---- Admin ----
   ADMIN_REGISTER: `${admin}/register`,
@@ -37,7 +46,7 @@ export const API = {
   ADMIN_GET_USERS: `${user}/users`,
   ADMIN_UPDATE_USER: (id) => `${user}/users/${id}`,
   ADMIN_DELETE_USER: (id) => `${user}/users/${id}`,
-  
+
   // ---- User ----
   USER_REGISTER: `${user}/register`,
   USER_LOGIN: `${user}/login`,
@@ -52,13 +61,14 @@ export const API = {
   DELETE_TOUR: (id) => `${tours}/${id}`,
   GET_TOURS_BY_CATEGORY: (categoryName) => `${tours}/category/${categoryName}`,
   CHECK_AVAILABILITY: `${tours}/check-availability`,
+  GET_TOUR_BY_ID: (id) => `${tours}/id/${id}`,
 
   // ---- Tour Categories ----
   GET_CATEGORIES: `${categories}`,
   ADD_CATEGORY: `${categories}`,
   DELETE_CATEGORY: (id) => `${categories}/${id}`,
   UPDATE_CATEGORY: (id) => `${categories}/${id}`,
-
+  
   // ---- Visa Categories ----
   ADD_VISA_CATEGORY: `${visaCategories}`,
   GET_VISA_CATEGORIES: `${visaCategories}`,
@@ -134,7 +144,7 @@ export const API = {
     `${visaBookings}/lookup?bookingId=${bookingId}&email=${email}`,
   VISA_INVOICE_DOWNLOAD: (id) => `${visaBookings}/invoice/${id}`,
 
-  // ---- ✅ Visa Payment ----
+  // ---- Visa Payment ----
   CREATE_VISA_PAYMENT: `${visaPayment}/create`,
   CONFIRM_VISA_PAYMENT: (id) => `${visaPayment}/confirm/${id}`,
   WEBHOOK_VISA_PAYMENT: `${visaPayment}/webhook`,
@@ -152,7 +162,7 @@ export const API = {
   GET_HOLIDAY_TOUR_BY_ID: (id) => `${holidayTours}/${id}`,
   UPDATE_HOLIDAY_TOUR: (id) => `${holidayTours}/update/${id}`,
   DELETE_HOLIDAY_TOUR: (id) => `${holidayTours}/delete/${id}`,
-  GET_PACKAGES_BY_CATEGORY: (slug) => `${holidayTours}/category/${slug}`,
+  GET_PACKAGES_BY_CATEGORY2: (slug) => `${holidayTours}/category/${slug}`,
   GET_HOLIDAY_PACKAGE_BY_SLUG: (category, slug) =>
     `${holidayTours}/category/${category}/${slug}`,
 };
