@@ -7,6 +7,7 @@ import {
   FaBed,
   FaUtensils,
   FaUser,
+  FaInfoCircle
 } from "react-icons/fa";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
@@ -450,6 +451,45 @@ export default function HolidayPage() {
             terms={terms}
           />
         </div>
+
+        {/* ⭐ HOLIDAY FAQ SECTION – SAME DESIGN AS TOUR/ VISA FAQ */}
+        {seo?.faqs?.length > 0 && (
+          <div className="bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] rounded-3xl shadow-xl p-8 space-y-8 border border-[#e82429]/20 hover:shadow-2xl transition duration-300">
+            {/* Header */}
+            <div className="flex items-center gap-2">
+              <FaInfoCircle className="text-[#e82429] text-3xl" />
+              <h2 className="text-3xl font-extrabold text-[#721011]">
+                Holiday Package FAQs
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {seo.faqs.map((faq, index) => (
+                <div
+                  key={index}
+                  className="group bg-white border border-[#e82429]/20 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                >
+                  <details className="p-0">
+                    {/* Summary */}
+                    <summary className="cursor-pointer list-none flex items-center justify-between p-5 text-lg font-semibold text-gray-800 group-hover:bg-[#fff4f4] transition-all">
+                      <span>{faq.question}</span>
+
+                      {/* Icon */}
+                      <span className="text-[#e82429] text-xl transition-transform duration-300 group-open:rotate-180">
+                        ▼
+                      </span>
+                    </summary>
+
+                    {/* Answer */}
+                    <div className="px-5 pb-5 text-gray-700 leading-relaxed border-t border-gray-200 bg-white animate-fadeIn">
+                      {faq.answer}
+                    </div>
+                  </details>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* RIGHT SIDE (STATIC sections as requested) */}
