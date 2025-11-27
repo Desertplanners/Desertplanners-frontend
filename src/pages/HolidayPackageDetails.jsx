@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
+import { Helmet } from "react-helmet-async";
 
 export default function HolidayPage() {
   const { categorySlug, packageSlug } = useParams();
@@ -17,6 +18,7 @@ export default function HolidayPage() {
   const [packageData, setPackageData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [seo, setSeo] = useState(null);
 
   // slider state
   const [activeSlide, setActiveSlide] = useState(0);
@@ -41,13 +43,18 @@ export default function HolidayPage() {
     api
       .get(API.GET_HOLIDAY_PACKAGE_BY_SLUG(categorySlug, packageSlug))
       .then((res) => {
-        // backend returns the tour object (we saw res.json(tour) in controller)
-        const data = res.data || res; // adapt if wrapper differs
+        const raw = res.data || res;
+
+        // Backend now returns: { tour, seo }
+        const data = raw.tour ? raw.tour : raw;
+
         setPackageData(data);
+        setSeo(raw.seo || null); // ⭐ ADD THIS
         setForm((prev) => ({
           ...prev,
-          selectedTour: data?.title || prev.selectedTour,
+          selectedTour: data.title || prev.selectedTour,
         }));
+
         setLoading(false);
       })
       .catch((err) => {
@@ -151,6 +158,126 @@ export default function HolidayPage() {
 
   return (
     <div className="max-w-[1200px] mx-auto py-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <Helmet>
+        <title>{seo?.seoTitle || packageData.title}</title>
+
+        <meta
+          name="description"
+          content={
+            seo?.seoDescription || packageData.description?.slice(0, 150)
+          }
+        />
+
+        <meta
+          name="keywords"
+          content={
+            seo?.seoKeywords ||
+            "holiday tour, international tour packages, Dubai holiday package"
+          }
+        />
+
+        <link
+          rel="canonical"
+          href={`https://www.desertplanners.net/holidays/${categorySlug}/${packageSlug}`}
+        />
+
+        {/* OG TAGS */}
+        <meta
+          property="og:title"
+          content={seo?.seoTitle || packageData.title}
+        />
+        <meta
+          property="og:description"
+          content={seo?.seoDescription || packageData.description}
+        />
+        <meta
+          property="og:image"
+          content={seo?.seoOgImage || packageData.sliderImages?.[0]}
+        />
+        <meta
+          property="og:url"
+          content={`https://www.desertplanners.net/holidays/${categorySlug}/${packageSlug}`}
+        />
+        <meta property="og:type" content="product" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={seo?.seoTitle || packageData.title}
+        />
+        <meta
+          name="twitter:description"
+          content={seo?.seoDescription || packageData.description}
+        />
+        <meta
+          name="twitter:image"
+          content={seo?.seoOgImage || packageData.sliderImages?.[0]}
+        />
+
+        {/* PRODUCT SCHEMA */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: seo?.seoTitle || packageData.title,
+            description: seo?.seoDescription || packageData.description,
+            image: [seo?.seoOgImage || packageData.sliderImages?.[0]],
+            brand: { "@type": "Brand", name: "Desert Planners" },
+            offers: {
+              "@type": "Offer",
+              url: window.location.href,
+              priceCurrency: "USD",
+              price: packageData.priceAdult || "",
+              availability: "https://schema.org/InStock",
+            },
+          })}
+        </script>
+
+        {/* FAQ SCHEMA */}
+        {seo?.faqs?.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: seo.faqs.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: { "@type": "Answer", text: f.answer },
+              })),
+            })}
+          </script>
+        )}
+
+        {/* BREADCRUMB */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://desertplanners.net",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Holiday Packages",
+                item: "https://desertplanners.net/holidays",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: packageData.title,
+                item: window.location.href,
+              },
+            ],
+          })}
+        </script>
+      </Helmet>
+
       {/* LEFT SIDE */}
       <div className="md:col-span-2 space-y-10">
         {/* MAIN IMAGE / SLIDER HERO */}

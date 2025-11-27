@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
-import { Edit3, ArrowRight, Tag, Globe } from "lucide-react";
+import { Edit3, Tag } from "lucide-react";
 
 export default function SEOManagement({ setActiveTab, setSelectedSEO }) {
   const [type, setType] = useState("tour");
@@ -11,15 +11,39 @@ export default function SEOManagement({ setActiveTab, setSelectedSEO }) {
 
   const fetchList = async () => {
     try {
-      let res = [];
+      let res;
 
       if (type === "tour") res = await api.get(API.GET_TOURS);
       else if (type === "visa") res = await api.get(API.GET_VISAS);
       else res = await api.get(API.GET_ALL_HOLIDAY_TOURS);
 
-      setData(res.data || []);
+      console.log("API RESPONSE:", res.data);
+
+      let finalData = [];
+
+      // 🔥 CASE 1: API returns ARRAY
+      if (Array.isArray(res.data)) {
+        finalData = res.data;
+      }
+
+      // 🔥 CASE 2: API returns OBJECT with "tours" key (Holiday)
+      else if (res.data?.tours) {
+        finalData = res.data.tours;
+      }
+
+      // 🔥 CASE 3: Visa API returns "visas"
+      else if (res.data?.visas) {
+        finalData = res.data.visas;
+      }
+
+      else {
+        finalData = [];
+      }
+
+      setData(finalData);
     } catch (err) {
       console.log(err);
+      setData([]);
     }
   };
 
@@ -67,41 +91,43 @@ export default function SEOManagement({ setActiveTab, setSelectedSEO }) {
         </div>
 
         {/* Rows */}
-        {data.map((item) => (
-          <div
-            key={item._id}
-            className="grid grid-cols-12 gap-4 py-4 border-b hover:bg-gray-50 transition cursor-pointer"
-          >
-            {/* Title */}
-            <div className="col-span-6 font-medium text-gray-800">
-              {item.title}
-            </div>
+        {Array.isArray(data) && data.length > 0 &&
+          data.map((item) => (
+            <div
+              key={item._id}
+              className="grid grid-cols-12 gap-4 py-4 border-b hover:bg-gray-50 transition cursor-pointer"
+            >
+              {/* Title */}
+              <div className="col-span-6 font-medium text-gray-800">
+                {item.title}
+              </div>
 
-            {/* Type Tag */}
-            <div className="col-span-3">
-              <span className="px-3 py-1 rounded-full text-xs bg-[#ffe8e8] text-[#721011]">
-                {type.toUpperCase()}
-              </span>
-            </div>
+              {/* Type Tag */}
+              <div className="col-span-3">
+                <span className="px-3 py-1 rounded-full text-xs bg-[#ffe8e8] text-[#721011]">
+                  {type.toUpperCase()}
+                </span>
+              </div>
 
-            {/* Action */}
-            <div className="col-span-3 text-right">
-              <button
-                onClick={() => {
-                  setSelectedSEO({ type, id: item._id });
-                  setActiveTab("seoEditor");
-                }}
-                className="flex items-center float-right gap-2 bg-[#e82429] text-white px-4 py-2 rounded-lg shadow hover:shadow-md transition"
-              >
-                <Edit3 size={16} />
-                Edit
-              </button>
+              {/* Action */}
+              <div className="col-span-3 text-right">
+                <button
+                  onClick={() => {
+                    setSelectedSEO({ type, id: item._id });
+                    setActiveTab("seoEditor");
+                  }}
+                  className="flex items-center float-right gap-2 bg-[#e82429] text-white px-4 py-2 rounded-lg shadow hover:shadow-md transition"
+                >
+                  <Edit3 size={16} />
+                  Edit
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
 
         {/* Empty State */}
-        {!data.length && (
+        {(!data || data.length === 0) && (
           <p className="text-center py-6 text-gray-500">
             No records found...
           </p>
