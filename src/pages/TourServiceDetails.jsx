@@ -1044,56 +1044,38 @@ export default function TourServiceDetails() {
             </div>
           )}
 
-          {/* ⭐ MODERN TIMELINE FAQ SECTION */}
+          {/* ⭐ BEAUTIFUL ANIMATED FAQ SECTION */}
           {seo?.faqs?.length > 0 && (
-            <div className="bg-white rounded-3xl shadow-xl p-10 border border-[#e82429]/20">
+            <div className="bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] rounded-3xl shadow-xl p-8 space-y-8 border border-[#e82429]/20 hover:shadow-2xl transition duration-300">
               {/* Header */}
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-2">
                 <FaInfoCircle className="text-[#e82429] text-3xl" />
-                <h2 className="text-3xl font-extrabold text-[#721011] tracking-tight">
+                <h2 className="text-3xl font-extrabold text-[#721011]">
                   Frequently Asked Questions
                 </h2>
               </div>
 
-              <div className="relative pl-6 space-y-10">
-                {/* Vertical Line */}
-                <div className="absolute left-3 top-0 bottom-0 w-[3px] bg-gradient-to-b from-[#e82429] to-[#721011]/70 rounded-full"></div>
-
+              <div className="space-y-4">
                 {seo.faqs.map((faq, index) => (
-                  <div key={index} className="relative">
-                    {/* Dot Icon */}
-                    <div className="absolute -left-[10px] top-0 w-6 h-6 rounded-full bg-gradient-to-br from-[#e82429] to-[#721011] shadow-md flex items-center justify-center text-white font-bold text-xs">
-                      {index + 1}
-                    </div>
+                  <div
+                    key={index}
+                    className="group bg-white border border-[#e82429]/20 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                  >
+                    <details className="p-0">
+                      <summary className="cursor-pointer list-none flex items-center justify-between p-5 text-lg font-semibold text-gray-800 group-hover:bg-[#fff4f4] transition-all">
+                        <span>{faq.question}</span>
 
-                    {/* Card */}
-                    <div
-                      className="
-            bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] 
-            border border-[#e82429]/20 rounded-2xl p-6 shadow-md 
-            hover:shadow-lg transition-all duration-300
-          "
-                    >
-                      {/* Question */}
-                      <div className="flex items-start gap-3 mb-3">
-                        <span className="bg-[#e82429] text-white px-3 py-1 rounded-lg text-sm font-semibold">
-                          Q
+                        {/* Icon */}
+                        <span className="text-[#e82429] text-xl transition-transform duration-300 group-open:rotate-180">
+                          ▼
                         </span>
-                        <h3 className="text-xl font-semibold text-[#721011] leading-snug">
-                          {faq.question}
-                        </h3>
-                      </div>
+                      </summary>
 
-                      {/* Answer */}
-                      <div className="flex items-start gap-3">
-                        <span className="bg-[#721011]/90 text-white px-3 py-1 rounded-lg text-sm font-semibold">
-                          A
-                        </span>
-                        <p className="text-gray-700 leading-relaxed">
-                          {faq.answer}
-                        </p>
+                      {/* Content */}
+                      <div className="px-5 pb-5 text-gray-700 leading-relaxed border-t border-gray-200 bg-white animate-fadeIn">
+                        {faq.answer}
                       </div>
-                    </div>
+                    </details>
                   </div>
                 ))}
               </div>
