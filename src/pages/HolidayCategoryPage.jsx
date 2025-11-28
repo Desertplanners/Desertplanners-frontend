@@ -2,28 +2,121 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
+import { Helmet } from "react-helmet-async";
 
 export default function HolidayCategoryPage() {
   const { categorySlug } = useParams();
   const [packages, setPackages] = useState([]);
+  const [seo, setSEO] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const api = DataService();
-    api.get(API.GET_PACKAGES_BY_CATEGORY(categorySlug)).then((res) => {
-      setPackages(res.data || []);
-    });
-  }, [categorySlug]);
+  const api = DataService();
+
+  const fallbackBanner =
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
 
   const categoryName = categorySlug.replaceAll("-", " ").toUpperCase();
 
+  /* ======================================
+     STEP 1 — Fetch Holiday Packages
+     ====================================== */
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const res = await api.get(API.GET_PACKAGES_BY_CATEGORY(categorySlug));
+        setPackages(res.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        // packages loaded → now SEO load
+        setLoading(false);
+      }
+    };
+
+    requestIdleCallback(loadData);
+  }, [categorySlug]);
+
+  /* ======================================
+     STEP 2 — Fetch SEO using slug
+     ====================================== */
+  useEffect(() => {
+    const fetchSEO = async () => {
+      try {
+        const res = await api.get(API.GET_SEO("holidayCategory", categorySlug));
+        setSEO(res.data?.seo || null);
+      } catch {
+        setSEO(null);
+      }
+    };
+
+    fetchSEO();
+  }, [categorySlug]);
+
+  // LOADING STATE
+  if (loading)
+    return <h2 className="text-center py-10 text-xl">Loading...</h2>;
+
+  // NO PACKAGES
+  if (!packages.length)
+    return (
+      <h2 className="text-center py-10 text-2xl text-red-600">
+        No holiday packages found for this category.
+      </h2>
+    );
+
+  /* ======================================
+     FINAL DYNAMIC SEO VALUES
+     ====================================== */
+  const pageTitle = seo?.seoTitle || "";
+  const pageDesc = seo?.seoDescription || "";
+  const pageKeywords = seo?.seoKeywords || "";
+
+  const ogImage =
+    seo?.seoOgImage || packages[0]?.sliderImages?.[0] || fallbackBanner;
+
+  const canonicalURL = `https://www.desertplanners.net/holidays/${categorySlug}`;
+
   return (
     <div className="w-full">
-      {/* TOP BANNER */}
-      <div className="relative w-full h-44 sm:h-52 md:h-60 lg:h-64 mb-10 rounded-xl overflow-hidden">
+      <Helmet>
+        {pageTitle && <title>{pageTitle}</title>}
+        {pageDesc && <meta name="description" content={pageDesc} />}
+        {pageKeywords && <meta name="keywords" content={pageKeywords} />}
+        <link rel="canonical" href={canonicalURL} />
+
+        {pageTitle && <meta property="og:title" content={pageTitle} />}
+        {pageDesc && <meta property="og:description" content={pageDesc} />}
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        {pageTitle && <meta name="twitter:title" content={pageTitle} />}
+        {pageDesc && <meta name="twitter:description" content={pageDesc} />}
+        <meta name="twitter:image" content={ogImage} />
+
+        {(pageTitle || pageDesc) && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: pageTitle || categoryName,
+              description: pageDesc || "",
+              image: ogImage,
+              url: canonicalURL,
+              about: { "@type": "Thing", name: categoryName },
+            })}
+          </script>
+        )}
+      </Helmet>
+
+      {/* BANNER */}
+      <div className="relative w-full h-44 sm:h-52 md:h-60 lg:h-64 mb-10 rounded-xl overflow-hidden bg-black">
         <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"
-          alt="Holiday Banner"
+          src={ogImage}
+          alt={categoryName}
           className="w-full h-full object-cover"
+          onError={(e) => (e.currentTarget.src = fallbackBanner)}
         />
         <div className="absolute inset-0 bg-black/50"></div>
         <h1 className="absolute inset-0 flex items-center justify-center text-white text-3xl sm:text-4xl font-extrabold tracking-wider">
@@ -31,27 +124,30 @@ export default function HolidayCategoryPage() {
         </h1>
       </div>
 
-      {/* CARDS */}
-      <div className="max-w-[1200px] mx-auto px-4 pb-16">
-        {packages.length === 0 ? (
-          <p className="text-gray-600 text-lg text-center">
-            No holiday tours found.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {packages.map((pkg) => (
-              <ImageCard key={pkg._id} pkg={pkg} categorySlug={categorySlug} />
-            ))}
+      {/* Description */}
+      {pageDesc && (
+        <div className="max-w-[1200px] mx-auto px-4 md:px-0 mt-3">
+          <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm">
+            <p className="text-gray-700 text-[15px] leading-snug">{pageDesc}</p>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* PACKAGE CARDS */}
+      <div className="max-w-[1200px] mx-auto px-4 pb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {packages.map((pkg) => (
+            <ImageCard key={pkg._id} pkg={pkg} categorySlug={categorySlug} />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-/* -------------------------------------------
-   CARD WITH AUTO SLIDER + DURATION BADGE
-------------------------------------------- */
+/* ===============================
+   HOLIDAY PACKAGE CARD COMPONENT
+=============================== */
 function ImageCard({ pkg, categorySlug }) {
   const [index, setIndex] = useState(0);
 
@@ -70,42 +166,19 @@ function ImageCard({ pkg, categorySlug }) {
       to={`/holidays/${categorySlug}/${pkg.slug}`}
       className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 overflow-hidden"
     >
-      {/* IMAGE */}
       <div className="h-60 w-full overflow-hidden relative bg-gray-200">
         <img
           src={pkg.sliderImages?.[index] || "/no-image.png"}
           alt={pkg.title}
           className="w-full h-full object-cover transition duration-700 group-hover:scale-110"
         />
+
         {pkg.duration && (
-          <div
-            className="
-      absolute bottom-3 right-3
-      px-4 py-1.5
-      rounded-full
-      flex items-center gap-2
-
-      /* ⭐ Solid Color */
-      bg-[#e82429]
-
-      /* Text */
-      text-white text-[12.5px] font-bold tracking-wide
-
-      /* Glow & Border */
-      shadow-[0_4px_18px_rgba(0,0,0,0.35)]
-      border border-white/20
-
-      /* Slight Lift */
-      hover:brightness-110 hover:scale-[1.03]
-      transition-all duration-300
-    "
-          >
-            {/* <span className="text-sm">🗓️</span> */}
-            <span>{pkg.duration}</span>
+          <div className="absolute bottom-3 right-3 px-4 py-1.5 rounded-full bg-[#e82429] text-white text-[12.5px] font-bold shadow border border-white/20">
+            {pkg.duration}
           </div>
         )}
 
-        {/* Dots */}
         {pkg.sliderImages?.length > 1 && (
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
             {pkg.sliderImages.map((_, i) => (
@@ -114,20 +187,17 @@ function ImageCard({ pkg, categorySlug }) {
                 className={`w-2 h-2 rounded-full ${
                   index === i ? "bg-white" : "bg-white/50"
                 }`}
-              ></div>
+              />
             ))}
           </div>
         )}
       </div>
 
-      {/* CONTENT */}
       <div className="p-5 space-y-4">
-        {/* TITLE + PRICE */}
         <div className="flex items-start justify-between">
           <h3 className="text-lg font-bold text-[#404041] group-hover:text-[#e82429] transition w-[70%] leading-snug">
             {pkg.title}
           </h3>
-
           <p className="text-[#e82429] font-bold text-lg whitespace-nowrap">
             $ {pkg.priceAdult}
           </p>

@@ -404,7 +404,7 @@ export default function TourServiceDetails() {
         <meta
           name="keywords"
           content={
-            seo?.seoKeywords || "dubai tours, desert safari, luxury travel"
+            seo?.seoKeywords || " "
           }
         />
 

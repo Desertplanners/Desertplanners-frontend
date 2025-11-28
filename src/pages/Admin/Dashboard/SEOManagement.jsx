@@ -1,136 +1,159 @@
 import React, { useEffect, useState } from "react";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
-import { Edit3, Tag } from "lucide-react";
+import { Edit3, Tag, Home, Plane, Briefcase, Grid, Layers, Files } from "lucide-react";
 
 export default function SEOManagement({ setActiveTab, setSelectedSEO }) {
-  const [type, setType] = useState("tour");
-  const [data, setData] = useState([]);
-
   const api = DataService();
 
-  const fetchList = async () => {
-    try {
-      let res;
+  // ⭐ Active Tab
+  const [tab, setTab] = useState("page");
 
-      if (type === "tour") res = await api.get(API.GET_TOURS);
-      else if (type === "visa") res = await api.get(API.GET_VISAS);
-      else res = await api.get(API.GET_ALL_HOLIDAY_TOURS);
+  // ⭐ All cached data
+  const [staticPages] = useState([
+    { id: "home", title: "Home" },
+    { id: "about-us", title: "About Us" },
+    { id: "contact-us", title: "Contact Us" },
+    { id: "privacy-policy", title: "Privacy Policy" },
+    { id: "terms-and-conditions", title: "Terms & Conditions" },
+    { id: "tours", title: "Tours Page" },
+    { id: "visa", title: "Visa Page" },
+    { id: "holidays", title: "Holidays Page" },
+  ]);
 
-      console.log("API RESPONSE:", res.data);
+  const [tours, setTours] = useState([]);
+  const [visas, setVisas] = useState([]);
+  const [holidays, setHolidays] = useState([]);
+  const [tourCategories, setTourCategories] = useState([]);
+  const [visaCategories, setVisaCategories] = useState([]);
+  const [holidayCategories, setHolidayCategories] = useState([]);
 
-      let finalData = [];
+  // ⭐ FETCH ALL ONCE
+  useEffect(() => {
+    (async () => {
+      try {
+        const t = await api.get(API.GET_TOURS);
+        setTours(t.data || []);
 
-      // 🔥 CASE 1: API returns ARRAY
-      if (Array.isArray(res.data)) {
-        finalData = res.data;
+        const v = await api.get(API.GET_VISAS);
+        setVisas(v.data?.visas || []);
+
+        const h = await api.get(API.GET_ALL_HOLIDAY_TOURS);
+        setHolidays(h.data?.tours || []);
+
+        const tc = await api.get(API.GET_CATEGORIES);
+        setTourCategories(tc.data || []);
+
+        const vc = await api.get(API.GET_VISA_CATEGORIES);
+        setVisaCategories(vc.data || []);
+
+        const hc = await api.get(API.GET_HOLIDAY_CATEGORIES);
+        setHolidayCategories(hc.data || []);
+      } catch (err) {
+        console.log(err);
       }
+    })();
+  }, []);
 
-      // 🔥 CASE 2: API returns OBJECT with "tours" key (Holiday)
-      else if (res.data?.tours) {
-        finalData = res.data.tours;
-      }
-
-      // 🔥 CASE 3: Visa API returns "visas"
-      else if (res.data?.visas) {
-        finalData = res.data.visas;
-      }
-
-      else {
-        finalData = [];
-      }
-
-      setData(finalData);
-    } catch (err) {
-      console.log(err);
-      setData([]);
-    }
+  // ⭐ FIXED – Backend compatible keys
+  const lists = {
+    page: staticPages,
+    tour: tours,
+    visa: visas,
+    holiday: holidays,
+    tourCategory: tourCategories,
+    visaCategory: visaCategories,
+    holidayCategory: holidayCategories,
   };
 
-  useEffect(() => {
-    fetchList();
-  }, [type]);
+  const tabs = [
+    { key: "page", label: "Static Pages", icon: <Home size={16} /> },
+    { key: "tour", label: "Tours", icon: <Briefcase size={16} /> },
+    { key: "visa", label: "Visa", icon: <Plane size={16} /> },
+    { key: "holiday", label: "Holiday Packages", icon: <Files size={16} /> },
+    { key: "tourCategory", label: "Tour Categories", icon: <Grid size={16} /> },
+    { key: "visaCategory", label: "Visa Categories", icon: <Grid size={16} /> },
+    { key: "holidayCategory", label: "Holiday Categories", icon: <Layers size={16} /> },
+  ];
 
   return (
     <div className="p-6">
 
-      {/* Page Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-extrabold text-[#721011]">
-            SEO Manager
-          </h1>
-          <p className="text-gray-500 mt-1">
-            Manage SEO for Tours, Visa, and Holiday Packages
-          </p>
-        </div>
-
-        {/* Type Selector */}
-        <select
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          className="px-4 py-2 rounded-xl bg-white border shadow-sm text-sm font-medium"
-        >
-          <option value="tour">Tours</option>
-          <option value="visa">Visa</option>
-          <option value="holiday">Holiday Tours</option>
-        </select>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-4xl font-extrabold text-[#721011]">
+          SEO Manager
+        </h1>
+        <p className="text-gray-500 font-medium mt-1 text-lg">
+          Manage SEO for all pages, categories & listings
+        </p>
       </div>
 
-      {/* MAIN LIST */}
-      <div className="bg-white rounded-2xl shadow p-5">
+      {/* ⭐ Modern Tabs */}
+      <div className="flex gap-3 mb-8 overflow-x-auto pb-3 no-scrollbar">
+        {tabs.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={`px-5 py-3 flex items-center gap-2 rounded-xl text-sm font-medium shadow 
+              transition-all duration-300 whitespace-nowrap 
+              ${
+                tab === t.key
+                  ? "bg-gradient-to-r from-[#721011] to-[#e82429] text-white shadow-lg scale-105"
+                  : "bg-white border text-gray-700 hover:bg-gray-100"
+              }`}
+          >
+            {t.icon} {t.label}
+          </button>
+        ))}
+      </div>
 
-        {/* List Header */}
+      {/* LIST */}
+      <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
         <div className="grid grid-cols-12 gap-4 py-3 border-b font-semibold text-gray-600">
           <div className="col-span-6 flex items-center gap-2">
-            <Tag size={16} className="text-[#e82429]" />
-            Title
+            <Tag size={16} className="text-[#e82429]" /> 
+            {tabs.find(x => x.key === tab)?.label}
           </div>
           <div className="col-span-3">Type</div>
           <div className="col-span-3 text-right">Action</div>
         </div>
 
-        {/* Rows */}
-        {Array.isArray(data) && data.length > 0 &&
-          data.map((item) => (
+        {lists[tab]?.length > 0 ? (
+          lists[tab].map((item) => (
             <div
-              key={item._id}
-              className="grid grid-cols-12 gap-4 py-4 border-b hover:bg-gray-50 transition cursor-pointer"
+              key={item._id || item.id}
+              className="grid grid-cols-12 gap-4 py-4 border-b hover:bg-gray-50 transition-all"
             >
-              {/* Title */}
-              <div className="col-span-6 font-medium text-gray-800">
-                {item.title}
+              <div className="col-span-6 font-medium text-gray-900">
+                {item.title || item.name}
               </div>
 
-              {/* Type Tag */}
               <div className="col-span-3">
                 <span className="px-3 py-1 rounded-full text-xs bg-[#ffe8e8] text-[#721011]">
-                  {type.toUpperCase()}
+                  {tabs.find((x) => x.key === tab)?.label}
                 </span>
               </div>
 
-              {/* Action */}
               <div className="col-span-3 text-right">
                 <button
                   onClick={() => {
-                    setSelectedSEO({ type, id: item._id });
+                    setSelectedSEO({
+                      type: tab, // Backend compatible
+                      id: item._id || item.id,
+                      backTab: tab,
+                    });
                     setActiveTab("seoEditor");
                   }}
-                  className="flex items-center float-right gap-2 bg-[#e82429] text-white px-4 py-2 rounded-lg shadow hover:shadow-md transition"
+                  className="bg-[#e82429] text-white px-4 py-2 rounded-lg shadow hover:shadow-md flex items-center gap-2 float-right"
                 >
-                  <Edit3 size={16} />
-                  Edit
+                  <Edit3 size={16} /> Edit
                 </button>
               </div>
             </div>
-          )
-        )}
-
-        {/* Empty State */}
-        {(!data || data.length === 0) && (
-          <p className="text-center py-6 text-gray-500">
-            No records found...
-          </p>
+          ))
+        ) : (
+          <p className="text-center py-6 text-gray-500">No records found...</p>
         )}
       </div>
     </div>

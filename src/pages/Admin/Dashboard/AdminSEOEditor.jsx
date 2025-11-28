@@ -6,7 +6,24 @@ import { ArrowLeft, FileText, Image, HelpCircle, Tags } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function AdminSEOEditor({ data, setActiveTab }) {
-  const { type, id } = data;
+  const api = DataService();
+
+  // ⭐ FRONTEND → BACKEND TYPE MAP
+  const typeMap = {
+    "tour-category": "tourCategory",
+    "visa-category": "visaCategory",
+    "holiday-category": "holidayCategory",
+    page: "page",
+    tour: "tour",
+    visa: "visa",
+    holiday: "holiday",
+  };
+
+  // ⭐ SAFE TYPE FIX (never undefined)
+  const rawType = data?.type || "";
+  const backendType = typeMap[rawType] || rawType.replace("-", "");
+
+  const { id } = data;
 
   const [loading, setLoading] = useState(true);
   const [seoId, setSeoId] = useState(null);
@@ -20,27 +37,74 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
   const [faqs, setFaqs] = useState([]);
 
   const [itemTitle, setItemTitle] = useState("Loading...");
-  const api = DataService();
 
-  // ⭐ Fetch correct item title
+  // -----------------------------------------------------
+  // ⭐ FETCH TITLE BASED ON TYPE
+  // -----------------------------------------------------
   const fetchItemTitle = async () => {
     try {
       let res;
-      if (type === "tour") res = await api.get(API.GET_TOUR_BY_ID(id));
-      else if (type === "visa") res = await api.get(API.GET_VISA_BY_ID(id));
-      else res = await api.get(API.GET_HOLIDAY_TOUR_BY_ID(id));
 
-      setItemTitle(res.data?.title || "Untitled");
+      // STATIC PAGES
+      if (backendType === "page") {
+        const titles = {
+          home: "Home",
+          "about-us": "About Us",
+          "contact-us": "Contact Us",
+          "privacy-policy": "Privacy Policy",
+          "terms-and-conditions": "Terms & Conditions",
+          tours: "Tours Listing Page",
+          visa: "Visa Listing Page",
+          holidays: "Holiday Packages Listing Page",
+        };
+        return setItemTitle(titles[id] || "Static Page");
+      }
+
+      // TOURS
+      if (backendType === "tour") {
+        res = await api.get(API.GET_TOUR_BY_ID(id));
+        return setItemTitle(res.data?.title || "Unknown Tour");
+      }
+
+      // VISA
+      if (backendType === "visa") {
+        res = await api.get(API.GET_VISA_BY_ID(id));
+        return setItemTitle(res.data?.title || "Unknown Visa");
+      }
+
+      // HOLIDAY TOUR
+      if (backendType === "holiday") {
+        res = await api.get(API.GET_HOLIDAY_TOUR_BY_ID(id));
+        return setItemTitle(res.data?.title || "Unknown Holiday");
+      }
+
+      // CATEGORIES
+      if (backendType === "tourCategory") {
+        res = await api.get(API.GET_TOUR_CATEGORY_BY_ID(id));
+        return setItemTitle(res.data?.name || "Tour Category");
+      }
+
+      if (backendType === "visaCategory") {
+        res = await api.get(API.GET_VISA_CATEGORY_BY_ID(id));
+        return setItemTitle(res.data?.name || "Visa Category");
+      }
+
+      if (backendType === "holidayCategory") {
+        res = await api.get(API.GET_HOLIDAY_CATEGORY_BY_ID(id));
+        return setItemTitle(res.data?.name || "Holiday Category");
+      }
     } catch (err) {
       console.log(err);
       setItemTitle("Not Found");
     }
   };
 
-  // ⭐ Fetch SEO data
+  // -----------------------------------------------------
+  // ⭐ FETCH SEO
+  // -----------------------------------------------------
   const fetchSEO = async () => {
     try {
-      const res = await api.get(API.GET_SEO(type, id));
+      const res = await api.get(API.GET_SEO(backendType, id));
 
       if (res.data?.seo) {
         const s = res.data.seo;
@@ -52,7 +116,7 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
         setFaqs(s.faqs || []);
       }
     } catch (err) {
-      console.log(err);
+      console.log("SEO missing (first time create)");
     } finally {
       setLoading(false);
     }
@@ -61,27 +125,31 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
   useEffect(() => {
     fetchItemTitle();
     fetchSEO();
-  }, [type, id]);
+  }, [backendType, id]);
 
-  // ⭐ Add FAQ
+  // -----------------------------------------------------
+  // ⭐ FAQ FUNCTIONS
+  // -----------------------------------------------------
   const addFAQ = () => setFaqs([...faqs, { question: "", answer: "" }]);
 
-  // ⭐ Remove FAQ
-  const removeFAQ = (i) => setFaqs(faqs.filter((_, idx) => idx !== i));
-
-  // ⭐ Update FAQ
-  const updateFAQ = (i, key, value) => {
-    const arr = [...faqs];
-    arr[i][key] = value;
-    setFaqs(arr);
+  const removeFAQ = (i) => {
+    setFaqs(faqs.filter((_, idx) => idx !== i));
   };
 
-  // ⭐ Handle Submit
+  const updateFAQ = (i, key, val) => {
+    const clone = [...faqs];
+    clone[i][key] = val;
+    setFaqs(clone);
+  };
+
+  // -----------------------------------------------------
+  // ⭐ SUBMIT (Create / Update)
+  // -----------------------------------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const form = new FormData();
-    form.append("parentType", type);
+    form.append("parentType", backendType);
     form.append("parentId", id);
     form.append("seoTitle", seoTitle);
     form.append("seoDescription", seoDescription);
@@ -94,9 +162,9 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
       setLoading(true);
 
       if (seoId) {
-        await api.put(API.UPDATE_SEO, form);
+        await api.put(API.UPDATE_SEO, form); // update existing
       } else {
-        await api.post(API.CREATE_SEO, form);
+        await api.post(API.CREATE_SEO, form); // first time create
       }
 
       toast.success("SEO Saved Successfully!");
@@ -108,37 +176,39 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
     }
   };
 
-  if (loading)
-    return <h2 className="text-center py-10 text-xl">Loading SEO...</h2>;
+  if (loading) return <h2 className="text-center py-10 text-xl">Loading SEO...</h2>;
+
+  // -----------------------------------------------------
+  // ⭐ UI
+  // -----------------------------------------------------
 
   return (
     <div className="p-6">
 
-      {/* HEADER — TITLE + CANCEL BUTTON */}
+      {/* HEADER */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-extrabold text-[#721011]">
-            Edit SEO ({type.toUpperCase()})
+            Edit SEO ({backendType.toUpperCase()})
           </h1>
           <p className="text-gray-600 text-lg mt-1 font-medium">{itemTitle}</p>
         </div>
 
-        {/* Cancel Button */}
         <button
           onClick={() => setActiveTab("seo")}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100
-                     hover:bg-gray-200 transition border shadow-sm text-gray-700"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition border shadow-sm text-gray-700"
         >
-          <ArrowLeft size={18} /> Cancel
+          <ArrowLeft size={18} /> Back
         </button>
       </div>
 
-      {/* MAIN FORM */}
+      {/* FORM */}
       <form
         onSubmit={handleSubmit}
         className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-8 border"
       >
-        {/* SEO Title */}
+
+        {/* TITLE */}
         <div>
           <label className="font-semibold text-gray-700 flex gap-2 mb-1">
             <FileText size={18} className="text-[#e82429]" /> Meta Title
@@ -146,11 +216,11 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
           <input
             value={seoTitle}
             onChange={(e) => setSeoTitle(e.target.value)}
-            className="w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-[#e82429]"
+            className="w-full border rounded-xl p-3 shadow-sm"
           />
         </div>
 
-        {/* Meta Description */}
+        {/* DESCRIPTION */}
         <div>
           <label className="font-semibold text-gray-700 flex gap-2 mb-1">
             <FileText size={18} className="text-[#e82429]" /> Meta Description
@@ -159,11 +229,11 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
             value={seoDescription}
             onChange={(e) => setSeoDescription(e.target.value)}
             rows={4}
-            className="w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-[#e82429]"
+            className="w-full border rounded-xl p-3 shadow-sm"
           />
         </div>
 
-        {/* Meta Keywords */}
+        {/* KEYWORDS */}
         <div>
           <label className="font-semibold text-gray-700 flex gap-2 mb-1">
             <Tags className="text-[#e82429]" /> Meta Keywords
@@ -171,7 +241,7 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
           <input
             value={seoKeywords}
             onChange={(e) => setSeoKeywords(e.target.value)}
-            className="w-full border rounded-xl p-3 shadow-sm focus:ring-2 focus:ring-[#e82429]"
+            className="w-full border rounded-xl p-3 shadow-sm"
           />
         </div>
 
@@ -195,15 +265,11 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
           />
         </div>
 
-        {/* FAQ Section */}
+        {/* FAQ */}
         <div className="border p-6 rounded-2xl bg-gray-50 shadow-sm">
           <h3 className="font-bold text-lg mb-4 flex gap-2">
             <HelpCircle className="text-[#e82429]" /> FAQs
           </h3>
-
-          {faqs.length === 0 && (
-            <p className="text-gray-500 mb-3">No FAQ added yet.</p>
-          )}
 
           {faqs.map((faq, i) => (
             <div
@@ -222,6 +288,7 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
                 placeholder="FAQ Answer"
                 className="w-full border rounded-xl p-3"
               />
+
               <button
                 type="button"
                 onClick={() => removeFAQ(i)}
@@ -232,7 +299,6 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
             </div>
           ))}
 
-          {/* Add FAQ */}
           <button
             type="button"
             onClick={addFAQ}
@@ -242,10 +308,10 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
           </button>
         </div>
 
-        {/* Save Button */}
+        {/* SAVE BUTTON */}
         <button
           type="submit"
-          className="w-full bg-[#e82429] text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition"
+          className="w-full bg-[#e82429] text-white py-3 rounded-xl font-bold shadow-lg"
         >
           Save SEO
         </button>
