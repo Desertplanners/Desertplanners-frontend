@@ -9,6 +9,7 @@ import {
   FaShieldAlt,
   FaArrowRight,
   FaTimesCircle,
+  FaSitemap,
 } from "react-icons/fa";
 
 export default function Footer() {
