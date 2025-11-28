@@ -158,6 +158,7 @@ export default function Footer() {
               <span className="w-2 h-2 bg-[#e82429] rounded-full"></span>
               Legal
             </h3>
+
             <div className="space-y-3">
               <Link
                 to="/terms-and-conditions"
@@ -166,6 +167,7 @@ export default function Footer() {
                 <FaFileContract className="text-[#e82429] text-xs group-hover:scale-110 transition-transform" />
                 Terms & Conditions
               </Link>
+
               <Link
                 to="/privacy-policy"
                 className="flex items-center gap-2 text-gray-400 hover:text-white transition-all group text-sm"
@@ -173,6 +175,7 @@ export default function Footer() {
                 <FaShieldAlt className="text-[#e82429] text-xs group-hover:scale-110 transition-transform" />
                 Privacy Policy
               </Link>
+
               <Link
                 to="/cancellation-policy"
                 className="flex items-center gap-2 text-gray-400 hover:text-white transition-all group text-sm"
@@ -180,13 +183,25 @@ export default function Footer() {
                 <FaTimesCircle className="text-[#e82429] text-xs group-hover:scale-110 transition-transform" />
                 Cancellation & Refund Policy
               </Link>
+
+              {/* ⭐ NEW – Sitemap Link */}
+              <a
+                href="https://www.desertplanners.net/sitemap.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-gray-400 hover:text-white transition-all group text-sm"
+              >
+                <FaSitemap className="text-[#e82429] text-xs group-hover:scale-110 transition-transform" />
+                Sitemap
+              </a>
             </div>
 
-            {/* ✅ Mastercard & Footer Logo Section */}
+            {/* Secure Payment */}
             <div className="pt-6 border-t border-gray-800">
               <h4 className="text-sm font-semibold text-gray-400 mb-3">
                 Secure Payments
               </h4>
+
               <div className="flex items-center gap-3">
                 <img
                   src="/mastercard.png"
@@ -198,7 +213,6 @@ export default function Footer() {
                   alt="Visa"
                   className="w-12 h-8 object-contain"
                 />
-               
               </div>
             </div>
           </div>
@@ -211,7 +225,6 @@ export default function Footer() {
               © {new Date().getFullYear()} Desert Planners Tourism LLC. All
               rights reserved.
             </p>
-           
           </div>
         </div>
       </div>
