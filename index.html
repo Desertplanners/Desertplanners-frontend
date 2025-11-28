@@ -4,12 +4,20 @@
 <head>
   <meta charset="UTF-8" />
 
-  <!-- 🌐 Google Tag Manager (HEAD PART) -->
+  <!-- =========================================== -->
+  <!-- 🌐 Robots (VERY IMPORTANT FOR SEO)           -->
+  <!-- =========================================== -->
+  <meta name="robots" content="index, follow" />
+
+  <!-- =========================================== -->
+  <!-- 🌐 Google Tag Manager (HEAD PART)            -->
+  <!-- =========================================== -->
   <script>
     (function (w, d, s, l, i) {
-      w[l] = w[l] || []; w[l].push({
-        'gtm.start':
-          new Date().getTime(), event: 'gtm.js'
+      w[l] = w[l] || []; 
+      w[l].push({
+        'gtm.start': new Date().getTime(),
+        event: 'gtm.js'
       });
       var f = d.getElementsByTagName(s)[0],
         j = d.createElement(s),
@@ -21,35 +29,40 @@
   </script>
   <!-- End GTM HEAD -->
 
-
   <!-- 🔥 Google Site Verification -->
   <meta name="google-site-verification" content="l0Z7OThtQET47sani6ZJ101AzbWqPpm-sKyAch_rYfk" />
 
-
-  <!-- 🌐 Basic SEO -->
+  <!-- =========================================== -->
+  <!-- 🌐 Basic SEO                                 -->
+  <!-- =========================================== -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Desert Planners – Dubai Tours, Desert Safari & UAE Visa</title>
-  <!-- <meta name="description"
-    content="Desert Planners offers Dubai desert safari, customized tours, UAE visa assistance, luxury transfers and travel packages at best prices."> -->
-  <!-- <link rel="canonical" href="https://desertplanners.net" /> -->
 
+  <!--
+  <meta name="description" content="Desert Planners offers Dubai desert safari, customized tours, UAE visa assistance, luxury transfers and travel packages at best prices.">
+  <link rel="canonical" href="https://desertplanners.net" />
+  -->
 
-  <!-- 🌐 Open Graph Tags -->
+  <!-- =========================================== -->
+  <!-- 🌐 Open Graph (Optional but Good for Social) -->
+  <!-- =========================================== -->
+  <!--
   <meta property="og:title" content="Desert Planners – Dubai Tours & Desert Safari" />
-  <meta property="og:description"
-    content="Book Dubai tours, UAE visa and desert safari experiences with Desert Planners." />
+  <meta property="og:description" content="Book Dubai tours, UAE visa and desert safari experiences with Desert Planners." />
   <meta property="og:image" content="https://desertplanners.net/og-main.jpg" />
   <meta property="og:url" content="https://desertplanners.net" />
   <meta property="og:type" content="website" />
+  -->
 
-
-  <!-- 🌐 Favicon -->
+  <!-- =========================================== -->
+  <!-- 🌐 Favicon                                    -->
+  <!-- =========================================== -->
   <link rel="icon" type="image/svg+xml" href="/desertfavicon.png" />
 
-
-  <!-- ============================================= -->
-  <!-- 📌 GLOBAL SCHEMA MARKUP (ORGANIZATION SCHEMA) -->
-  <!-- ============================================= -->
+  <!-- =============================================== -->
+  <!-- 📌 GLOBAL ORGANIZATION SCHEMA (Structured Data) -->
+  <!-- =============================================== -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -73,20 +86,17 @@
   }
   </script>
 
-
-  <!-- =============================== -->
-  <!-- 🎯 Meta Pixel Code (HEAD PART) -->
-  <!-- =============================== -->
+  <!-- =========================================== -->
+  <!-- 🎯 Meta Pixel Code (HEAD PART)               -->
+  <!-- =========================================== -->
   <script>
     !function (f, b, e, v, n, t, s) {
       if (f.fbq) return;
-
       n = f.fbq = function () {
         n.callMethod
           ? n.callMethod.apply(n, arguments)
           : n.queue.push(arguments);
       };
-
       if (!f._fbq) f._fbq = n;
       n.push = n;
       n.loaded = !0;
@@ -100,8 +110,7 @@
       s = b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t, s);
 
-    }(window, document, 'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
+    }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
     fbq('init', '864889270045350');
     fbq('track', 'PageView');
@@ -111,13 +120,14 @@
     <img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=864889270045350&ev=PageView&noscript=1" />
   </noscript>
-  <!-- End Meta Pixel Code -->
 
 </head>
 
 <body>
 
-  <!-- 🌐 Google Tag Manager (BODY PART) -->
+  <!-- =========================================== -->
+  <!-- 🌐 Google Tag Manager (BODY PART)            -->
+  <!-- =========================================== -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKF9RSN6"
       height="0" width="0" style="display:none;visibility:hidden"></iframe>
@@ -126,6 +136,7 @@
 
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+
 </body>
 
 </html>

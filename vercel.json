@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/robots.txt",
+      "destination": "https://desertplanners-backend.onrender.com/robots.txt"
+    },
+    {
       "source": "/sitemap.xml",
       "destination": "https://desertplanners-backend.onrender.com/sitemap.xml"
     },
