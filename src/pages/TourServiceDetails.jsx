@@ -557,8 +557,7 @@ export default function TourServiceDetails() {
                   AED {tour.priceAdult || tour.price || "—"}
                 </p>
 
-                {/* Child Price Beautiful Tag */}
-                {tour.priceChild && (
+                {Number(tour.priceChild) > 0 && (
                   <div className="flex items-center gap-2">
                     <span className="px-3 py-1 bg-gradient-to-r from-[#ffe5e5] to-[#ffd6d6] text-[#721011] font-semibold text-sm rounded-full shadow-sm border border-[#e82429]/30">
                       Child Price: AED {tour.priceChild}
@@ -1172,7 +1171,8 @@ export default function TourServiceDetails() {
                   {/* Guests (No child price tours) */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">👥</span> Adult (10+ years)
+                      <span className="text-[#e82429] text-lg">👥</span> Adult
+                      (10+ years)
                     </label>
 
                     <div className="relative">
