@@ -69,11 +69,15 @@ export default function TourServiceDetails() {
       const api = DataService();
       try {
         const res = await api.get(API.GET_TOUR(tourSlug));
-        console.log("🎯 API GET_TOUR Response:", res.data); // <-- ADD THIS
-        if (res.data?.tour) {
-          setTour(res.data.tour); // ⭐ FIX ADDED
+        console.log("🎯 API GET_TOUR Response:", res.data);
 
-          fetchSEO(res.data.tour._id);
+        if (res.data) {
+          setTour(res.data.tour);
+
+          // ⭐ SEO yahi se set hoga
+          if (res.data.seo) {
+            setSeo(res.data.seo);
+          }
 
           setMainImage(
             res.data.tour.mainImage?.startsWith("http")
@@ -401,12 +405,7 @@ export default function TourServiceDetails() {
           content={seo?.seoDescription || tour.shortDescription}
         />
 
-        <meta
-          name="keywords"
-          content={
-            seo?.seoKeywords || " "
-          }
-        />
+        <meta name="keywords" content={seo?.seoKeywords || " "} />
 
         <link
           rel="canonical"
@@ -625,8 +624,8 @@ export default function TourServiceDetails() {
                     {/* Adults */}
                     <div className="flex flex-col gap-1">
                       <label className="text-gray-700 font-semibold flex items-center gap-2">
-                        <span className="text-[#e82429] text-lg">👤</span>{" "}
-                        Adults
+                        <span className="text-[#e82429] text-lg">👤</span>
+                        Adults (10+ years)
                       </label>
                       <select
                         value={adults}
@@ -645,8 +644,8 @@ export default function TourServiceDetails() {
                     {/* Children */}
                     <div className="flex flex-col gap-1">
                       <label className="text-gray-700 font-semibold flex items-center gap-2">
-                        <span className="text-[#e82429] text-lg">🧒</span>{" "}
-                        Children
+                        <span className="text-[#e82429] text-lg">🧒</span>
+                        Children (3 - 10 years)
                       </label>
                       <select
                         value={children}
@@ -664,10 +663,10 @@ export default function TourServiceDetails() {
                   </>
                 ) : (
                   <>
-                    {/* Guests (no child price) */}
+                    {/* Guests */}
                     <div className="flex flex-col gap-1">
                       <label className="text-gray-700 font-semibold flex items-center gap-2">
-                        <span className="text-[#e82429] text-lg">👥</span>{" "}
+                        <span className="text-[#e82429] text-lg">👥</span>
                         Guests
                       </label>
                       <select
@@ -1115,7 +1114,8 @@ export default function TourServiceDetails() {
                   {/* Adults */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">👤</span> Adults
+                      <span className="text-[#e82429] text-lg">👤</span>
+                      Adults (10+ years)
                     </label>
 
                     <div className="relative">
@@ -1142,8 +1142,8 @@ export default function TourServiceDetails() {
                   {/* Children */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">🧒</span>{" "}
-                      Children
+                      <span className="text-[#e82429] text-lg">🧒</span>
+                      Children (3 - 10 years)
                     </label>
 
                     <div className="relative">
