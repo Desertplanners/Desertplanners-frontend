@@ -21,10 +21,12 @@ export default function SEOManagement() {
     { id: "contact-us", title: "Contact Us" },
     { id: "privacy-policy", title: "Privacy Policy" },
     { id: "terms-and-conditions", title: "Terms & Conditions" },
+    { id: "cancellation-refund-policy", title: "Cancellation & Refund Policy" }, // ⭐ NEW
     { id: "tours", title: "Tours Page" },
     { id: "visa", title: "Visa Page" },
     { id: "holidays", title: "Holidays Page" },
   ]);
+  
 
   const [tours, setTours] = useState([]);
   const [visas, setVisas] = useState([]);
