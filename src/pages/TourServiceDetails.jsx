@@ -667,7 +667,7 @@ export default function TourServiceDetails() {
                     <div className="flex flex-col gap-1">
                       <label className="text-gray-700 font-semibold flex items-center gap-2">
                         <span className="text-[#e82429] text-lg">👥</span>
-                        Guests (10+ years)
+                        Adult (10+ years)
                       </label>
                       <select
                         value={guests}
@@ -1172,7 +1172,7 @@ export default function TourServiceDetails() {
                   {/* Guests (No child price tours) */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">👥</span> Guests (10+ years)
+                      <span className="text-[#e82429] text-lg">👥</span> Adult (10+ years)
                     </label>
 
                     <div className="relative">
