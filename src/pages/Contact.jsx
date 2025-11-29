@@ -1,9 +1,10 @@
 // src/pages/ContactUs.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock } from "react-icons/fa";
 import { API } from "../config/API";
 import DataService from "../config/DataService";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,24 @@ export default function ContactUs() {
 
   const [loading, setLoading] = useState(false);
 
+  // ⭐ SEO STATE
+  const [seo, setSEO] = useState(null);
+
+  // ⭐ Fetch SEO for Contact Us page
+  useEffect(() => {
+    const loadSEO = async () => {
+      try {
+        const api = DataService();
+        const res = await api.get(API.GET_SEO("page", "contact-us"));
+        if (res.data?.seo) setSEO(res.data.seo);
+      } catch (err) {
+        console.log("SEO fetch error:", err);
+      }
+    };
+
+    loadSEO();
+  }, []);
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -27,7 +46,6 @@ export default function ContactUs() {
       const api = DataService();
       const response = await api.post(API.CREATE_ENQUIRY, formData);
 
-      // ✅ Handle success by HTTP status also (201 = created)
       if (response.status === 200 || response.status === 201) {
         toast.success("Message submitted! Admin will contact you soon. ✅");
         setFormData({
@@ -44,23 +62,77 @@ export default function ContactUs() {
       }
     } catch (err) {
       console.error("❌ Enquiry submission error:", err);
-
-      // 🔹 Backend error could be from nodemailer / timeout
       if (err.response) {
         toast.error(
           err.response.data?.message ||
             "Server responded with an error. Try again later."
         );
       } else {
-        toast.error("Network issue or server not reachable. Please try again.");
+        toast.error("Network issue or server not reachable.");
       }
     } finally {
       setLoading(false);
     }
   };
 
+  // ⭐ Canonical URL
+  const canonicalURL = "https://www.desertplanners.net/contact-us";
+
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
+      
+      {/* ⭐⭐⭐ FULL DYNAMIC SEO ⭐⭐⭐ */}
+      <Helmet>
+        <title>{seo?.seoTitle}</title>
+        <meta name="description" content={seo?.seoDescription} />
+        <meta name="keywords" content={seo?.seoKeywords} />
+        <link rel="canonical" href={canonicalURL} />
+
+        {/* OG TAGS */}
+        <meta property="og:title" content={seo?.seoTitle} />
+        <meta property="og:description" content={seo?.seoDescription} />
+        <meta property="og:image" content={seo?.seoOgImage} />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:type" content="website" />
+
+        {/* TWITTER TAGS */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seo?.seoTitle} />
+        <meta name="twitter:description" content={seo?.seoDescription} />
+        <meta name="twitter:image" content={seo?.seoOgImage} />
+
+        {/* Website Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            name: seo?.seoTitle,
+            url: canonicalURL,
+            description: seo?.seoDescription,
+            image: seo?.seoOgImage,
+          })}
+        </script>
+
+        {/* FAQ Schema */}
+        {seo?.faqs?.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: seo.faqs.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: f.answer,
+                },
+              })),
+            })}
+          </script>
+        )}
+      </Helmet>
+      {/* ⭐⭐⭐ END SEO ⭐⭐⭐ */}
+
       {/* Hero Section */}
       <div className="relative w-full h-72 md:h-96 overflow-hidden">
         <img
@@ -77,7 +149,8 @@ export default function ContactUs() {
 
       {/* Main Content */}
       <div className="max-w-[1200px] mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left: Form */}
+        
+        {/* Form */}
         <div className="lg:col-span-7">
           <div className="bg-white rounded-3xl shadow-2xl p-10 space-y-6 relative overflow-hidden">
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#e82429]/30 rounded-full blur-3xl animate-pulse"></div>
@@ -89,6 +162,7 @@ export default function ContactUs() {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+              
               {/* Name & Email */}
               <div className="flex flex-col md:flex-row gap-4">
                 <input
@@ -97,7 +171,7 @@ export default function ContactUs() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="Your Name"
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none transition-all"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] transition-all"
                   required
                 />
                 <input
@@ -106,7 +180,7 @@ export default function ContactUs() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Your Email"
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none transition-all"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] transition-all"
                   required
                 />
               </div>
@@ -119,14 +193,14 @@ export default function ContactUs() {
                   value={formData.contactNumber}
                   onChange={handleChange}
                   placeholder="Your Contact Number"
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none transition-all"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] transition-all"
                   required
                 />
                 <select
                   name="services"
                   value={formData.services}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] focus:outline-none transition-all"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-[#e82429] transition-all"
                   required
                 >
                   <option value="">Select a Service</option>
@@ -142,11 +216,11 @@ export default function ContactUs() {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Your Message"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 h-40 focus:ring-2 focus:ring-[#e82429] focus:outline-none transition-all"
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 h-40 focus:ring-2 focus:ring-[#e82429] transition-all"
                 required
               />
 
-              {/* Submit Button */}
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}
@@ -156,17 +230,18 @@ export default function ContactUs() {
               >
                 {loading ? "Sending..." : "Send Message"}
               </button>
+
             </form>
           </div>
         </div>
 
-        {/* Right: Contact Info */}
+        {/* Contact Info */}
         <div className="lg:col-span-5 flex flex-col gap-6">
           {[
             {
               icon: <FaMapMarkerAlt className="text-[#e82429] text-3xl" />,
               title: "Address",
-              text: "Desert Planners Tourism LLC ,\n\nP.O. Box: 43710, Dubai, UAE",
+              text: "Desert Planners Tourism LLC\nP.O. Box: 43710, Dubai, UAE",
             },
             {
               icon: <FaPhoneAlt className="text-[#e82429] text-3xl" />,
@@ -186,32 +261,36 @@ export default function ContactUs() {
           ].map((card, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-4 p-6 rounded-2xl bg-white shadow-2xl hover:shadow-3xl transition-all cursor-pointer"
+              className="flex items-center gap-4 p-6 rounded-2xl bg-white shadow-2xl hover:shadow-3xl transition-all"
             >
               <div className="p-4 bg-[#e82429]/20 rounded-full">{card.icon}</div>
               <div>
                 <h3 className="font-bold text-[#721011] text-lg">
                   {card.title}
                 </h3>
-                <p className="text-gray-600">{card.text}</p>
+                <p className="text-gray-600 whitespace-pre-line">
+                  {card.text}
+                </p>
               </div>
             </div>
           ))}
         </div>
+
       </div>
 
-      {/* Full-width Map */}
+      {/* Map */}
       <div className="w-full mt-10">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d41465.69666469703!2d55.27165081812245!3d25.264376433810032!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f433bff0b836d%3A0xd7787e1f3959e5f1!2sDesert%20Planners%20Tourism%20LLC!5e1!3m2!1sen!2sin!4v1762533672459!5m2!1sen!2sin"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12..."
           width="100%"
           height="400"
           className="border-0"
-          allowFullScreen=""
           loading="lazy"
           title="Google Map"
+          allowFullScreen
         ></iframe>
       </div>
+
     </div>
   );
 }

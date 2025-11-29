@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaPassport,
@@ -6,51 +6,145 @@ import {
   FaSuitcaseRolling,
   FaStar,
 } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
+
+import DataService from "../config/DataService";
+import { API } from "../config/API";
 
 export default function AboutUs() {
+  const [seo, setSEO] = useState(null);
+
+  // ⭐ Fetch SEO for About Us page
+  useEffect(() => {
+    const fetchSEO = async () => {
+      try {
+        const api = DataService();
+        const res = await api.get(API.GET_SEO("page", "about-us"));
+        if (res.data?.seo) {
+          setSEO(res.data.seo);
+        }
+      } catch (err) {
+        console.log("About SEO fetch error:", err);
+      }
+    };
+
+    fetchSEO();
+  }, []);
+
+  // ⭐ Fallbacks
+  const pageTitle =
+    seo?.seoTitle || "About Us | Desert Planners UAE";
+
+  const pageDesc =
+    seo?.seoDescription ||
+    "Learn more about Desert Planners UAE, your trusted Dubai travel & tourism partner.";
+
+  const pageKeywords =
+    seo?.seoKeywords ||
+    "About Desert Planners, Dubai tours company, UAE travel agency";
+
+  const canonicalURL = "https://www.desertplanners.net/about-us";
+
+  const ogImage =
+    seo?.seoOgImage || "/travel-header-1.jpg";
+
   return (
     <div className="bg-white">
+
+      {/* ⭐⭐⭐ SEO START ⭐⭐⭐ */}
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDesc} />
+        <meta name="keywords" content={pageKeywords} />
+        <link rel="canonical" href={canonicalURL} />
+
+        {/* OG Tags */}
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDesc} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:type" content="website" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDesc} />
+        <meta name="twitter:image" content={ogImage} />
+
+        {/* Schema – About Page Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            name: pageTitle,
+            description: pageDesc,
+            url: canonicalURL,
+            image: ogImage,
+            publisher: {
+              "@type": "Organization",
+              name: "Desert Planners UAE",
+              logo: ogImage,
+            },
+          })}
+        </script>
+
+        {/* FAQ Schema */}
+        {seo?.faqs?.length > 0 && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: seo.faqs.map((f) => ({
+                "@type": "Question",
+                name: f.question,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: f.answer,
+                },
+              })),
+            })}
+          </script>
+        )}
+      </Helmet>
+      {/* ⭐⭐⭐ SEO END ⭐⭐⭐ */}
+
       {/* ⭐ HERO BANNER */}
-   <section
-  className="relative h-[45vh] flex items-center justify-center overflow-hidden p-0 m-0"
-  style={{
-    backgroundImage:
-      "url('/travel-header-1.jpg')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}
->
-  {/* Dark Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent"></div>
+      <section
+        className="relative h-[45vh] flex items-center justify-center overflow-hidden p-0 m-0"
+        style={{
+          backgroundImage: "url('/travel-header-1.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-transparent"></div>
 
-  {/* Floating Blurs */}
-  <div className="absolute w-64 h-40 bg-[#e82429]/30 rounded-full blur-3xl top-10 left-10 animate-pulse"></div>
-  <div className="absolute w-56 h-46 bg-white/10 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
+        <div className="absolute w-64 h-40 bg-[#e82429]/30 rounded-full blur-3xl top-10 left-10 animate-pulse"></div>
+        <div className="absolute w-56 h-46 bg-white/10 rounded-full blur-3xl bottom-10 right-10 animate-pulse"></div>
 
-  {/* Content */}
-  <div className="relative text-center px-4 z-10 -mt-6">
-    <motion.h1
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="text-5xl font-extrabold text-white tracking-tight drop-shadow-xl"
-    >
-      About Us
-    </motion.h1>
+        <div className="relative text-center px-4 z-10 -mt-6">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-5xl font-extrabold text-white tracking-tight drop-shadow-xl"
+          >
+            About Us
+          </motion.h1>
 
-    <motion.p
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2, duration: 0.5 }}
-      className="text-white/90 max-w-2xl mx-auto mt-3 text-lg leading-relaxed"
-    >
-      Discover the story, passion, and vision behind Desert Planners Tourism LLC - your trusted partner for unforgettable UAE travel experiences.
-    </motion.p>
-  </div>
-</section>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-white/90 max-w-2xl mx-auto mt-3 text-lg leading-relaxed"
+          >
+            Discover the story, passion, and vision behind Desert Planners Tourism LLC - 
+            your trusted partner for unforgettable UAE travel experiences.
+          </motion.p>
+        </div>
+      </section>
 
- {/* desertplanners  */}
       {/* ⭐ INTRO SECTION */}
       <section className="max-w-6xl mx-auto px-6 py-12">
         <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -125,11 +219,10 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* ⭐ MISSION & VISION — NEW SECTION */}
+      {/* ⭐ MISSION & VISION */}
       <section className="py-12 bg-gray-50 border-y">
         <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-8">
 
-          {/* Mission */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -145,7 +238,6 @@ export default function AboutUs() {
             </p>
           </motion.div>
 
-          {/* Vision */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

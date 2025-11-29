@@ -5,10 +5,9 @@ import { FaPlus, FaTrash } from "react-icons/fa";
 import { ArrowLeft, FileText, Image, HelpCircle, Tags } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function AdminSEOEditor({ data, setActiveTab }) {
+export default function AdminSEOEditor({ data, closeModal }) {
   const api = DataService();
 
-  // ⭐ FRONTEND → BACKEND TYPE MAP
   const typeMap = {
     "tour-category": "tourCategory",
     "visa-category": "visaCategory",
@@ -19,33 +18,30 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
     holiday: "holiday",
   };
 
-  // ⭐ SAFE TYPE FIX (never undefined)
   const rawType = data?.type || "";
   const backendType = typeMap[rawType] || rawType.replace("-", "");
-
   const { id } = data;
 
   const [loading, setLoading] = useState(true);
-  const [seoId, setSeoId] = useState(null);
 
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
   const [seoKeywords, setSeoKeywords] = useState("");
   const [seoOgImage, setSeoOgImage] = useState("");
   const [ogFile, setOgFile] = useState(null);
-
   const [faqs, setFaqs] = useState([]);
 
   const [itemTitle, setItemTitle] = useState("Loading...");
 
-  // -----------------------------------------------------
-  // ⭐ FETCH TITLE BASED ON TYPE
-  // -----------------------------------------------------
+  // ⭐ Character Limits
+  const TITLE_LIMIT = 60;
+  const DESC_LIMIT = 160;
+
+  // -------- FETCH TITLE --------
   const fetchItemTitle = async () => {
     try {
       let res;
 
-      // STATIC PAGES
       if (backendType === "page") {
         const titles = {
           home: "Home",
@@ -60,25 +56,21 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
         return setItemTitle(titles[id] || "Static Page");
       }
 
-      // TOURS
       if (backendType === "tour") {
         res = await api.get(API.GET_TOUR_BY_ID(id));
         return setItemTitle(res.data?.title || "Unknown Tour");
       }
 
-      // VISA
       if (backendType === "visa") {
         res = await api.get(API.GET_VISA_BY_ID(id));
         return setItemTitle(res.data?.title || "Unknown Visa");
       }
 
-      // HOLIDAY TOUR
       if (backendType === "holiday") {
         res = await api.get(API.GET_HOLIDAY_TOUR_BY_ID(id));
         return setItemTitle(res.data?.title || "Unknown Holiday");
       }
 
-      // CATEGORIES
       if (backendType === "tourCategory") {
         res = await api.get(API.GET_TOUR_CATEGORY_BY_ID(id));
         return setItemTitle(res.data?.name || "Tour Category");
@@ -93,30 +85,24 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
         res = await api.get(API.GET_HOLIDAY_CATEGORY_BY_ID(id));
         return setItemTitle(res.data?.name || "Holiday Category");
       }
-    } catch (err) {
-      console.log(err);
+    } catch {
       setItemTitle("Not Found");
     }
   };
 
-  // -----------------------------------------------------
-  // ⭐ FETCH SEO
-  // -----------------------------------------------------
+  // -------- FETCH SEO --------
   const fetchSEO = async () => {
     try {
       const res = await api.get(API.GET_SEO(backendType, id));
 
       if (res.data?.seo) {
         const s = res.data.seo;
-        setSeoId(s._id);
         setSeoTitle(s.seoTitle || "");
         setSeoDescription(s.seoDescription || "");
         setSeoKeywords(s.seoKeywords || "");
         setSeoOgImage(s.seoOgImage || "");
         setFaqs(s.faqs || []);
       }
-    } catch (err) {
-      console.log("SEO missing (first time create)");
     } finally {
       setLoading(false);
     }
@@ -127,27 +113,19 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
     fetchSEO();
   }, [backendType, id]);
 
-  // -----------------------------------------------------
-  // ⭐ FAQ FUNCTIONS
-  // -----------------------------------------------------
+  // -------- FAQ --------
   const addFAQ = () => setFaqs([...faqs, { question: "", answer: "" }]);
-
-  const removeFAQ = (i) => {
-    setFaqs(faqs.filter((_, idx) => idx !== i));
-  };
-
+  const removeFAQ = (i) => setFaqs(faqs.filter((_, idx) => idx !== i));
   const updateFAQ = (i, key, val) => {
     const clone = [...faqs];
     clone[i][key] = val;
     setFaqs(clone);
   };
 
-  // -----------------------------------------------------
-  // ⭐ SUBMIT (Create / Update)
-  // -----------------------------------------------------
+  // -------- SUBMIT --------
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const form = new FormData();
     form.append("parentType", backendType);
     form.append("parentId", id);
@@ -155,69 +133,56 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
     form.append("seoDescription", seoDescription);
     form.append("seoKeywords", seoKeywords);
     form.append("faqs", JSON.stringify(faqs));
-
+  
     if (ogFile) form.append("ogImage", ogFile);
-
+  
     try {
       setLoading(true);
-
-      if (seoId) {
-        await api.put(API.UPDATE_SEO, form); // update existing
-      } else {
-        await api.post(API.CREATE_SEO, form); // first time create
-      }
-
+      await api.post(API.SAVE_SEO, form);
       toast.success("SEO Saved Successfully!");
-    } catch (err) {
-      console.log(err);
+      closeModal();
+    } catch {
       toast.error("Failed to save SEO");
     } finally {
       setLoading(false);
     }
   };
+  
 
   if (loading) return <h2 className="text-center py-10 text-xl">Loading SEO...</h2>;
 
-  // -----------------------------------------------------
-  // ⭐ UI
-  // -----------------------------------------------------
-
   return (
-    <div className="p-6">
+    <div>
+      <h1 className="text-3xl font-extrabold text-[#721011] mb-2">
+        Edit SEO ({backendType.toUpperCase()})
+      </h1>
+      <p className="text-gray-600 text-lg mb-6">{itemTitle}</p>
 
-      {/* HEADER */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-extrabold text-[#721011]">
-            Edit SEO ({backendType.toUpperCase()})
-          </h1>
-          <p className="text-gray-600 text-lg mt-1 font-medium">{itemTitle}</p>
-        </div>
-
-        <button
-          onClick={() => setActiveTab("seo")}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition border shadow-sm text-gray-700"
-        >
-          <ArrowLeft size={18} /> Back
-        </button>
-      </div>
-
-      {/* FORM */}
       <form
         onSubmit={handleSubmit}
         className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 space-y-8 border"
       >
-
         {/* TITLE */}
         <div>
           <label className="font-semibold text-gray-700 flex gap-2 mb-1">
             <FileText size={18} className="text-[#e82429]" /> Meta Title
           </label>
+
           <input
             value={seoTitle}
             onChange={(e) => setSeoTitle(e.target.value)}
-            className="w-full border rounded-xl p-3 shadow-sm"
+            className={`w-full border rounded-xl p-3 shadow-sm ${
+              seoTitle.length > TITLE_LIMIT ? "border-red-500" : ""
+            }`}
           />
+
+          <p
+            className={`text-right text-sm mt-1 ${
+              seoTitle.length > TITLE_LIMIT ? "text-red-600 font-semibold" : "text-gray-500"
+            }`}
+          >
+            {seoTitle.length} / {TITLE_LIMIT}
+          </p>
         </div>
 
         {/* DESCRIPTION */}
@@ -225,12 +190,23 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
           <label className="font-semibold text-gray-700 flex gap-2 mb-1">
             <FileText size={18} className="text-[#e82429]" /> Meta Description
           </label>
+
           <textarea
             value={seoDescription}
             onChange={(e) => setSeoDescription(e.target.value)}
             rows={4}
-            className="w-full border rounded-xl p-3 shadow-sm"
+            className={`w-full border rounded-xl p-3 shadow-sm ${
+              seoDescription.length > DESC_LIMIT ? "border-red-500" : ""
+            }`}
           />
+
+          <p
+            className={`text-right text-sm mt-1 ${
+              seoDescription.length > DESC_LIMIT ? "text-red-600 font-semibold" : "text-gray-500"
+            }`}
+          >
+            {seoDescription.length} / {DESC_LIMIT}
+          </p>
         </div>
 
         {/* KEYWORDS */}
@@ -272,10 +248,7 @@ export default function AdminSEOEditor({ data, setActiveTab }) {
           </h3>
 
           {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="bg-white p-4 rounded-xl shadow mb-3 border"
-            >
+            <div key={i} className="bg-white p-4 rounded-xl shadow mb-3 border">
               <input
                 value={faq.question}
                 onChange={(e) => updateFAQ(i, "question", e.target.value)}

@@ -30,9 +30,9 @@ export const API = {
     : "https://desertplanners-backend.onrender.com",
 
   // ---- SEO ----
+
+  SAVE_SEO: `${seo}/save`, // Create + Update both
   GET_SEO: (type, id) => `${seo}/get?parentType=${type}&parentId=${id}`,
-  CREATE_SEO: `${seo}/create`,
-  UPDATE_SEO: `${seo}/update`,
   DELETE_SEO: `${seo}/delete`,
 
   // ---- Admin ----
@@ -68,7 +68,7 @@ export const API = {
   ADD_CATEGORY: `${categories}`,
   DELETE_CATEGORY: (id) => `${categories}/${id}`,
   UPDATE_CATEGORY: (id) => `${categories}/${id}`,
-  
+
   // ---- Visa Categories ----
   ADD_VISA_CATEGORY: `${visaCategories}`,
   GET_VISA_CATEGORIES: `${visaCategories}`,
