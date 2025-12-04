@@ -5,12 +5,15 @@ export default function BookingSuccess() {
   const navigate = useNavigate();
   const search = new URLSearchParams(window.location.search);
 
-  const bookingId =
-  search.get("bookingId") || search.get("id");   // ← Admin support added
+  // bookingId from URL
+  const bookingId = search.get("bookingId") || search.get("id");
+
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fetch booking details
+  // -------------------------------------
+  // 1️⃣ FETCH BOOKING DETAILS
+  // -------------------------------------
   useEffect(() => {
     if (!bookingId) return;
 
@@ -23,6 +26,31 @@ export default function BookingSuccess() {
       .catch(() => setLoading(false));
   }, [bookingId]);
 
+  // -------------------------------------
+  // 2️⃣ FIRE META PURCHASE EVENT
+  // -------------------------------------
+  useEffect(() => {
+    if (!booking) return;
+
+    if (typeof fbq === "function") {
+      fbq("track", "Purchase", {
+        value: booking.totalPrice,
+        currency: "AED",
+        contents: booking.items.map((item) => ({
+          id: item.tourId?._id,
+          quantity: item.adultCount + item.childCount,
+        })),
+        content_ids: booking.items.map((item) => item.tourId?._id),
+        content_type: "product",
+      });
+
+      console.log("🔥 Meta Purchase Event Fired!");
+    }
+  }, [booking]);
+
+  // -------------------------------------
+  // LOADING / ERROR UI
+  // -------------------------------------
   if (loading) {
     return <div className="p-10 text-center text-lg">Loading...</div>;
   }
@@ -35,6 +63,9 @@ export default function BookingSuccess() {
     );
   }
 
+  // -------------------------------------
+  // 3️⃣ MAIN UI
+  // -------------------------------------
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white mt-8 shadow-lg rounded-xl border">
       <div className="text-center">
@@ -46,7 +77,9 @@ export default function BookingSuccess() {
         <h2 className="text-3xl font-bold text-[#721011] mb-2">
           Booking Confirmed 🎉
         </h2>
-        <p className="text-gray-600">Your payment has been received successfully.</p>
+        <p className="text-gray-600">
+          Your payment has been received successfully.
+        </p>
       </div>
 
       {/* Booking Info */}
@@ -56,29 +89,34 @@ export default function BookingSuccess() {
         </h3>
 
         <div className="grid grid-cols-2 gap-3 text-gray-700">
-          <p><b>Booking ID:</b> {booking._id}</p>
           <p>
-            <b>Status:</b> <span className="text-green-600 font-semibold">{booking.status}</span>
+            <b>Booking ID:</b> {booking._id}
           </p>
           <p>
-            <b>Payment:</b> <span className="text-green-600 font-semibold">{booking.paymentStatus}</span>
+            <b>Status:</b>{" "}
+            <span className="text-green-600 font-semibold">
+              {booking.status}
+            </span>
           </p>
-
-          {/* SUBTOTAL */}
           <p>
-            <b>Subtotal:</b> <span className="font-semibold">AED {booking.subtotal}</span>
+            <b>Payment:</b>{" "}
+            <span className="text-green-600 font-semibold">
+              {booking.paymentStatus}
+            </span>
           </p>
-
-          {/* FEE */}
+          <p>
+            <b>Subtotal:</b>{" "}
+            <span className="font-semibold">AED {booking.subtotal}</span>
+          </p>
           <p>
             <b>Transaction Fee:</b>{" "}
             <span className="font-semibold">AED {booking.transactionFee}</span>
           </p>
-
-          {/* TOTAL */}
           <p>
             <b>Total Amount:</b>{" "}
-            <span className="text-[#e82429] font-bold">AED {booking.totalPrice}</span>
+            <span className="text-[#e82429] font-bold">
+              AED {booking.totalPrice}
+            </span>
           </p>
         </div>
       </div>
@@ -90,15 +128,26 @@ export default function BookingSuccess() {
         </h3>
 
         <div className="text-gray-700">
-          <p><b>Name:</b> {booking.guestName || booking.userName}</p>
-          <p><b>Email:</b> {booking.guestEmail || booking.userEmail}</p>
-          <p><b>Contact:</b> {booking.guestContact || "---"}</p>
+          <p>
+            <b>Name:</b> {booking.guestName || booking.userName}
+          </p>
+          <p>
+            <b>Email:</b> {booking.guestEmail || booking.userEmail}
+          </p>
+          <p>
+            <b>Contact:</b> {booking.guestContact || "---"}
+          </p>
 
-          {/* FIXED PICKUP / DROP */}
-          <p><b>Pickup:</b> {booking.pickupPoint || "N/A"}</p>
-          <p><b>Drop:</b> {booking.dropPoint || "N/A"}</p>
+          <p>
+            <b>Pickup:</b> {booking.pickupPoint || "N/A"}
+          </p>
+          <p>
+            <b>Drop:</b> {booking.dropPoint || "N/A"}
+          </p>
 
-          <p><b>Special Request:</b> {booking.specialRequest || "None"}</p>
+          <p>
+            <b>Special Request:</b> {booking.specialRequest || "None"}
+          </p>
         </div>
       </div>
 
@@ -109,21 +158,36 @@ export default function BookingSuccess() {
         </h3>
 
         {booking.items.map((item, index) => (
-          <div key={index} className="p-4 border rounded-lg mb-3 bg-gray-50 shadow-sm">
-            <p><b>Tour:</b> {item.tourId?.title}</p>
-            <p><b>Date:</b> {item.date}</p>
-            <p><b>Adults:</b> {item.adultCount} × {item.adultPrice}</p>
-            <p><b>Children:</b> {item.childCount} × {item.childPrice}</p>
+          <div
+            key={index}
+            className="p-4 border rounded-lg mb-3 bg-gray-50 shadow-sm"
+          >
+            <p>
+              <b>Tour:</b> {item.tourId?.title}
+            </p>
+            <p>
+              <b>Date:</b>{" "}
+              {new Date(item.date).toLocaleDateString("en-GB")}
+            </p>
+            <p>
+              <b>Adults:</b> {item.adultCount} × {item.adultPrice}
+            </p>
+            <p>
+              <b>Children:</b> {item.childCount} × {item.childPrice}
+            </p>
             <p>
               <b>Tour Total:</b>{" "}
               <b className="text-[#e82429]">
-                AED {item.adultCount * item.adultPrice + item.childCount * item.childPrice}
+                AED{" "}
+                {item.adultCount * item.adultPrice +
+                  item.childCount * item.childPrice}
               </b>
             </p>
           </div>
         ))}
       </div>
 
+      {/* Invoice */}
       <div className="text-center mt-8">
         <button
           onClick={() =>
