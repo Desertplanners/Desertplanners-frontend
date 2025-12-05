@@ -161,6 +161,30 @@ export default function Cart({ userId }) {
       toast.error("Your cart is empty!");
       return;
     }
+
+    // ⭐ DATA LAYER — BEGIN_CHECKOUT
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+      event: "begin_checkout",
+      items: cart.map((item) => ({
+        tour_id: item.tourId?._id || item.tourId || item._id,
+        tour_name: item.tourId?.title || item.title,
+        date: item.date,
+        guests_adult: Number(item.guestsAdult || item.guests || 0),
+        guests_child: Number(item.guestsChild || 0),
+        price_adult: Number(
+          item.adultPrice || item.tourId?.priceAdult || item.price || 0
+        ),
+        price_child: Number(item.childPrice || item.tourId?.priceChild || 0),
+        quantity: 1,
+      })),
+      total_value: totalPrice,
+      currency: "AED",
+    });
+
+    console.log("📡 DATA LAYER — begin_checkout fired");
+
     navigate("/checkout", { state: { cart } });
   };
 

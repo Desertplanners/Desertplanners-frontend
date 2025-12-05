@@ -81,17 +81,10 @@ export default function Checkout() {
     const childPrice = Number(item.childPrice || t.priceChild || 0);
 
     const adultCount = Number(
-      item.guestsAdult ??
-        item.adultCount ??
-        item.adults ??
-        item.guests ??
-        0
+      item.guestsAdult ?? item.adultCount ?? item.adults ?? item.guests ?? 0
     );
     const childCount = Number(
-      item.guestsChild ??
-        item.childCount ??
-        item.children ??
-        0
+      item.guestsChild ?? item.childCount ?? item.children ?? 0
     );
 
     return sum + adultPrice * adultCount + childPrice * childCount;
@@ -112,6 +105,7 @@ export default function Checkout() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // ⭐ VALIDATION
     if (
       !form.guestName ||
       !form.guestEmail ||
@@ -127,6 +121,39 @@ export default function Checkout() {
       return;
     }
 
+    // ⭐ DATA LAYER — ADD_PAYMENT_INFO
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+      event: "add_payment_info",
+      payment_type: "online",
+      value: finalAmount,
+      currency: "AED",
+      items: cart.map((item) => ({
+        tour_id: item.tourId?._id || item.tourId || item._id,
+        tour_name: item.tourId?.title || item.title,
+        date: item.date,
+
+        guests_adult: Number(
+          item.guestsAdult ?? item.adultCount ?? item.adults ?? item.guests ?? 0
+        ),
+
+        guests_child: Number(
+          item.guestsChild ?? item.childCount ?? item.children ?? 0
+        ),
+
+        price_adult: Number(
+          item.adultPrice || item.tourId?.priceAdult || item.price || 0
+        ),
+
+        price_child: Number(item.childPrice || item.tourId?.priceChild || 0),
+
+        quantity: 1,
+      })),
+    });
+
+    console.log("📡 DATA LAYER — add_payment_info fired");
+
     setLoading(true);
 
     try {
@@ -136,7 +163,7 @@ export default function Checkout() {
         ...(token && { Authorization: `Bearer ${token}` }),
       };
 
-      // ITEMS MAPPING (FIXED)
+      // ⭐ FIXED ITEMS MAPPING
       const items = cart.map((item) => {
         const tourId =
           typeof item.tourId === "object" ? item.tourId._id : item.tourId;
@@ -170,10 +197,7 @@ export default function Checkout() {
           ),
 
           childCount: Number(
-            item.guestsChild ??
-              item.childCount ??
-              item.children ??
-              0
+            item.guestsChild ?? item.childCount ?? item.children ?? 0
           ),
 
           adultPrice,
@@ -181,7 +205,7 @@ export default function Checkout() {
         };
       });
 
-      // SEND ONLY REQUIRED FIELDS
+      // ⭐ FINAL BOOKING PAYLOAD
       const bookingData = {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
@@ -192,6 +216,7 @@ export default function Checkout() {
         items,
       };
 
+      // ⭐ CREATE BOOKING API
       const bookingRes = await api.post(API.CREATE_BOOKING, bookingData, {
         headers,
       });
@@ -205,18 +230,20 @@ export default function Checkout() {
       const bookingId =
         bookingRes.data.booking?._id || bookingRes.data.bookingId;
 
-      // PAYMENT — FINAL AMOUNT
+      // ⭐ PAYMENT API
       const paymentRes = await api.post(
         API.CREATE_PAYMENT,
         { bookingId, amount: finalAmount },
         { headers }
       );
 
+      // ⭐ IF PAYMENT LINK RECEIVED → REDIRECT
       if (paymentRes.data?.success && paymentRes.data?.paymentLink) {
         toast.success("Redirecting to secure payment...");
         localStorage.removeItem("guestCart");
         window.location.href = paymentRes.data.paymentLink;
       } else {
+        // ⭐ DIRECT PAYMENT CONFIRMATION
         await api.put(API.CONFIRM_PAYMENT(bookingId));
         localStorage.removeItem("guestCart");
         toast.success("Booking confirmed!");
@@ -259,10 +286,7 @@ export default function Checkout() {
                     0
                 );
                 const childCount = Number(
-                  item.guestsChild ??
-                    item.childCount ??
-                    item.children ??
-                    0
+                  item.guestsChild ?? item.childCount ?? item.children ?? 0
                 );
 
                 const adultUnitPrice = Number(
@@ -351,7 +375,9 @@ export default function Checkout() {
               </div>
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-10">No items in cart 🛒</p>
+            <p className="text-gray-500 text-center py-10">
+              No items in cart 🛒
+            </p>
           )}
         </div>
 
@@ -431,9 +457,7 @@ export default function Checkout() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl text-lg font-bold hover:scale-[1.03]"
             >
-              {loading
-                ? "Processing..."
-                : `Confirm & Pay AED ${finalAmount}`}
+              {loading ? "Processing..." : `Confirm & Pay AED ${finalAmount}`}
             </button>
           </form>
         </div>

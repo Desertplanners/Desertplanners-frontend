@@ -97,6 +97,24 @@ export default function TourServiceDetails() {
     fetchTour();
   }, [tourSlug]);
 
+  // ⭐ DATA LAYER — VIEW ITEM (Tour Detail Page)
+  useEffect(() => {
+    if (!tour) return;
+
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+      event: "view_item",
+      tour_id: tour._id,
+      tour_name: tour.title,
+      price: Number(tour.priceAdult || tour.price || 0),
+      child_price: Number(tour.priceChild || 0),
+      category: tour.category?.name,
+    });
+
+    console.log("📡 DATA LAYER — view_item fired", tour);
+  }, [tour]);
+
   // Format date to YYYY-MM-DD for backend
   const formatDateToYYYYMMDD = (date) => {
     const year = date.getFullYear();
@@ -192,6 +210,23 @@ export default function TourServiceDetails() {
 
         if (res.data?.success) {
           toast.success("Added to cart!");
+          // ⭐ DATA LAYER — ADD_TO_CART
+          window.dataLayer = window.dataLayer || [];
+
+          window.dataLayer.push({
+            event: "add_to_cart",
+            tour_id: tour._id,
+            tour_name: tour.title,
+            price: Number(tour.priceAdult || tour.price || 0),
+            child_price: Number(tour.priceChild || 0),
+            guests_adult: adultCount,
+            guests_child: childCount,
+            date: formattedDate,
+            quantity: 1,
+          });
+
+          console.log("📡 DATA LAYER — add_to_cart fired");
+
           navigate("/cart", { state: { newCart: res.data.cart } });
         } else {
           toast.error("Something went wrong!");
@@ -233,6 +268,24 @@ export default function TourServiceDetails() {
       localStorage.setItem("guestCart", JSON.stringify(localCart));
 
       toast.success("Added to cart!");
+
+      // ⭐ DATA LAYER — ADD_TO_CART (Guest User)
+      window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        event: "add_to_cart",
+        tour_id: tour._id,
+        tour_name: tour.title,
+        price: Number(tour.priceAdult || tour.price || 0),
+        child_price: Number(tour.priceChild || 0),
+        guests_adult: adultCount,
+        guests_child: childCount,
+        date: formattedDate,
+        quantity: 1,
+      });
+
+      console.log("📡 DATA LAYER — add_to_cart fired (GUEST)");
+
       navigate("/cart", { state: { newCart: localCart } });
     } catch (error) {
       console.error(

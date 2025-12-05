@@ -27,7 +27,7 @@ export default function BookingSuccess() {
   }, [bookingId]);
 
   // -------------------------------------
-  // 2️⃣ FIRE META PURCHASE EVENT
+  // 2️⃣ META PURCHASE EVENT (FB Pixel)
   // -------------------------------------
   useEffect(() => {
     if (!booking) return;
@@ -49,6 +49,41 @@ export default function BookingSuccess() {
   }, [booking]);
 
   // -------------------------------------
+  // 3️⃣ GA4 + Google Ads — PURCHASE EVENT
+  // -------------------------------------
+  useEffect(() => {
+    if (!booking) return;
+
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+      event: "purchase",
+      transaction_id: booking._id,
+      value: booking.totalPrice,
+      currency: "AED",
+      tax: booking.transactionFee || 0,
+      subtotal: booking.subtotal || 0,
+      payment_status: booking.paymentStatus,
+
+      items: booking.items.map((item) => ({
+        item_id: item.tourId?._id,
+        item_name: item.tourId?.title,
+        date: item.date,
+
+        price_adult: item.adultPrice,
+        price_child: item.childPrice,
+
+        guests_adult: item.adultCount,
+        guests_child: item.childCount,
+
+        quantity: 1,
+      })),
+    });
+
+    console.log("📡 GA4 PURCHASE EVENT FIRED!", booking);
+  }, [booking]);
+
+  // -------------------------------------
   // LOADING / ERROR UI
   // -------------------------------------
   if (loading) {
@@ -64,7 +99,7 @@ export default function BookingSuccess() {
   }
 
   // -------------------------------------
-  // 3️⃣ MAIN UI
+  // 4️⃣ MAIN UI
   // -------------------------------------
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white mt-8 shadow-lg rounded-xl border">
