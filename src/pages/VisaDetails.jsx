@@ -49,6 +49,30 @@ export default function VisaDetails() {
     fetchVisa();
   }, [visaSlug]);
 
+  // ⭐ DATA LAYER — VIEW ITEM (Visa Details Page)
+  useEffect(() => {
+    if (!visa) return;
+
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+      event: "view_item",
+      item_type: "visa",
+
+      visa_id: visa._id,
+      visa_name: visa.title,
+      visa_type: visa.visaType,
+      entry_type: visa.entryType,
+      processing_time: visa.processingTime,
+      stay_duration: visa.stayDuration,
+
+      price: Number(visa.price || 0),
+      currency: "AED",
+    });
+
+    console.log("📡 DATA LAYER — view_item (visa) fired", visa);
+  }, [visa]);
+
   // ✅ Fetch Related Visas
   useEffect(() => {
     if (!visa) return;

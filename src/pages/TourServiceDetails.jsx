@@ -110,6 +110,7 @@ export default function TourServiceDetails() {
       price: Number(tour.priceAdult || tour.price || 0),
       child_price: Number(tour.priceChild || 0),
       category: tour.category?.name,
+      currency: "AED",
     });
 
     console.log("📡 DATA LAYER — view_item fired", tour);
@@ -217,12 +218,13 @@ export default function TourServiceDetails() {
             event: "add_to_cart",
             tour_id: tour._id,
             tour_name: tour.title,
-            price: Number(tour.priceAdult || tour.price || 0),
-            child_price: Number(tour.priceChild || 0),
+            price: adultPrice,
+            child_price: childPrice,
             guests_adult: adultCount,
             guests_child: childCount,
             date: formattedDate,
-            quantity: 1,
+            quantity: adultCount + childCount,
+            currency: "AED",
           });
 
           console.log("📡 DATA LAYER — add_to_cart fired");
@@ -276,12 +278,13 @@ export default function TourServiceDetails() {
         event: "add_to_cart",
         tour_id: tour._id,
         tour_name: tour.title,
-        price: Number(tour.priceAdult || tour.price || 0),
-        child_price: Number(tour.priceChild || 0),
+        price: adultPrice,
+        child_price: childPrice,
         guests_adult: adultCount,
         guests_child: childCount,
         date: formattedDate,
-        quantity: 1,
+        quantity: adultCount + childCount,
+        currency: "AED",
       });
 
       console.log("📡 DATA LAYER — add_to_cart fired (GUEST)");

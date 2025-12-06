@@ -53,35 +53,41 @@ export default function BookingSuccess() {
   // -------------------------------------
   useEffect(() => {
     if (!booking) return;
-
+  
     window.dataLayer = window.dataLayer || [];
-
+  
     window.dataLayer.push({
       event: "purchase",
       transaction_id: booking._id,
-      value: booking.totalPrice,
+      value: booking.totalPrice, // must be final paid amount
       currency: "AED",
       tax: booking.transactionFee || 0,
       subtotal: booking.subtotal || 0,
       payment_status: booking.paymentStatus,
-
+  
       items: booking.items.map((item) => ({
         item_id: item.tourId?._id,
         item_name: item.tourId?.title,
         date: item.date,
-
+  
+        // GA4 expects a single price field
+        price: Number(item.adultPrice || 0),
+  
+        // Custom fields — allowed
         price_adult: item.adultPrice,
         price_child: item.childPrice,
-
+  
         guests_adult: item.adultCount,
         guests_child: item.childCount,
-
-        quantity: 1,
+  
+        // CORRECT QUANTITY
+        quantity: Number(item.adultCount + item.childCount),
       })),
     });
-
+  
     console.log("📡 GA4 PURCHASE EVENT FIRED!", booking);
   }, [booking]);
+  
 
   // -------------------------------------
   // LOADING / ERROR UI

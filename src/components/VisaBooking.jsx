@@ -2,7 +2,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
-import { FaUpload, FaPlaneArrival, FaPassport, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import {
+  FaUpload,
+  FaPlaneArrival,
+  FaPassport,
+  FaCheckCircle,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -15,44 +21,48 @@ import PhoneInput from "../components/PhoneInput";
 // ------------------------------------------------------------------
 // MODERN DATE PICKER WITH MONTH + YEAR DROPDOWN
 // ------------------------------------------------------------------
-const DateInput = React.memo(({ label, name, value, onChange, placeholder }) => {
-  return (
-    <div className="flex flex-col gap-2 w-full">
-      <label className="text-sm font-semibold text-gray-700">{label}</label>
+const DateInput = React.memo(
+  ({ label, name, value, onChange, placeholder }) => {
+    return (
+      <div className="flex flex-col gap-2 w-full">
+        <label className="text-sm font-semibold text-gray-700">{label}</label>
 
-      <DatePicker
-        selected={value ? new Date(value) : null}
-        onChange={(date) => onChange(name, date)}
-        dateFormat="dd MMM yyyy"
-        placeholderText={placeholder || `Select ${label}`}
-        showMonthDropdown
-        showYearDropdown
-        dropdownMode="select"
-        className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 
+        <DatePicker
+          selected={value ? new Date(value) : null}
+          onChange={(date) => onChange(name, date)}
+          dateFormat="dd MMM yyyy"
+          placeholderText={placeholder || `Select ${label}`}
+          showMonthDropdown
+          showYearDropdown
+          dropdownMode="select"
+          className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 
                    shadow-sm focus:border-red-500 outline-none transition-all"
-        calendarClassName="rounded-2xl shadow-2xl border bg-white"
-        popperClassName="z-50"
-      />
-    </div>
-  );
-});
+          calendarClassName="rounded-2xl shadow-2xl border bg-white"
+          popperClassName="z-50"
+        />
+      </div>
+    );
+  }
+);
 
 // ------------------------------------------------------------------
 // TEXT INPUT
 // ------------------------------------------------------------------
-const FormInput = React.memo(({ label, name, type = "text", value, onChange, placeholder }) => (
-  <div className="flex flex-col gap-2 w-full">
-    <label className="text-sm font-semibold text-gray-700">{label}</label>
-    <input
-      type={type}
-      value={value || ""}
-      placeholder={placeholder || label}
-      onChange={(e) => onChange(name, e.target.value)}
-      className="px-4 py-3 rounded-xl bg-white border border-gray-300 shadow-sm 
+const FormInput = React.memo(
+  ({ label, name, type = "text", value, onChange, placeholder }) => (
+    <div className="flex flex-col gap-2 w-full">
+      <label className="text-sm font-semibold text-gray-700">{label}</label>
+      <input
+        type={type}
+        value={value || ""}
+        placeholder={placeholder || label}
+        onChange={(e) => onChange(name, e.target.value)}
+        className="px-4 py-3 rounded-xl bg-white border border-gray-300 shadow-sm 
                  focus:border-red-500 outline-none transition-all"
-    />
-  </div>
-));
+      />
+    </div>
+  )
+);
 
 // ------------------------------------------------------------------
 // SELECT FIELD
@@ -79,51 +89,66 @@ const FormSelect = React.memo(({ label, name, value, onChange, options }) => (
 // ------------------------------------------------------------------
 // FILE UPLOAD
 // ------------------------------------------------------------------
-const FileUpload = React.memo(({ label, name, file, onChange, optional = false, accept }) => (
-  <div className="flex flex-col gap-2">
-    <label
-      className={`border-2 ${optional ? "border-dashed border-yellow-400" : "border-dashed border-gray-400"} 
+const FileUpload = React.memo(
+  ({ label, name, file, onChange, optional = false, accept }) => (
+    <div className="flex flex-col gap-2">
+      <label
+        className={`border-2 ${
+          optional
+            ? "border-dashed border-yellow-400"
+            : "border-dashed border-gray-400"
+        } 
                  rounded-xl p-4 flex flex-col items-start gap-2 cursor-pointer
                  hover:border-red-500 hover:bg-red-50 transition-all w-full`}
-    >
-      <div className="flex items-center gap-3 w-full">
-        <FaUpload className="text-red-600 text-2xl" />
-        <div className="flex-1">
-          <div className="flex items-center gap-2 justify-between">
-            <span className="text-gray-700 font-medium">{label}</span>
-            {optional ? (
-              <span className="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full">Optional</span>
-            ) : (
-              <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded-full">Required</span>
-            )}
+      >
+        <div className="flex items-center gap-3 w-full">
+          <FaUpload className="text-red-600 text-2xl" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2 justify-between">
+              <span className="text-gray-700 font-medium">{label}</span>
+              {optional ? (
+                <span className="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full">
+                  Optional
+                </span>
+              ) : (
+                <span className="text-xs text-green-700 bg-green-100 px-2 py-1 rounded-full">
+                  Required
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Click to upload {optional ? "(optional)" : ""}
+            </p>
           </div>
-          <p className="text-xs text-gray-500 mt-1">Click to upload {optional ? "(optional)" : ""}</p>
         </div>
-      </div>
 
-      <input
-        type="file"
-        accept={accept || "*/*"}
-        className="hidden"
-        onChange={(e) => onChange(name, e.target.files[0])}
-      />
-    </label>
+        <input
+          type="file"
+          accept={accept || "*/*"}
+          className="hidden"
+          onChange={(e) => onChange(name, e.target.files[0])}
+        />
+      </label>
 
-    {file && (
-      <div className="flex items-center gap-2">
-        <FaCheckCircle className="text-green-500" />
-        <p className="text-sm text-gray-700 truncate">✔ {file.name}</p>
-      </div>
-    )}
-  </div>
-));
+      {file && (
+        <div className="flex items-center gap-2">
+          <FaCheckCircle className="text-green-500" />
+          <p className="text-sm text-gray-700 truncate">✔ {file.name}</p>
+        </div>
+      )}
+    </div>
+  )
+);
 
 // ------------------------------------------------------------------
 // HELPER: Format currency
 // ------------------------------------------------------------------
 const formatAED = (val) => {
   if (val === undefined || val === null || isNaN(Number(val))) return "-";
-  return Number(val).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return Number(val).toLocaleString("en-IN", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 };
 
 // ==================================================================
@@ -168,6 +193,7 @@ export default function VisaBooking() {
   const [loading, setLoading] = useState(false);
   const [params] = useSearchParams();
   const visaId = params.get("visaId");
+  const [beginCheckoutFired, setBeginCheckoutFired] = useState(false);
 
   const api = DataService();
 
@@ -204,6 +230,29 @@ export default function VisaBooking() {
 
     loadVisa();
   }, [visaId, api]);
+
+  // ⭐ DATA LAYER — BEGIN CHECKOUT (Visa)
+  useEffect(() => {
+    if (!selectedVisa || beginCheckoutFired) return;
+
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+      event: "begin_checkout",
+      item_type: "visa",
+      visa_id: selectedVisa._id,
+      visa_name: selectedVisa.title,
+      visa_type: selectedVisa.visaType,
+      entry_type: selectedVisa.entryType,
+      processing_time: selectedVisa.processingTime,
+      price: Number(selectedVisa.price || 0),
+      currency: "AED",
+    });
+
+    console.log("📡 DATA LAYER — begin_checkout (visa) fired");
+
+    setBeginCheckoutFired(true);
+  }, [selectedVisa, beginCheckoutFired]);
 
   // ----------------------------------------------------------------
   // Updaters
@@ -325,6 +374,41 @@ export default function VisaBooking() {
         return;
       }
 
+      // ⭐ DATA LAYER — ADD PAYMENT INFO (Visa)
+      window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        event: "add_payment_info",
+        payment_type: "online",
+        item_type: "visa",
+      
+        value: +finalAmount,
+        currency: "AED",
+      
+        items: [
+          {
+            item_id: fields.visaId,
+            item_name: fields.visaTitle,
+            item_category: "Visa",
+            price: basePrice,
+            quantity: 1,
+          },
+        ],
+      
+        visa_id: fields.visaId,
+        visa_name: fields.visaTitle,
+        visa_price: basePrice,
+        transaction_fee: transactionFee,
+      
+        applicant: {
+          name: fields.fullName,
+          email: fields.email,
+          phone: fields.phone,
+          gender: fields.gender,
+        },
+      });
+      console.log("📡 DATA LAYER — add_payment_info (visa) fired");
+
       const fd = new FormData();
 
       // fields (convert dates to ISO strings)
@@ -393,13 +477,16 @@ export default function VisaBooking() {
       if (v === null || v === undefined || v === "") return acc + 1;
       return acc;
     }, 0);
-  }, [fields]);
+  }, 0);
 
   const missingFileCount = useMemo(() => {
-    return requiredFileKeys.reduce((acc, k) => {
-      if (!files[k]) return acc + 1;
-      return acc;
-    }, [files]);
+    return requiredFileKeys.reduce(
+      (acc, k) => {
+        if (!files[k]) return acc + 1;
+        return acc;
+      },
+      [files]
+    );
   }, [files]);
 
   // ----------------------------------------------------------------
@@ -423,7 +510,11 @@ export default function VisaBooking() {
                   <h3 className="text-xl font-extrabold text-red-900">
                     {selectedVisa?.title || fields.visaTitle || "Visa"}
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">{fields.processingTime || selectedVisa?.processingTime || "Processing time info"}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {fields.processingTime ||
+                      selectedVisa?.processingTime ||
+                      "Processing time info"}
+                  </p>
                 </div>
               </div>
 
@@ -432,18 +523,24 @@ export default function VisaBooking() {
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="text-sm text-gray-500">Base Price</p>
-                      <p className="text-lg font-bold">AED {formatAED(basePrice)}</p>
+                      <p className="text-lg font-bold">
+                        AED {formatAED(basePrice)}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-500">Transaction Fee</p>
-                      <p className="text-lg font-semibold">AED {formatAED(transactionFee)}</p>
+                      <p className="text-lg font-semibold">
+                        AED {formatAED(transactionFee)}
+                      </p>
                     </div>
                   </div>
 
                   <div className="mt-4 border-t pt-3 flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-500">Total Payable</p>
-                      <p className="text-2xl font-extrabold text-red-700">AED {formatAED(finalAmount)}</p>
+                      <p className="text-2xl font-extrabold text-red-700">
+                        AED {formatAED(finalAmount)}
+                      </p>
                     </div>
                     <div className="text-xs text-gray-400">
                       <p>incl. Transition fee</p>
@@ -455,7 +552,10 @@ export default function VisaBooking() {
                   <div className="flex items-start gap-2">
                     <FaExclamationTriangle className="text-yellow-700 mt-0.5" />
                     <div>
-                      <strong>Note:</strong> The final amount includes a <strong> transaction fee</strong>. The server will validate and charge the same amount during payment creation.
+                      <strong>Note:</strong> The final amount includes a{" "}
+                      <strong> transaction fee</strong>. The server will
+                      validate and charge the same amount during payment
+                      creation.
                     </div>
                   </div>
                 </div>
@@ -468,13 +568,18 @@ export default function VisaBooking() {
             <h4 className="font-bold text-gray-800 mb-3">Checklist</h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li className="flex items-center gap-2">
-                <FaCheckCircle className="text-green-500" /> All personal details filled
+                <FaCheckCircle className="text-green-500" /> All personal
+                details filled
               </li>
               <li className="flex items-center gap-2">
-                <FaCheckCircle className="text-green-500" /> Passport & photo uploaded
+                <FaCheckCircle className="text-green-500" /> Passport & photo
+                uploaded
               </li>
               <li className="flex items-center gap-2">
-                <span className="text-xs bg-yellow-100 px-2 py-1 rounded-full text-yellow-800">Optional</span> Emirates ID / Additional ID / Old Visa
+                <span className="text-xs bg-yellow-100 px-2 py-1 rounded-full text-yellow-800">
+                  Optional
+                </span>{" "}
+                Emirates ID / Additional ID / Old Visa
               </li>
             </ul>
           </div>
@@ -490,33 +595,68 @@ export default function VisaBooking() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Personal Info */}
               <div className="space-y-4">
-  <FormInput label="Full Name" name="fullName" value={fields.fullName} onChange={handleChange} />
-  <FormInput label="Email" name="email" type="email" value={fields.email} onChange={handleChange} />
+                <FormInput
+                  label="Full Name"
+                  name="fullName"
+                  value={fields.fullName}
+                  onChange={handleChange}
+                />
+                <FormInput
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={fields.email}
+                  onChange={handleChange}
+                />
 
-  {/* NEW PHONE INPUT WITH COUNTRY CODE */}
-  <PhoneInput
-    value={fields.phone}
-    onChange={(val) => handleChange("phone", val)}
-  />
+                {/* NEW PHONE INPUT WITH COUNTRY CODE */}
+                <PhoneInput
+                  value={fields.phone}
+                  onChange={(val) => handleChange("phone", val)}
+                />
 
-  <FormSelect
-    label="Gender"
-    name="gender"
-    value={fields.gender}
-    onChange={handleChange}
-    options={["Male", "Female", "Other"]}
-  />
+                <FormSelect
+                  label="Gender"
+                  name="gender"
+                  value={fields.gender}
+                  onChange={handleChange}
+                  options={["Male", "Female", "Other"]}
+                />
 
-  <DateInput label="Date of Birth" name="dob" value={fields.dob} onChange={handleChange} />
-</div>
-
+                <DateInput
+                  label="Date of Birth"
+                  name="dob"
+                  value={fields.dob}
+                  onChange={handleChange}
+                />
+              </div>
 
               {/* Passport Info */}
               <div className="space-y-4">
-                <FormInput label="Passport Number" name="passportNumber" value={fields.passportNumber} onChange={handleChange} />
-                <FormInput label="Issue Place" name="issuePlace" value={fields.issuePlace} onChange={handleChange} />
-                <DateInput label="Passport Issue Date" name="issueDate" value={fields.issueDate} onChange={handleChange} />
-                <DateInput label="Passport Expiry Date" name="expiryDate" value={fields.expiryDate} onChange={handleChange} />
+                <FormInput
+                  label="Passport Number"
+                  name="passportNumber"
+                  value={fields.passportNumber}
+                  onChange={handleChange}
+                />
+                <FormInput
+                  label="Issue Place"
+                  name="issuePlace"
+                  value={fields.issuePlace}
+                  onChange={handleChange}
+                />
+                <DateInput
+                  label="Passport Issue Date"
+                  name="issueDate"
+                  value={fields.issueDate}
+                  onChange={handleChange}
+                />
+                <DateInput
+                  label="Passport Expiry Date"
+                  name="expiryDate"
+                  value={fields.expiryDate}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
@@ -524,27 +664,96 @@ export default function VisaBooking() {
 
             {/* Travel Info */}
             <div className="grid md:grid-cols-2 gap-6">
-              <DateInput label="Entry Date" name="entryDate" value={fields.entryDate} onChange={handleChange} />
-              <DateInput label="Return Date" name="returnDate" value={fields.returnDate} onChange={handleChange} />
+              <DateInput
+                label="Entry Date"
+                name="entryDate"
+                value={fields.entryDate}
+                onChange={handleChange}
+              />
+              <DateInput
+                label="Return Date"
+                name="returnDate"
+                value={fields.returnDate}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="my-8 h-[1px] bg-gray-100" />
 
             {/* Upload Documents */}
-            <h2 className="text-xl font-bold text-red-800 mb-4">Upload Documents</h2>
+            <h2 className="text-xl font-bold text-red-800 mb-4">
+              Upload Documents
+            </h2>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <FileUpload label="Passport Front Page" name="passportFront" file={files.passportFront} onChange={handleFile} accept="image/*,application/pdf" />
-              <FileUpload label="Passport Back Page" name="passportBack" file={files.passportBack} onChange={handleFile} accept="image/*,application/pdf" />
-              <FileUpload label="Passport Cover" name="passportCover" file={files.passportCover} onChange={handleFile} accept="image/*,application/pdf" />
-              <FileUpload label="Photo (White BG)" name="photo" file={files.photo} onChange={handleFile} accept="image/*" />
-              <FileUpload label="Accommodation Proof" name="accommodation" file={files.accommodation} onChange={handleFile} accept="image/*,application/pdf" />
-              <FileUpload label="Return Ticket" name="flightTicket" file={files.flightTicket} onChange={handleFile} accept="image/*,application/pdf" />
+              <FileUpload
+                label="Passport Front Page"
+                name="passportFront"
+                file={files.passportFront}
+                onChange={handleFile}
+                accept="image/*,application/pdf"
+              />
+              <FileUpload
+                label="Passport Back Page"
+                name="passportBack"
+                file={files.passportBack}
+                onChange={handleFile}
+                accept="image/*,application/pdf"
+              />
+              <FileUpload
+                label="Passport Cover"
+                name="passportCover"
+                file={files.passportCover}
+                onChange={handleFile}
+                accept="image/*,application/pdf"
+              />
+              <FileUpload
+                label="Photo (White BG)"
+                name="photo"
+                file={files.photo}
+                onChange={handleFile}
+                accept="image/*"
+              />
+              <FileUpload
+                label="Accommodation Proof"
+                name="accommodation"
+                file={files.accommodation}
+                onChange={handleFile}
+                accept="image/*,application/pdf"
+              />
+              <FileUpload
+                label="Return Ticket"
+                name="flightTicket"
+                file={files.flightTicket}
+                onChange={handleFile}
+                accept="image/*,application/pdf"
+              />
 
               {/* Optional ones */}
-              <FileUpload label="Emirates ID" name="emiratesId" file={files.emiratesId} onChange={handleFile} optional accept="image/*,application/pdf" />
-              <FileUpload label="Additional ID" name="extraId" file={files.extraId} onChange={handleFile} optional accept="image/*,application/pdf" />
-              <FileUpload label="Old Visa (Optional)" name="oldVisa" file={files.oldVisa} onChange={handleFile} optional accept="image/*,application/pdf" />
+              <FileUpload
+                label="Emirates ID"
+                name="emiratesId"
+                file={files.emiratesId}
+                onChange={handleFile}
+                optional
+                accept="image/*,application/pdf"
+              />
+              <FileUpload
+                label="Additional ID"
+                name="extraId"
+                file={files.extraId}
+                onChange={handleFile}
+                optional
+                accept="image/*,application/pdf"
+              />
+              <FileUpload
+                label="Old Visa (Optional)"
+                name="oldVisa"
+                file={files.oldVisa}
+                onChange={handleFile}
+                optional
+                accept="image/*,application/pdf"
+              />
             </div>
 
             <div className="my-8 h-[1px] bg-gray-100" />
@@ -554,11 +763,17 @@ export default function VisaBooking() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Visa</p>
-                  <p className="font-semibold text-gray-800">{selectedVisa?.title || fields.visaTitle || "Selected Visa"}</p>
+                  <p className="font-semibold text-gray-800">
+                    {selectedVisa?.title || fields.visaTitle || "Selected Visa"}
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-600">Processing</p>
-                  <p className="font-semibold text-gray-800">{fields.processingTime || selectedVisa?.processingTime || "-"}</p>
+                  <p className="font-semibold text-gray-800">
+                    {fields.processingTime ||
+                      selectedVisa?.processingTime ||
+                      "-"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -569,7 +784,8 @@ export default function VisaBooking() {
                 <p className="text-sm text-gray-600">
                   {missingFieldCount > 0 || missingFileCount > 0 ? (
                     <span className="inline-flex items-center gap-2 text-red-600">
-                      <FaExclamationTriangle /> {missingFieldCount} fields & {missingFileCount} files missing
+                      <FaExclamationTriangle /> {missingFieldCount} fields &{" "}
+                      {missingFileCount} files missing
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-2 text-green-600">
@@ -585,13 +801,16 @@ export default function VisaBooking() {
                   disabled={loading}
                   className="px-8 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-red-900 text-white text-lg font-semibold shadow-xl hover:scale-105 transition disabled:opacity-50"
                 >
-                  {loading ? "Processing..." : `Pay AED ${formatAED(finalAmount)}`}
+                  {loading
+                    ? "Processing..."
+                    : `Pay AED ${formatAED(finalAmount)}`}
                 </button>
               </div>
             </div>
 
             <p className="text-xs text-gray-400 mt-3">
-              By clicking Pay you agree to our terms. The final payable amount includes a transaction fee.
+              By clicking Pay you agree to our terms. The final payable amount
+              includes a transaction fee.
             </p>
           </div>
         </div>

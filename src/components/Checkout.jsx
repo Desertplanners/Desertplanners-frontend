@@ -133,24 +133,29 @@ export default function Checkout() {
         tour_id: item.tourId?._id || item.tourId || item._id,
         tour_name: item.tourId?.title || item.title,
         date: item.date,
-
+    
         guests_adult: Number(
           item.guestsAdult ?? item.adultCount ?? item.adults ?? item.guests ?? 0
         ),
-
+    
         guests_child: Number(
           item.guestsChild ?? item.childCount ?? item.children ?? 0
         ),
-
+    
         price_adult: Number(
           item.adultPrice || item.tourId?.priceAdult || item.price || 0
         ),
-
+    
         price_child: Number(item.childPrice || item.tourId?.priceChild || 0),
-
-        quantity: 1,
+    
+        quantity:
+          Number(
+            item.guestsAdult ?? item.adultCount ?? item.adults ?? item.guests ?? 0
+          ) +
+          Number(item.guestsChild ?? item.childCount ?? item.children ?? 0),
       })),
     });
+    
 
     console.log("📡 DATA LAYER — add_payment_info fired");
 

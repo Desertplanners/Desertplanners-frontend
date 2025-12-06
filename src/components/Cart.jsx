@@ -45,6 +45,39 @@ export default function Cart({ userId }) {
     }
   };
 
+  useEffect(() => {
+    if (!loading && cart.length > 0) {
+      window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        event: "view_cart",
+        items: cart.map((item) => {
+          const adultGuests = Number(item.guestsAdult || item.guests || 0);
+          const childGuests = Number(item.guestsChild || 0);
+          const adultPrice = Number(
+            item.adultPrice || item.tourId?.priceAdult || item.price || 0
+          );
+          const childPrice = Number(
+            item.childPrice || item.tourId?.priceChild || 0
+          );
+
+          return {
+            item_id: item.tourId?._id || item.tourId || item._id,
+            item_name: item.tourId?.title || item.title,
+            price: adultPrice, // GA4 uses single price field
+            price_child: childPrice,
+            quantity: adultGuests + childGuests,
+            date: item.date,
+          };
+        }),
+        total_value: totalPrice,
+        currency: "AED",
+      });
+
+      console.log("📡 DATA LAYER — view_cart fired");
+    }
+  }, [loading, cart]);
+
   // ✅ Remove single item
   const removeItem = async (itemId) => {
     const uid = getUserId();
@@ -177,7 +210,9 @@ export default function Cart({ userId }) {
           item.adultPrice || item.tourId?.priceAdult || item.price || 0
         ),
         price_child: Number(item.childPrice || item.tourId?.priceChild || 0),
-        quantity: 1,
+        quantity:
+          Number(item.guestsAdult || item.guests || 0) +
+          Number(item.guestsChild || 0),
       })),
       total_value: totalPrice,
       currency: "AED",
