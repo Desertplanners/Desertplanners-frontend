@@ -131,24 +131,36 @@ export default function Footer() {
               <span className="w-2 h-2 bg-[#e82429] rounded-full"></span>
               Get In Touch
             </h3>
+
             <ul className="space-y-4">
+              {/* Address */}
               <li className="flex items-start gap-3 group">
                 <FaMapMarkerAlt className="text-[#e82429] mt-1 flex-shrink-0 group-hover:scale-110 transition-transform" />
                 <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
                   Desert Planners Tourism LLC P.O. Box: 43710, Dubai, UAE
                 </span>
               </li>
+
+              {/* Phone Clickable */}
               <li className="flex items-center gap-3 group">
                 <FaPhoneAlt className="text-[#e82429] group-hover:scale-110 transition-transform" />
-                <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
-                  +97143546677
-                </span>
+                <a
+                  href="tel:+97143546677"
+                  className="text-gray-400 text-sm group-hover:text-white transition-colors"
+                >
+                  +971 4 354 6677
+                </a>
               </li>
+
+              {/* Email Clickable */}
               <li className="flex items-center gap-3 group">
                 <FaEnvelope className="text-[#e82429] group-hover:scale-110 transition-transform" />
-                <span className="text-gray-400 text-sm group-hover:text-white transition-colors">
+                <a
+                  href="mailto:info@desertplanners.net"
+                  className="text-gray-400 text-sm group-hover:text-white transition-colors"
+                >
                   info@desertplanners.net
-                </span>
+                </a>
               </li>
             </ul>
           </div>

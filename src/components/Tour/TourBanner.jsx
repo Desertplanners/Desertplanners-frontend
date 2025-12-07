@@ -26,9 +26,7 @@ export default function TourBanner() {
             </li>
           </ul>
 
-          <button className="mt-6 bg-[#e82429] text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-[#b9191c] transition-all duration-300">
-            Explore Tours
-          </button>
+        
         </div>
 
         {/* RIGHT IMAGE */}

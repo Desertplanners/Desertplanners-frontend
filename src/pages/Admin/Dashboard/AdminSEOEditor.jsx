@@ -31,7 +31,7 @@ export default function AdminSEOEditor({ data, closeModal }) {
   const [ogFile, setOgFile] = useState(null);
   const [faqs, setFaqs] = useState([]);
 
-  const [itemTitle, setItemTitle] = useState("Loading...");
+  const [itemTitle, setItemTitle] = useState(data?.title || "Loading...");
 
   // ⭐ Character Limits
   const TITLE_LIMIT = 60;
@@ -109,7 +109,7 @@ export default function AdminSEOEditor({ data, closeModal }) {
   };
 
   useEffect(() => {
-    fetchItemTitle();
+    // fetchItemTitle();
     fetchSEO();
   }, [backendType, id]);
 

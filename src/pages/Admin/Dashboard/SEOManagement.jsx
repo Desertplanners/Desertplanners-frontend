@@ -39,7 +39,7 @@ export default function SEOManagement() {
     (async () => {
       try {
         setTours((await api.get(API.GET_TOURS)).data || []);
-        setVisas((await api.get(API.GET_VISAS)).data?.visas || []);
+        setVisas((await api.get(API.GET_VISAS)).data || []);
         setHolidays((await api.get(API.GET_ALL_HOLIDAY_TOURS)).data?.tours || []);
 
         setTourCategories((await api.get(API.GET_CATEGORIES)).data || []);
@@ -179,6 +179,7 @@ export default function SEOManagement() {
                     setSelectedSEOData({
                       type: tab,
                       id: item._id || item.id,
+                      title: item.title || item.name,
                     });
                     setShowModal(true);
                   }}
