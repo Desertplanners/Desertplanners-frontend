@@ -31,6 +31,7 @@ import HolidayCategoryPage from "./pages/HolidayCategoryPage";
 import HolidayPackageDetails from "./pages/HolidayPackageDetails";
 import HolidayPage from "./pages/HolidayPage";
 import  Admin from "./pages/Admin/Dashboard/Admin";
+import Visa from "./pages/Visa";
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -44,7 +45,7 @@ const AppRouter = () => (
       />
       {/* <Route path="/holidays" element={<HolidayPackages />} />
       <Route path="/holidays/:slug" element={<HolidayDetails />} /> */}
-      <Route path="/visa" element={<VisaList />} />
+      <Route path="/visa" element={<Visa />} />
       <Route path="/visa/:categorySlug" element={<VisaList />} /> {/* 👈 new */}
       <Route path="/visa/:categorySlug/:visaSlug" element={<VisaDetails />} />
       <Route path="/visa-success" element={<VisaSuccess />} />

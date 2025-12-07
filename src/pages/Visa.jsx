@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import DataService from "../config/DataService";
-import { Link, useNavigate } from "react-router-dom";
-import { API } from "../config/API";
+import { useNavigate } from "react-router-dom";
 import {
   FaStar,
   FaClock,
@@ -9,69 +8,75 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 
-export default function HolidayPage() {
-  const [categories, setCategories] = useState([]);
-  const [categoryImages, setCategoryImages] = useState({});
+export default function VisaPage() {
+  const [visaTypes, setVisaTypes] = useState([]);
+  const [visaImages, setVisaImages] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
     const api = DataService();
 
-    api.get("/api/holiday-categories").then((res) => {
+    // ⭐ Correct API → GET Visa categories
+    api.get("/api/visa-categories").then((res) => {
       const list = res.data || [];
-      setCategories(list);
+      setVisaTypes(list);
 
-      list.forEach((cat) => fetchCategoryImage(cat));
+      list.forEach((v) => fetchVisaImage(v));
     });
 
-    const fetchCategoryImage = async (cat) => {
+    // ⭐ Fetch FIRST visa image for each category
+    const fetchVisaImage = async (visa) => {
       try {
-        const res = await api.get(API.GET_PACKAGES_BY_CATEGORY(cat.slug));
-        const packages = res.data || [];
+        const res = await api.get(`/api/visas?categorySlug=${visa.slug}`);
+        const items = res.data || [];
+
+        const firstVisa = items[0] || {};
 
         const firstImage =
-          packages?.[0]?.sliderImages?.[0] ||
-          "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=80";
+          firstVisa.gallery?.[0] ||
+          firstVisa.img ||
+          firstVisa.image ||
+          firstVisa.thumbnail ||
+          (firstVisa.images?.length > 0 ? firstVisa.images[0] : null) ||
+          "https://images.unsplash.com/photo-1522199873711-ae6f022b24ae?auto=format&fit=crop&q=80&w=1200";
 
-        setCategoryImages((prev) => ({
-          ...prev,
-          [cat.slug]: firstImage,
-        }));
+        setVisaImages((prev) => ({ ...prev, [visa.slug]: firstImage }));
       } catch (err) {
-        console.log("Image load error:", err);
+        console.log("Visa image load error:", err);
       }
     };
   }, []);
 
   return (
     <div className="w-full">
-      {/* ⭐⭐⭐ HOLIDAY BANNER HERE ⭐⭐⭐ */}
+
+      {/* ⭐⭐⭐ VISA BANNER (same as Holiday) ⭐⭐⭐ */}
       <section className="bg-gradient-to-br from-[#f9fafc] via-[#f5f6f9] to-[#f8f8fb] py-16">
         <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between px-6 gap-10">
-          {/* LEFT CONTENT */}
+          
+          {/* LEFT TEXT */}
           <div className="md:w-1/2 space-y-6">
             <h1 className="text-3xl md:text-4xl font-bold text-[#1c1c1c] leading-snug">
-              Holiday Packages | International Trips, Family Tours & Honeymoon
-              Packages
+              Visa Services | UAE Visa, Tourist Visa & Express Processing
             </h1>
 
             <ul className="space-y-4 text-gray-700 text-lg">
               <li className="flex items-center gap-3">
                 <FaCalendarCheck className="text-[#e82429]" size={22} />
-                Best curated international holiday trips.
+                Fast processing & verified visa consultants.
               </li>
               <li className="flex items-center gap-3">
                 <FaStar className="text-[#e82429]" size={22} />
-                Handpicked itineraries & customizable packages.
+                High approval rate & secure documentation.
               </li>
               <li className="flex items-center gap-3">
                 <FaClock className="text-[#e82429]" size={22} />
-                24/7 expert travel assistance.
+                Support for urgent & express visa requests.
               </li>
             </ul>
 
             <button className="mt-6 bg-[#e82429] text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-[#b9191c] transition-all duration-300">
-              Explore Holidays
+              Explore Visa Options
             </button>
           </div>
 
@@ -79,8 +84,8 @@ export default function HolidayPage() {
           <div className="md:w-1/2 flex justify-center relative">
             <div className="absolute inset-0 bg-[#e82429]/10 blur-3xl rounded-full -z-10"></div>
             <img
-              src="https://images.unsplash.com/photo-1612010863789-40e90e0f5112?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="Holiday Banner"
+              src="https://i.pinimg.com/736x/d0/d2/ee/d0d2ee92bbf5ec268cbb9a1696e0aa3c.jpg"
+              alt="Visa Banner"
               className="rounded-2xl shadow-xl w-full h-[350px] object-cover"
             />
           </div>
@@ -90,48 +95,44 @@ export default function HolidayPage() {
       {/* ⭐ CATEGORY CARDS BELOW ⭐ */}
       <div className="max-w-[1200px] mx-auto py-12 px-4">
         <h2 className="text-3xl md:text-4xl font-bold mb-8 text-[#1c1c1c]">
-          Holiday Categories
+          Visa Categories
         </h2>
 
         <div className="space-y-8">
-          {categories.map((cat) => (
+          {visaTypes.map((visa) => (
             <div
-              key={cat._id}
-              onClick={() => navigate(`/holidays/${cat.slug}`)}
+              key={visa._id}
+              onClick={() => navigate(`/visa/${visa.slug}`)}
               className="bg-white border border-gray-200 rounded-2xl shadow-md 
                  p-5 flex flex-col md:flex-row gap-6 hover:shadow-xl 
                  transition-all duration-300 cursor-pointer"
             >
-              {/* IMAGE LEFT — Short height / Modern rounded */}
+              {/* IMAGE LEFT */}
               <div className="md:w-1/3 w-full overflow-hidden rounded-xl">
                 <img
-                  src={categoryImages[cat.slug]}
-                  alt={cat.name}
-                  className="w-full h-52 md:h-60 object-cover rounded-xl 
-                     group-hover:scale-105 transition-transform duration-500"
+                  src={visaImages[visa.slug]}
+                  alt={visa.name}
+                  className="w-full h-52 md:h-60 object-cover rounded-xl hover:scale-105 transition-transform duration-500"
                 />
               </div>
 
-              {/* CONTENT MIDDLE — Minimal, luxury feel */}
+              {/* CONTENT MIDDLE */}
               <div className="flex-1 flex flex-col justify-center space-y-3">
                 <h2 className="text-2xl font-bold text-[#1c1c1c]">
-                  {cat.name}
+                  {visa.name}
                 </h2>
 
                 <p className="text-gray-700 text-[15px] leading-relaxed">
-                  Handpicked holiday experiences including stays, sightseeing,
-                  and guided city tours. Designed for families, couples and solo
-                  travelers looking for comfortable & memorable vacations.
+                  Fast & easy UAE visa processing with expert support, verified 
+                  documents and high approval success rate.
                 </p>
 
                 <div className="flex items-center gap-3 text-sm text-gray-600 pt-1">
                   <span className="flex items-center gap-1">
-                    <FaCheckCircle className="text-green-500" /> Verified
-                    packages
+                    <FaCheckCircle className="text-green-500" /> Verified service
                   </span>
                   <span className="flex items-center gap-1">
-                    <FaCalendarCheck className="text-[#721011]" /> Flexible
-                    plans
+                    <FaCalendarCheck className="text-[#721011]" /> Flexible plans
                   </span>
                   <span className="flex items-center gap-1">
                     <FaClock className="text-gray-500" /> 24×7 support
@@ -139,21 +140,20 @@ export default function HolidayPage() {
                 </div>
 
                 <span className="text-[#e82429] font-semibold text-sm mt-1 inline-block">
-                  Explore {cat.name} Packages →
+                  Explore {visa.name} Options →
                 </span>
               </div>
 
-              {/* RIGHT SIDE — Clean CTA Box */}
-              <div
-                className="md:w-1/4 w-full md:border-l border-t md:border-t-0 border-gray-200 
+              {/* CTA BOX RIGHT */}
+              <div className="md:w-1/4 w-full md:border-l border-t md:border-t-0 border-gray-200 
                    flex flex-col justify-center pt-3 md:pt-0 md:pl-6 space-y-4"
               >
                 <div className="bg-[#fff5f5] border border-[#e82429]/20 rounded-xl p-4">
                   <p className="text-[#721011] font-bold text-lg">
-                    Popular Category
+                    Popular Visa Type
                   </p>
                   <p className="text-gray-600 text-sm mt-1">
-                    Best-selling holiday packages curated by travel experts.
+                    Trusted visa applications with high approval success.
                   </p>
                 </div>
 
@@ -162,7 +162,7 @@ export default function HolidayPage() {
                      font-semibold py-2.5 px-4 rounded-lg shadow hover:scale-[1.02] 
                      transition-all duration-300"
                 >
-                  View Packages
+                  View Details
                 </button>
               </div>
             </div>
