@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import DataService from "../../config/DataService";
 import { API } from "../../config/API";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -19,7 +19,11 @@ export default function AdminResetPassword() {
     setMessage("");
 
     try {
-      await axios.post(API.ADMIN_RESET_PASSWORD(token), { password });
+      const api = DataService(); // ⭐ MUST USE THIS
+
+      await api.post(API.ADMIN_RESET_PASSWORD(token), {
+        password,
+      });
 
       setMessage("Password updated successfully! Redirecting...");
       setTimeout(() => navigate("/admin/login"), 1500);
