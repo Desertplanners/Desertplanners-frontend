@@ -37,12 +37,35 @@ const DataService = (type = "guest") => {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // FINAL AXIOS INSTANCE
-  return axios.create({
-    baseURL: API_BASE_URL,  // ⭐ CORRECT BASE URL
+  // ⭐ Axios Instance
+  const api = axios.create({
+    baseURL: API_BASE_URL,
     headers,
     withCredentials: false,
   });
+
+  // ⭐ ADD INTERCEPTOR (IMPORTANT FOR AUTO LOGOUT)
+  api.interceptors.response.use(
+    (res) => res,
+    (err) => {
+      const status = err?.response?.status;
+
+      // If token invalid, expired, or user deleted
+      if (status === 401 || status === 403) {
+        // Remove admin token
+        localStorage.removeItem("adminToken");
+
+        // Redirect ONLY if request is from admin
+        if (type === "admin") {
+          window.location.href = "/admin/login";
+        }
+      }
+
+      return Promise.reject(err);
+    }
+  );
+
+  return api;
 };
 
 export default DataService;
