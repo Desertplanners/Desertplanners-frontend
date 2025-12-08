@@ -93,7 +93,7 @@ export default function AdminLogin() {
           </button>
         </form>
 
-        {/* Links */}
+        {/* ONLY Forgot Password */}
         <div className="text-center mt-5">
           <Link
             to="/admin/forgot-password"
@@ -101,13 +101,6 @@ export default function AdminLogin() {
           >
             Forgot Password?
           </Link>
-
-          <p className="text-gray-600 text-sm mt-3">
-            Don’t have an account?{" "}
-            <Link to="/admin/register" className="text-red-600 font-semibold hover:underline">
-              Register
-            </Link>
-          </p>
         </div>
       </div>
 

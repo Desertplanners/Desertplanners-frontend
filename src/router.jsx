@@ -9,7 +9,7 @@ import TourServiceDetails from "./pages/TourServiceDetails";
 import VisaList from "./pages/VisaList";
 import VisaDetails from "./pages/VisaDetails";
 import ContactUs from "./pages/Contact";
-import AdminRegister from "./pages/Admin/AdminRegister";
+// import AdminRegister from "./pages/Admin/AdminRegister";
 import AdminForgotPassword from "./pages/Admin/AdminForgotPassword";
 import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AdminLogin from "./pages/Admin/AdminLogin";
@@ -58,7 +58,7 @@ const AppRouter = () => (
       />
       {/* Admin Auth */}
       <Route path="/admin" element={<Admin />} />
-      <Route path="/admin/register" element={<AdminRegister />} />
+      {/* <Route path="/admin/register" element={<AdminRegister />} /> */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
       <Route
