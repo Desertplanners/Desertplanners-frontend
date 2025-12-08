@@ -10,6 +10,8 @@ import VisaList from "./pages/VisaList";
 import VisaDetails from "./pages/VisaDetails";
 import ContactUs from "./pages/Contact";
 import AdminRegister from "./pages/Admin/AdminRegister";
+import AdminForgotPassword from "./pages/Admin/AdminForgotPassword";
+import AdminResetPassword from "./pages/Admin/AdminResetPassword";
 import AdminLogin from "./pages/Admin/AdminLogin";
 import AdminDashboard from "./pages/Admin/Dashboard/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -30,7 +32,7 @@ import VisaSuccess from "./components/VisaSuccess";
 import HolidayCategoryPage from "./pages/HolidayCategoryPage";
 import HolidayPackageDetails from "./pages/HolidayPackageDetails";
 import HolidayPage from "./pages/HolidayPage";
-import  Admin from "./pages/Admin/Dashboard/Admin";
+import Admin from "./pages/Admin/Dashboard/Admin";
 import Visa from "./pages/Visa";
 const AppRouter = () => (
   <>
@@ -58,6 +60,11 @@ const AppRouter = () => (
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/register" element={<AdminRegister />} />
       <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/forgot-password" element={<AdminForgotPassword />} />
+      <Route
+        path="/admin/reset-password/:token"
+        element={<AdminResetPassword />}
+      />
       <Route path="/login" element={<UserLogin />} />
       <Route path="/register" element={<UserRegister />} />
       <Route path="/profile" element={<MyProfile />} />

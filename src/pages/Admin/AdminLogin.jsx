@@ -69,7 +69,14 @@ export default function AdminLogin() {
           </button>
         </form>
 
+        {/* ⭐ Forgot Password Link ✔ */}
         <p className="text-center mt-4 text-sm">
+          <Link to="/admin/forgot-password" className="text-blue-600 font-semibold">
+            Forgot Password?
+          </Link>
+        </p>
+
+        <p className="text-center mt-2 text-sm">
           Don't have an admin account?{" "}
           <Link to="/admin/register" className="text-red-600 font-semibold">
             Register

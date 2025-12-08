@@ -36,16 +36,18 @@ export const API = {
   DELETE_SEO: `${seo}/delete`,
 
   // ---- Admin ----
-  ADMIN_REGISTER: `${admin}/register`,
   ADMIN_LOGIN: `${admin}/login`,
-  ADMIN_PROFILE: `${admin}/me`,
-  ADMIN_UPDATE_PROFILE: `${admin}/me`,
   ADMIN_OVERVIEW: `${admin}/overview`,
+  REMOVE_ADMIN: `${admin}/remove-admin`,
+  // ---- Admin Forgot / Reset Password ----
+  ADMIN_FORGOT_PASSWORD: `${admin}/forgot-password`,
+  ADMIN_RESET_PASSWORD: (token) => `${admin}/reset-password/${token}`,
 
   // ---- Admin Users ----
   ADMIN_GET_USERS: `${user}/users`,
   ADMIN_UPDATE_USER: (id) => `${user}/users/${id}`,
   ADMIN_DELETE_USER: (id) => `${user}/users/${id}`,
+  ADMIN_PROMOTE_USER: `${user}/promote`, // ⭐ NEW — PROMOTE USER TO ADMIN
 
   // ---- User ----
   USER_REGISTER: `${user}/register`,

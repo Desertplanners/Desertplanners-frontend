@@ -22,17 +22,19 @@ export default function Overview() {
 
   const fetchOverview = async () => {
     try {
-      const api = DataService();
-      const res = await api.get(API.ADMIN_OVERVIEW, {
-        headers: { Authorization: `Bearer ${adminToken}` },
-      });
+      const api = DataService("admin"); // token auto add
+      
+      const res = await api.get(API.ADMIN_OVERVIEW); // ❗ remove headers part
+  
       setStats(res.data);
     } catch (err) {
+      console.log("ERROR:", err);
       setError(err.response?.data?.message || "Failed to load overview data");
     } finally {
       setLoading(false);
     }
   };
+    
 
   useEffect(() => {
     fetchOverview();

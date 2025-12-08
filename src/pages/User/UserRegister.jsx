@@ -5,25 +5,27 @@ import toast from "react-hot-toast";
 import DataService from "../../config/DataService";
 import { API } from "../../config/API";
 
+// ⚡ Import PhoneInput Component
+import PhoneInput from "../../components/PhoneInput";
+
 export default function Register() {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    countryCode: "+971",
+    mobile: "",
     password: "",
     confirmPassword: "",
-    mobile: "",
-    countryCode: "+971", // Default UAE
   });
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
+  // ---------------------- SUBMIT --------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -32,17 +34,26 @@ export default function Register() {
       setError("Passwords do not match");
       return;
     }
-    if (formData.mobile.length < 6) {
+
+    const fullPhone = formData.countryCode + formData.mobile;
+
+    if (fullPhone.length < 8) {
       setError("Please enter a valid mobile number");
       return;
     }
 
     setLoading(true);
+
     try {
       const api = DataService();
-      const res = await api.post(API.USER_REGISTER, formData);
 
-      // ✅ Show success toast
+      await api.post(API.USER_REGISTER, {
+        name: formData.name,
+        email: formData.email.toLowerCase(),
+        mobile: fullPhone,
+        password: formData.password,
+      });
+
       toast.success("Registration successful! Please sign in.", {
         duration: 4000,
         style: {
@@ -52,11 +63,11 @@ export default function Register() {
         },
       });
 
-      // ✅ Redirect to login page
       navigate("/login");
     } catch (err) {
       const msg = err.response?.data?.message || "Registration failed";
       setError(msg);
+
       toast.error(msg, {
         duration: 4000,
         style: {
@@ -70,9 +81,11 @@ export default function Register() {
     }
   };
 
+  // ---------------------- UI --------------------------
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#f0f4f8] to-[#d9e2ec]">
       <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md">
+
         <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
           Create Account
         </h2>
@@ -84,18 +97,24 @@ export default function Register() {
         )}
 
         <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+
           {/* Name */}
           <div className="relative">
             <input
               type="text"
               name="name"
-              value={formData.name}
-              onChange={handleChange}
               required
-              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-3 focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
+              autoComplete="name"
+              value={formData.name}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
+              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-3 
+                focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
               placeholder=" "
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-placeholder-shown:top-5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base transition-all">
+            <label className="absolute left-4 top-2 text-gray-500 text-sm 
+              peer-placeholder-shown:top-5 peer-placeholder-shown:text-base transition-all">
               Full Name
             </label>
           </div>
@@ -105,51 +124,53 @@ export default function Register() {
             <input
               type="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
               required
-              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-3 focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
+              autoComplete="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
+              className="peer w-full border border-gray-300 rounded-xl px-4 pt-5 pb-3 
+                focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
               placeholder=" "
             />
-            <label className="absolute left-4 top-2 text-gray-500 text-sm peer-placeholder-shown:top-5 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base transition-all">
+            <label className="absolute left-4 top-2 text-gray-500 text-sm 
+              peer-placeholder-shown:top-5 peer-placeholder-shown:text-base transition-all">
               Email Address
             </label>
           </div>
 
-          {/* Mobile with Country Code */}
-          <div className="flex gap-2 items-center">
-            <select
-              name="countryCode"
-              value={formData.countryCode}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-xl px-3 py-3 focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm text-gray-700"
-            >
-              <option value="+971">🇦🇪 +971 (UAE)</option>
-              <option value="+91">🇮🇳 +91 (India)</option>
-              <option value="+1">🇺🇸 +1 (USA)</option>
-              <option value="+44">🇬🇧 +44 (UK)</option>
-            </select>
-            <input
-              type="text"
-              name="mobile"
-              value={formData.mobile}
-              onChange={handleChange}
-              required
-              placeholder="Mobile Number"
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
-            />
-          </div>
+          {/* PhoneInput Component */}
+          <PhoneInput
+            value={formData.countryCode + formData.mobile}
+            onChange={(phone, meta) => {
+              if (!meta || !meta.countryCallingCode) return; // Safe guard
+
+              const dial = "+" + meta.countryCallingCode;
+              const local = phone.replace(dial, "");
+
+              setFormData({
+                ...formData,
+                countryCode: dial,
+                mobile: local,
+              });
+            }}
+          />
 
           {/* Password */}
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              value={formData.password}
-              onChange={handleChange}
+              autoComplete="new-password"
               required
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               placeholder="Password"
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 
+                focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
             />
             <span
               className="absolute right-3 top-3 cursor-pointer text-gray-500"
@@ -164,15 +185,24 @@ export default function Register() {
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
+              autoComplete="new-password"
               required
+              value={formData.confirmPassword}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  confirmPassword: e.target.value,
+                })
+              }
               placeholder="Confirm Password"
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
+              className="w-full border border-gray-300 rounded-xl px-4 py-3 
+                focus:outline-none focus:ring-2 focus:ring-[#e82429] shadow-sm"
             />
             <span
               className="absolute right-3 top-3 cursor-pointer text-gray-500"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() =>
+                setShowConfirmPassword(!showConfirmPassword)
+              }
             >
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
@@ -182,7 +212,8 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl font-bold shadow-lg hover:scale-105 transition-transform"
+            className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 
+              rounded-xl font-bold shadow-lg hover:scale-105 transition-transform"
           >
             {loading ? "Registering..." : "Register"}
           </button>

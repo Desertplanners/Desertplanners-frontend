@@ -5,8 +5,9 @@ export default function PhoneInput({ value, onChange }) {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [query, setQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [localPhone, setLocalPhone] = useState("");
 
-  // Auto-select user country based on IP
+  // Auto-select country using IP
   useEffect(() => {
     fetch("https://ipapi.co/json/")
       .then((res) => res.json())
@@ -14,16 +15,38 @@ export default function PhoneInput({ value, onChange }) {
         const autoCountry = countryData.find(
           (c) => c.code2 === data.country_code
         );
-        if (autoCountry) setSelectedCountry(autoCountry);
+        if (autoCountry) {
+          setSelectedCountry(autoCountry);
+        } else {
+          setSelectedCountry(countryData[0]);
+        }
       })
       .catch(() => setSelectedCountry(countryData[0]));
   }, []);
 
-  // When user types phone number
+  // If parent sends a default full phone (value prop)
+  useEffect(() => {
+    if (!value || !selectedCountry) return;
+
+    const dial = selectedCountry.dial_code;
+
+    if (value.startsWith(dial)) {
+      setLocalPhone(value.replace(dial, ""));
+    }
+  }, [value, selectedCountry]);
+
   const handlePhoneChange = (e) => {
     const phone = e.target.value.replace(/\D/g, "");
+    setLocalPhone(phone);
+
     if (selectedCountry) {
-      onChange(selectedCountry.dial_code + phone);
+      onChange(
+        selectedCountry.dial_code + phone,
+        {
+          countryCallingCode: selectedCountry.dial_code.replace("+", ""),
+          countryCode: selectedCountry.code2,
+        }
+      );
     }
   };
 
@@ -33,10 +56,11 @@ export default function PhoneInput({ value, onChange }) {
 
   return (
     <div className="relative w-full">
-      {/* Main input box */}
+
+      {/* Main input */}
       <div className="flex items-center gap-2 border rounded-xl bg-white p-3">
-        
-        {/* COUNTRY FLAG + CODE section (click to open dropdown) */}
+
+        {/* Country select */}
         <div
           className="flex items-center gap-2 cursor-pointer select-none"
           onClick={() => setShowDropdown(true)}
@@ -48,25 +72,25 @@ export default function PhoneInput({ value, onChange }) {
               className="w-6 h-4 object-cover rounded-sm"
             />
           )}
-          <span className="font-semibold">
-            {selectedCountry?.dial_code}
-          </span>
+
+          <span className="font-semibold">{selectedCountry?.dial_code}</span>
           <span className="ml-1 text-gray-500">▼</span>
         </div>
 
-        {/* PHONE Number INPUT */}
+        {/* Phone Number input */}
         <input
           type="text"
           placeholder="Phone Number"
           className="ml-3 w-full outline-none"
+          value={localPhone}
           onChange={handlePhoneChange}
         />
       </div>
 
-      {/* DROPDOWN */}
+      {/* Dropdown */}
       {showDropdown && (
         <div className="absolute z-50 top-16 left-0 w-full bg-white border shadow-xl rounded-xl max-h-72 overflow-y-auto">
-          
+
           {/* Search */}
           <div className="p-2 border-b">
             <input
@@ -85,6 +109,12 @@ export default function PhoneInput({ value, onChange }) {
               onClick={() => {
                 setSelectedCountry(country);
                 setShowDropdown(false);
+
+                // Reset full phone with new dial code
+                onChange(country.dial_code + localPhone, {
+                  countryCallingCode: country.dial_code.replace("+", ""),
+                  countryCode: country.code2,
+                });
               }}
             >
               <img
@@ -92,12 +122,10 @@ export default function PhoneInput({ value, onChange }) {
                 alt={country.name}
                 className="w-6 h-4 object-cover rounded-sm"
               />
-              
+
               <span>{country.name}</span>
 
-              <span className="ml-auto font-semibold">
-                {country.dial_code}
-              </span>
+              <span className="ml-auto font-semibold">{country.dial_code}</span>
             </div>
           ))}
         </div>
