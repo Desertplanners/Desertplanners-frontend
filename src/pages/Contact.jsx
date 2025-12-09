@@ -80,7 +80,7 @@ export default function ContactUs() {
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-      
+
       {/* ⭐⭐⭐ FULL DYNAMIC SEO ⭐⭐⭐ */}
       <Helmet>
         <title>{seo?.seoTitle}</title>
@@ -136,7 +136,7 @@ export default function ContactUs() {
       {/* Hero Section */}
       <div className="relative w-full h-72 md:h-96 overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e"
+          src="travel-header-1.jpg"
           alt="Contact Us Banner"
           className="w-full h-full object-cover brightness-75"
         />
@@ -149,11 +149,12 @@ export default function ContactUs() {
 
       {/* Main Content */}
       <div className="max-w-[1200px] mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
+
         {/* Form */}
         <div className="lg:col-span-7">
           <div className="bg-white rounded-3xl shadow-2xl p-10 space-y-6 relative overflow-hidden">
             <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#e82429]/30 rounded-full blur-3xl animate-pulse"></div>
+
             <h2 className="text-3xl font-bold text-[#721011] relative z-10">
               Contact Form
             </h2>
@@ -162,7 +163,6 @@ export default function ContactUs() {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-              
               {/* Name & Email */}
               <div className="flex flex-col md:flex-row gap-4">
                 <input
@@ -230,7 +230,6 @@ export default function ContactUs() {
               >
                 {loading ? "Sending..." : "Send Message"}
               </button>
-
             </form>
           </div>
         </div>
@@ -246,12 +245,14 @@ export default function ContactUs() {
             {
               icon: <FaPhoneAlt className="text-[#e82429] text-3xl" />,
               title: "Phone",
-              text: "+97143546677",
+              text: "+971 4 354 6677",
+              link: "tel:+97143546677",
             },
             {
               icon: <FaEnvelope className="text-[#e82429] text-3xl" />,
               title: "Email",
               text: "info@desertplanners.net",
+              link: "mailto:info@desertplanners.net",
             },
             {
               icon: <FaClock className="text-[#e82429] text-3xl" />,
@@ -268,9 +269,19 @@ export default function ContactUs() {
                 <h3 className="font-bold text-[#721011] text-lg">
                   {card.title}
                 </h3>
-                <p className="text-gray-600 whitespace-pre-line">
-                  {card.text}
-                </p>
+
+                {card.link ? (
+                  <a
+                    href={card.link}
+                    className="text-gray-600 whitespace-pre-line hover:text-[#e82429] transition"
+                  >
+                    {card.text}
+                  </a>
+                ) : (
+                  <p className="text-gray-600 whitespace-pre-line">
+                    {card.text}
+                  </p>
+                )}
               </div>
             </div>
           ))}
@@ -278,16 +289,16 @@ export default function ContactUs() {
 
       </div>
 
-      {/* Map */}
+      {/* ⭐ MAP SECTION ⭐ */}
       <div className="w-full mt-10">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12..."
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d418593.32624981453!2d54.897823313520995!3d25.076280448422047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f43496ad9c645%3A0xbde66e5084295162!2sDubai%20-%20United%20Arab%20Emirates!5e1!3m2!1sen!2sin!4v1765275738613!5m2!1sen!2sin"
           width="100%"
-          height="400"
-          className="border-0"
+          height="450"
+          style={{ border: 0 }}
+          allowFullScreen=""
           loading="lazy"
-          title="Google Map"
-          allowFullScreen
+          referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
 

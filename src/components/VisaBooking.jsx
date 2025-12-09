@@ -381,10 +381,10 @@ export default function VisaBooking() {
         event: "add_payment_info",
         payment_type: "online",
         item_type: "visa",
-      
+
         value: +finalAmount,
         currency: "AED",
-      
+
         items: [
           {
             item_id: fields.visaId,
@@ -394,12 +394,12 @@ export default function VisaBooking() {
             quantity: 1,
           },
         ],
-      
+
         visa_id: fields.visaId,
         visa_name: fields.visaTitle,
         visa_price: basePrice,
         transaction_fee: transactionFee,
-      
+
         applicant: {
           name: fields.fullName,
           email: fields.email,
@@ -782,16 +782,7 @@ export default function VisaBooking() {
             <div className="mt-6 grid md:grid-cols-2 gap-6 items-center">
               <div>
                 <p className="text-sm text-gray-600">
-                  {missingFieldCount > 0 || missingFileCount > 0 ? (
-                    <span className="inline-flex items-center gap-2 text-red-600">
-                      <FaExclamationTriangle /> {missingFieldCount} fields &{" "}
-                      {missingFileCount} files missing
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2 text-green-600">
-                      <FaCheckCircle /> All required fields uploaded
-                    </span>
-                  )}
+                  Please complete all required details before submitting.
                 </p>
               </div>
 
