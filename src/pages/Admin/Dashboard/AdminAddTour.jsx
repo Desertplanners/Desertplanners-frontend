@@ -241,13 +241,13 @@ export default function AdminAddTour({ tour, onSuccess }) {
       return toast.error("Adult discount price must be less than actual price");
     }
 
-    if (
-      discountPriceChild &&
-      priceChild &&
-      Number(discountPriceChild) >= Number(priceChild)
-    ) {
-      return toast.error("Child discount price must be less than actual price");
-    }
+    // if (
+    //   discountPriceChild &&
+    //   priceChild &&
+    //   Number(discountPriceChild) >= Number(priceChild)
+    // ) {
+    //   return toast.error("Child discount price must be less than actual price");
+    // }
 
     if (
       !title ||
@@ -278,7 +278,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
 
     // ⭐ Child discount – ONLY if child price exists
     if (
-      priceChild !== "" &&
+      priceChild !== "" && 
       priceChild !== null &&
       discountPriceChild !== "" &&
       discountPriceChild !== null

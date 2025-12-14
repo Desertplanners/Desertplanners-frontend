@@ -46,6 +46,12 @@ export default function TourServiceDetails() {
   const navigate = useNavigate();
   const pageUrl = window.location.href;
 
+  // % OFF calculate helper
+  const calculateDiscountPercent = (actual, discount) => {
+    if (!actual || !discount) return null;
+    return Math.round(((actual - discount) / actual) * 100);
+  };
+
   const fetchSEO = async (tourId) => {
     try {
       const api = DataService();
@@ -607,17 +613,65 @@ export default function TourServiceDetails() {
                 </div>
               </div>
 
+              {/* PRICE SECTION */}
               <div className="flex flex-col items-start md:items-end gap-2 mt-3 md:mt-0">
-                {/* Adult Price */}
-                <p className="text-3xl md:text-4xl font-extrabold text-[#e82429] leading-tight">
-                  AED {tour.priceAdult || tour.price || "—"}
-                </p>
-
-                {Number(tour.priceChild) > 0 && (
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1 bg-gradient-to-r from-[#ffe5e5] to-[#ffd6d6] text-[#721011] font-semibold text-sm rounded-full shadow-sm border border-[#e82429]/30">
-                      Child Price: AED {tour.priceChild}
+                {/* ================= ADULT PRICE ================= */}
+                {tour.discountPriceAdult ? (
+                  <div className="flex flex-col items-start md:items-end">
+                    {/* Original Price */}
+                    <span className="text-gray-400 text-lg line-through">
+                      AED {tour.priceAdult}
                     </span>
+
+                    {/* Discounted Price */}
+                    <span className="text-3xl md:text-4xl font-extrabold text-[#e82429]">
+                      AED {tour.discountPriceAdult}
+                    </span>
+
+                    {/* % OFF */}
+                    <span className="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full mt-1">
+                      {calculateDiscountPercent(
+                        tour.priceAdult,
+                        tour.discountPriceAdult
+                      )}
+                      % OFF
+                    </span>
+                  </div>
+                ) : (
+                  <p className="text-3xl md:text-4xl font-extrabold text-[#e82429] leading-tight">
+                    AED {tour.priceAdult || tour.price || "—"}
+                  </p>
+                )}
+
+                {/* ================= CHILD PRICE ================= */}
+                {Number(tour.priceChild) > 0 && (
+                  <div className="flex flex-col items-start md:items-end mt-2">
+                    {tour.discountPriceChild ? (
+                      <>
+                        {/* Child Original */}
+                        <span className="text-gray-400 text-sm line-through">
+                          Child: AED {tour.priceChild}
+                        </span>
+
+                        {/* Child Discount */}
+                        <span className="text-lg font-bold text-[#721011]">
+                          Child: AED {tour.discountPriceChild}
+                        </span>
+
+                        {/* % OFF */}
+                        <span className="text-[11px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full mt-1">
+                          {calculateDiscountPercent(
+                            tour.priceChild,
+                            tour.discountPriceChild
+                          )}
+                          % OFF
+                        </span>
+                      </>
+                    ) : (
+                      <span className="px-3 py-1 bg-gradient-to-r from-[#ffe5e5] to-[#ffd6d6] text-[#721011] font-semibold text-sm rounded-full shadow-sm border border-[#e82429]/30">
+                        Child Price: AED {tour.priceChild}
+                      </span>
+                    )}
                   </div>
                 )}
 
@@ -626,7 +680,7 @@ export default function TourServiceDetails() {
                   (Per Person)
                 </p>
 
-                {/* Rating Section */}
+                {/* Rating */}
                 <div className="flex items-center gap-2 mt-1">
                   {[...Array(5)].map((_, i) => (
                     <FaStar
