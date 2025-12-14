@@ -276,9 +276,14 @@ export default function AdminAddTour({ tour, onSuccess }) {
       formData.append("priceChild", priceChild);
     }
 
+    // 🔴 FORCE CLEAR CHILD PRICE
+    if (priceChild === "" || priceChild === null) {
+      formData.append("priceChild", "");
+      formData.append("discountPriceChild", "");
+    }
     // ⭐ Child discount – ONLY if child price exists
     if (
-      priceChild !== "" && 
+      priceChild !== "" &&
       priceChild !== null &&
       discountPriceChild !== "" &&
       discountPriceChild !== null

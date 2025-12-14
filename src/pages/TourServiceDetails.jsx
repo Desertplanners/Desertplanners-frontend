@@ -596,106 +596,91 @@ export default function TourServiceDetails() {
           </Suspense>
 
           {/* Title + Price */}
-          <div className="bg-gradient-to-r from-[#fff4f4] to-[#ffeaea] rounded-3xl shadow-xl p-6 border border-[#e82429]/30">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <h1 className="text-3xl md:text-3xl font-extrabold text-[#721011] mb-2">
+          <div className="bg-gradient-to-br from-[#fff7f7] via-[#fff1f1] to-[#ffecec] rounded-3xl shadow-lg p-6 md:p-7 border border-[#e82429]/20">
+            <div className="flex flex-col md:flex-row justify-between gap-6">
+              {/* LEFT CONTENT */}
+              <div className="flex-1">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011] leading-snug">
                   {tour.title}
                 </h1>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="bg-[#e82429]/20 text-[#721011] font-semibold px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                    <FaClock className="text-[#e82429]" />{" "}
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1 bg-[#e82429]/15 text-[#721011] font-semibold px-3 py-1 rounded-full text-xs">
+                    <FaClock className="text-[#e82429]" />
                     {tour.duration || "Flexible"}
                   </span>
-                  <span className="bg-[#fff4f4]/80 text-[#721011] font-semibold px-3 py-1 rounded-full text-sm">
+
+                  <span className="inline-flex items-center bg-white/70 backdrop-blur text-[#721011] font-semibold px-3 py-1 rounded-full text-xs border border-[#e82429]/20">
                     {tour.category?.name || "Luxury Experience"}
                   </span>
                 </div>
               </div>
 
-              {/* PRICE SECTION */}
-              <div className="flex flex-col items-start md:items-end gap-2 mt-3 md:mt-0">
-                {/* ================= ADULT PRICE ================= */}
+              {/* RIGHT PRICE SECTION */}
+              <div className="flex flex-col items-start md:items-end justify-center gap-2">
+                {/* ===== ADULT PRICE ===== */}
                 {tour.discountPriceAdult ? (
-                  <div className="flex flex-col items-start md:items-end">
-                    {/* Original Price */}
-                    <span className="text-gray-400 text-lg line-through">
+                  <div className="text-left md:text-right">
+                    <span className="block text-sm text-gray-400 line-through">
                       AED {tour.priceAdult}
                     </span>
 
-                    {/* Discounted Price */}
-                    <span className="text-3xl md:text-4xl font-extrabold text-[#e82429]">
-                      AED {tour.discountPriceAdult}
-                    </span>
+                    <div className="flex items-center gap-2 justify-start md:justify-end">
+                      <span className="text-2xl md:text-3xl font-extrabold text-[#e82429]">
+                        AED {tour.discountPriceAdult}
+                      </span>
 
-                    {/* % OFF */}
-                    <span className="text-xs font-bold bg-green-100 text-green-700 px-3 py-1 rounded-full mt-1">
-                      {calculateDiscountPercent(
-                        tour.priceAdult,
-                        tour.discountPriceAdult
-                      )}
-                      % OFF
-                    </span>
+                      <span className="text-[11px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                        {calculateDiscountPercent(
+                          tour.priceAdult,
+                          tour.discountPriceAdult
+                        )}
+                        % OFF
+                      </span>
+                    </div>
                   </div>
                 ) : (
-                  <p className="text-3xl md:text-4xl font-extrabold text-[#e82429] leading-tight">
+                  <span className="text-2xl md:text-3xl font-extrabold text-[#e82429]">
                     AED {tour.priceAdult || tour.price || "—"}
-                  </p>
+                  </span>
                 )}
 
-                {/* ================= CHILD PRICE ================= */}
+                {/* ===== CHILD PRICE ===== */}
                 {Number(tour.priceChild) > 0 && (
-                  <div className="flex flex-col items-start md:items-end mt-2">
+                  <div className="text-left md:text-right mt-1">
                     {tour.discountPriceChild ? (
                       <>
-                        {/* Child Original */}
-                        <span className="text-gray-400 text-sm line-through">
-                          Child: AED {tour.priceChild}
+                        <span className="block text-xs text-gray-400 line-through">
+                          Child AED {tour.priceChild}
                         </span>
-
-                        {/* Child Discount */}
-                        <span className="text-lg font-bold text-[#721011]">
-                          Child: AED {tour.discountPriceChild}
-                        </span>
-
-                        {/* % OFF */}
-                        <span className="text-[11px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full mt-1">
-                          {calculateDiscountPercent(
-                            tour.priceChild,
-                            tour.discountPriceChild
-                          )}
-                          % OFF
-                        </span>
+                        <div className="flex items-center gap-2 justify-start md:justify-end">
+                          <span className="text-sm font-semibold text-[#721011]">
+                            Child AED {tour.discountPriceChild}
+                          </span>
+                          <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                            {calculateDiscountPercent(
+                              tour.priceChild,
+                              tour.discountPriceChild
+                            )}
+                            % OFF
+                          </span>
+                        </div>
                       </>
                     ) : (
-                      <span className="px-3 py-1 bg-gradient-to-r from-[#ffe5e5] to-[#ffd6d6] text-[#721011] font-semibold text-sm rounded-full shadow-sm border border-[#e82429]/30">
-                        Child Price: AED {tour.priceChild}
+                      <span className="text-sm font-semibold text-[#721011] bg-white/70 px-3 py-1 rounded-full border border-[#e82429]/20">
+                        Child AED {tour.priceChild}
                       </span>
                     )}
                   </div>
                 )}
 
-                {/* Per Person */}
-                <p className="text-gray-500 text-xs md:text-sm font-medium -mt-1">
-                  (Per Person)
-                </p>
-
-                {/* Rating */}
-                <div className="flex items-center gap-2 mt-1">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar
-                      key={i}
-                      className="text-yellow-500 drop-shadow-sm"
-                    />
-                  ))}
-                  <span className="text-gray-600 text-sm font-medium">
-                    4.9 / 5 (134 reviews)
-                  </span>
-                </div>
+                {/* PER PERSON */}
+                <span className="text-[11px] text-gray-500">(Per Person)</span>
               </div>
             </div>
 
-            <p className="mt-4 text-gray-700 text-sm md:text-base leading-relaxed">
+            {/* DESCRIPTION */}
+            <p className="mt-5 text-gray-700 text-sm md:text-base leading-relaxed">
               {tour.description ||
                 "Experience the best of Dubai with our luxury travel packages and unforgettable adventures."}
             </p>
