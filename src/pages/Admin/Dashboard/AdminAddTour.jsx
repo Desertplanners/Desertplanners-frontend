@@ -267,12 +267,24 @@ export default function AdminAddTour({ tour, onSuccess }) {
     formData.append("slug", slug);
     formData.append("description", description);
     formData.append("priceAdult", priceAdult);
-    formData.append("priceChild", priceChild);
     formData.append("discountPriceAdult", discountPriceAdult);
-    formData.append("discountPriceChild", discountPriceChild);
-
     formData.append("duration", duration);
     formData.append("category", category);
+
+    // ⭐ Child price – ONLY if provided
+    if (priceChild !== "" && priceChild !== null) {
+      formData.append("priceChild", priceChild);
+    }
+
+    // ⭐ Child discount – ONLY if child price exists
+    if (
+      priceChild !== "" &&
+      priceChild !== null &&
+      discountPriceChild !== "" &&
+      discountPriceChild !== null
+    ) {
+      formData.append("discountPriceChild", discountPriceChild);
+    }
 
     if (mainImage) formData.append("mainImage", mainImage, mainImage.name);
 
@@ -388,7 +400,11 @@ export default function AdminAddTour({ tour, onSuccess }) {
               <input
                 type="number"
                 value={priceChild}
-                onChange={(e) => setPriceChild(Number(e.target.value))}
+                onChange={(e) =>
+                  setPriceChild(
+                    e.target.value === "" ? "" : Number(e.target.value)
+                  )
+                }
                 onWheel={(e) => e.target.blur()} // ⭐ prevents accidental +1/-1
                 className="w-full border border-[#e82429] rounded-xl px-4 py-2"
                 placeholder="Optional"
