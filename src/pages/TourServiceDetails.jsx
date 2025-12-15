@@ -632,7 +632,7 @@ export default function TourServiceDetails() {
                     : "w-[180px] md:w-[200px]"
                 }`}
               >
-                {/* BADGES */}
+                {/* ================= BADGES ================= */}
                 {(tour.discountPriceAdult || tour.discountPriceChild) && (
                   <div className="absolute -top-2 left-0 right-0 flex justify-between px-3">
                     {tour.discountPriceChild ? (
@@ -661,33 +661,67 @@ export default function TourServiceDetails() {
                   </div>
                 )}
 
-                {/* PRICES */}
+                {/* ================= PRICES ================= */}
                 {Number(tour.priceChild) > 0 ? (
+                  /* CHILD + ADULT */
                   <div className="mt-1 grid grid-cols-2 gap-3">
+                    {/* CHILD */}
                     <div className="border-r border-gray-200 pr-2">
-                      <span className="block text-[10px] text-gray-500">
+                      <span className="block text-[10px] text-gray-500 mb-[2px]">
                         Child
                       </span>
-                      <span className="block text-base font-bold text-[#e82429]">
+
+                      {tour.discountPriceChild && (
+                        <div className="relative inline-block leading-none mb-[2px]">
+                          <span className="text-[11px] text-gray-400">
+                            AED {tour.priceChild}
+                          </span>
+                          <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
+                        </div>
+                      )}
+
+                      <span className="block text-base font-bold text-[#721011] leading-tight">
                         AED {tour.discountPriceChild || tour.priceChild}
                       </span>
                     </div>
 
+                    {/* ADULT */}
                     <div className="text-right">
-                      <span className="block text-[10px] text-gray-500">
+                      <span className="block text-[10px] text-gray-500 mb-[2px]">
                         Adult
                       </span>
-                      <span className="block text-base font-extrabold text-[#e82429]">
+
+                      {tour.discountPriceAdult && (
+                        <div className="relative inline-block leading-none mb-[2px]">
+                          <span className="text-[11px] text-gray-400">
+                            AED {tour.priceAdult}
+                          </span>
+                          <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
+                        </div>
+                      )}
+
+                      <span className="block text-base font-extrabold text-[#e82429] leading-tight">
                         AED {tour.discountPriceAdult || tour.priceAdult}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-center">
-                    <span className="block text-[10px] text-gray-500">
+                  /* ONLY ADULT – COMPACT */
+                  <div className="mt-1 text-center flex flex-col items-center">
+                    <span className="block text-[10px] text-gray-500 mb-[2px]">
                       Adult Price
                     </span>
-                    <span className="block text-xl font-extrabold text-[#e82429]">
+
+                    {tour.discountPriceAdult && (
+                      <div className="relative inline-block leading-none mb-[2px]">
+                        <span className="text-[11px] text-gray-400">
+                          AED {tour.priceAdult}
+                        </span>
+                        <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
+                      </div>
+                    )}
+
+                    <span className="block text-xl font-extrabold text-[#e82429] leading-tight">
                       AED {tour.discountPriceAdult || tour.priceAdult}
                     </span>
                   </div>
