@@ -188,8 +188,13 @@ export default function TourServiceDetails() {
       const adultCount = tour.priceChild ? Number(adults) : Number(guests);
       const childCount = tour.priceChild ? Number(children) : 0;
 
-      const adultPrice = Number(tour.priceAdult || tour.price || 0);
-      const childPrice = Number(tour.priceChild || 0);
+      const adultPrice = Number(
+        tour.discountPriceAdult ?? tour.priceAdult ?? tour.price ?? 0
+      );
+
+      const childPrice = Number(
+        tour.discountPriceChild ?? tour.priceChild ?? 0
+      );
 
       // ======================================================
       // 🔐 1️⃣ LOGGED-IN USER
@@ -596,11 +601,12 @@ export default function TourServiceDetails() {
           </Suspense>
 
           {/* Title + Price */}
+          {/* TITLE + PRICE SECTION */}
           <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
-            <div className="flex flex-col md:flex-row justify-between gap-6">
+            <div className="flex flex-col md:flex-row justify-between gap-6 items-start">
               {/* LEFT CONTENT */}
               <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold text-[#721011] leading-snug">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011] leading-snug">
                   {tour.title}
                 </h1>
 
@@ -616,66 +622,116 @@ export default function TourServiceDetails() {
                 </div>
               </div>
 
-              {/* RIGHT PRICE BOX */}
-              <div className="min-w-[220px] rounded-2xl border border-gray-100 bg-[#fff7f7] p-5 flex flex-col justify-center">
-                {/* ===== ADULT PRICE ===== */}
-                {tour.discountPriceAdult ? (
-                  <>
-                    <span className="text-xs text-gray-400 line-through">
-                      AED {tour.priceAdult}
+              {/* RIGHT PRICE CARD */}
+              <div className="relative bg-[#fff7f7] border border-[#e82429]/20 rounded-2xl px-4 pt-6 pb-3 w-[240px] md:w-[250px]">
+                {/* ================= BADGES ROW ================= */}
+                <div className="absolute -top-3 left-0 right-0 flex justify-between px-3">
+                  {/* CHILD DISCOUNT BADGE */}
+                  {tour.discountPriceChild && (
+                    <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                      {calculateDiscountPercent(
+                        tour.priceChild,
+                        tour.discountPriceChild
+                      )}
+                      % OFF
                     </span>
+                  )}
 
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-3xl font-bold text-[#e82429]">
-                        AED {tour.discountPriceAdult}
+                  {/* ADULT DISCOUNT BADGE */}
+                  {tour.discountPriceAdult && (
+                    <span className="text-[11px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                      {calculateDiscountPercent(
+                        tour.priceAdult,
+                        tour.discountPriceAdult
+                      )}
+                      % OFF
+                    </span>
+                  )}
+                </div>
+
+                {/* ================= PRICES ================= */}
+                {Number(tour.priceChild) > 0 ? (
+                  <div className="grid grid-cols-2 gap-3 items-start">
+                    {/* CHILD */}
+                    <div className="text-left border-r border-gray-200 pr-2">
+                      <span className="block text-[11px] text-gray-500 mb-0.5">
+                        Child
                       </span>
 
-                      <span className="text-[11px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                      {tour.discountPriceChild ? (
+                        <>
+                          <span className="block text-xs text-gray-400 line-through leading-none">
+                            AED {tour.priceChild}
+                          </span>
+                          <span className="text-sm font-semibold text-[#721011]">
+                            AED {tour.discountPriceChild}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-sm font-semibold text-[#721011]">
+                          AED {tour.priceChild}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* ADULT */}
+                    <div className="text-right">
+                      <span className="block text-[11px] text-gray-500 mb-0.5">
+                        Adult
+                      </span>
+
+                      {tour.discountPriceAdult ? (
+                        <>
+                          <span className="block text-xs text-gray-400 line-through leading-none">
+                            AED {tour.priceAdult}
+                          </span>
+                          <span className="text-2xl font-extrabold text-[#e82429] leading-tight">
+                            AED {tour.discountPriceAdult}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-2xl font-extrabold text-[#e82429] leading-tight">
+                          AED {tour.priceAdult}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  /* ONLY ADULT */
+                  <div className="text-center">
+                    {tour.discountPriceAdult && (
+                      <span className="block text-[11px] text-green-700 font-semibold mb-1">
                         {calculateDiscountPercent(
                           tour.priceAdult,
                           tour.discountPriceAdult
                         )}
                         % OFF
                       </span>
-                    </div>
-                  </>
-                ) : (
-                  <span className="text-3xl font-bold text-[#e82429]">
-                    AED {tour.priceAdult || "—"}
-                  </span>
-                )}
+                    )}
 
-                {/* ===== CHILD PRICE ===== */}
-                {Number(tour.priceChild) > 0 && (
-                  <div className="mt-3 pt-3 border-t border-gray-200">
-                    {tour.discountPriceChild ? (
+                    <span className="block text-[11px] text-gray-500 mb-1">
+                      Adult Price
+                    </span>
+
+                    {tour.discountPriceAdult ? (
                       <>
-                        <span className="block text-xs text-gray-400 line-through">
-                          Child AED {tour.priceChild}
+                        <span className="block text-sm text-gray-400 line-through">
+                          AED {tour.priceAdult}
                         </span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-sm font-semibold text-[#721011]">
-                            Child AED {tour.discountPriceChild}
-                          </span>
-                          <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                            {calculateDiscountPercent(
-                              tour.priceChild,
-                              tour.discountPriceChild
-                            )}
-                            % OFF
-                          </span>
-                        </div>
+                        <span className="text-2xl font-extrabold text-[#e82429]">
+                          AED {tour.discountPriceAdult}
+                        </span>
                       </>
                     ) : (
-                      <span className="text-sm font-semibold text-[#721011]">
-                        Child AED {tour.priceChild}
+                      <span className="text-2xl font-extrabold text-[#e82429]">
+                        AED {tour.priceAdult}
                       </span>
                     )}
                   </div>
                 )}
 
-                <span className="mt-2 text-[11px] text-gray-500">
-                  (Per Person)
+                <span className="block mt-1 text-[11px] text-gray-500 text-center">
+                  Per Person
                 </span>
               </div>
             </div>

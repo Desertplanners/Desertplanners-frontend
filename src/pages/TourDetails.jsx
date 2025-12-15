@@ -179,9 +179,23 @@ export default function TourCategoryPage() {
                 {tour.title}
               </h2>
 
-              <p className="text-gray-700 font-semibold mb-4">
-                From AED {tour.price}
-              </p>
+              <p className="mb-4">
+  {tour.discountPriceAdult ? (
+    <>
+      <span className="text-gray-400 line-through mr-2">
+        AED {tour.priceAdult || tour.price}
+      </span>
+      <span className="text-[#e82429] font-bold">
+        AED {tour.discountPriceAdult}
+      </span>
+    </>
+  ) : (
+    <span className="text-gray-700 font-semibold">
+      AED {tour.priceAdult || tour.price}
+    </span>
+  )}
+</p>
+
 
               <div className="mt-auto text-center bg-[#404041] hover:bg-[#e82429] text-white py-3 rounded-2xl transition">
                 View Trip
