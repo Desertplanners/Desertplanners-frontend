@@ -603,9 +603,9 @@ export default function TourServiceDetails() {
           {/* Title + Price */}
           {/* TITLE + PRICE SECTION */}
           <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
-            <div className="flex flex-col md:flex-row justify-between gap-6 items-start">
-              {/* LEFT CONTENT */}
-              <div className="flex-1">
+            <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-start">
+              {/* ================= LEFT TOP (TITLE + META) ================= */}
+              <div>
                 <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011] leading-snug">
                   {tour.title}
                 </h1>
@@ -622,125 +622,90 @@ export default function TourServiceDetails() {
                 </div>
               </div>
 
-              {/* RIGHT PRICE CARD */}
-              <div className="relative bg-[#fff7f7] border border-[#e82429]/20 rounded-2xl px-4 pt-4 pb-3 w-[230px] md:w-[245px]">
+              {/* ================= RIGHT TOP (PRICE CARD) ================= */}
+              <div
+                className={`relative bg-[#fff7f7] border border-[#e82429]/20 rounded-2xl px-4 ${
+                  Number(tour.priceChild) > 0 ? "pt-4 pb-3" : "pt-3 pb-2"
+                } ${
+                  Number(tour.priceChild) > 0
+                    ? "w-[230px] md:w-[245px]"
+                    : "w-[180px] md:w-[200px]"
+                }`}
+              >
                 {/* BADGES */}
-                <div className="absolute -top-2 left-0 right-0 flex justify-between px-3 min-h-[16px]">
-                  {tour.discountPriceChild ? (
-                    <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-[2px] rounded-full">
-                      {calculateDiscountPercent(
-                        tour.priceChild,
-                        tour.discountPriceChild
-                      )}
-                      % OFF
-                    </span>
-                  ) : (
-                    <span />
-                  )}
-
-                  {tour.discountPriceAdult ? (
-                    <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-[2px] rounded-full">
-                      {calculateDiscountPercent(
-                        tour.priceAdult,
-                        tour.discountPriceAdult
-                      )}
-                      % OFF
-                    </span>
-                  ) : (
-                    <span />
-                  )}
-                </div>
-
-                {/* PRICES – COMPACT */}
-                <div
-                  className={`mt-1 flex items-center ${
-                    Number(tour.priceChild) > 0
-                      ? "min-h-[70px]"
-                      : "min-h-[46px]"
-                  }`}
-                >
-                  {Number(tour.priceChild) > 0 ? (
-                    <div className="grid grid-cols-2 gap-3 w-full">
-                      {/* CHILD */}
-                      <div className="border-r border-gray-200 pr-2">
-                        <span className="block text-[10px] text-gray-500 mb-[2px]">
-                          Child
-                        </span>
-
-                        <div className="relative inline-block leading-none mb-[2px]">
-                          {tour.discountPriceChild && (
-                            <>
-                              <span className="text-[11px] text-gray-400">
-                                AED {tour.priceChild}
-                              </span>
-                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
-                            </>
-                          )}
-                        </div>
-
-                        <span className="block text-base font-bold text-[#721011] leading-tight">
-                          AED {tour.discountPriceChild || tour.priceChild}
-                        </span>
-                      </div>
-
-                      {/* ADULT */}
-                      <div className="text-right">
-                        <span className="block text-[10px] text-gray-500 mb-[2px]">
-                          Adult
-                        </span>
-
-                        <div className="relative inline-block leading-none mb-[2px]">
-                          {tour.discountPriceAdult && (
-                            <>
-                              <span className="text-[11px] text-gray-400">
-                                AED {tour.priceAdult}
-                              </span>
-                              <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
-                            </>
-                          )}
-                        </div>
-
-                        <span className="block text-base font-extrabold text-[#e82429] leading-tight">
-                          AED {tour.discountPriceAdult || tour.priceAdult}
-                        </span>
-                      </div>
-                    </div>
-                  ) : (
-                    /* ONLY ADULT */
-                    <div className="text-center w-full">
-                      <span className="block text-[10px] text-gray-500 mb-[2px]">
-                        Adult Price
-                      </span>
-
-                      <div className="relative inline-block leading-none mb-[2px]">
-                        {tour.discountPriceAdult && (
-                          <>
-                            <span className="text-[11px] text-gray-400">
-                              AED {tour.priceAdult}
-                            </span>
-                            <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
-                          </>
+                {(tour.discountPriceAdult || tour.discountPriceChild) && (
+                  <div className="absolute -top-2 left-0 right-0 flex justify-between px-3">
+                    {tour.discountPriceChild ? (
+                      <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-[2px] rounded-full">
+                        {calculateDiscountPercent(
+                          tour.priceChild,
+                          tour.discountPriceChild
                         )}
-                      </div>
+                        % OFF
+                      </span>
+                    ) : (
+                      <span />
+                    )}
 
-                      <span className="block text-xl font-extrabold text-[#e82429] leading-tight">
+                    {tour.discountPriceAdult ? (
+                      <span className="text-[10px] font-semibold bg-green-100 text-green-700 px-2 py-[2px] rounded-full">
+                        {calculateDiscountPercent(
+                          tour.priceAdult,
+                          tour.discountPriceAdult
+                        )}
+                        % OFF
+                      </span>
+                    ) : (
+                      <span />
+                    )}
+                  </div>
+                )}
+
+                {/* PRICES */}
+                {Number(tour.priceChild) > 0 ? (
+                  <div className="mt-1 grid grid-cols-2 gap-3">
+                    <div className="border-r border-gray-200 pr-2">
+                      <span className="block text-[10px] text-gray-500">
+                        Child
+                      </span>
+                      <span className="block text-base font-bold text-[#e82429]">
+                        AED {tour.discountPriceChild || tour.priceChild}
+                      </span>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="block text-[10px] text-gray-500">
+                        Adult
+                      </span>
+                      <span className="block text-base font-extrabold text-[#e82429]">
                         AED {tour.discountPriceAdult || tour.priceAdult}
                       </span>
                     </div>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <span className="block text-[10px] text-gray-500">
+                      Adult Price
+                    </span>
+                    <span className="block text-xl font-extrabold text-[#e82429]">
+                      AED {tour.discountPriceAdult || tour.priceAdult}
+                    </span>
+                  </div>
+                )}
 
                 <span className="block mt-1 text-[10px] text-gray-500 text-center">
                   Per Person
                 </span>
               </div>
-            </div>
 
-            {/* DESCRIPTION */}
-            <p className="mt-6 text-gray-700 text-sm md:text-base leading-relaxed">
-              {tour.description ||
-                "Experience the best of Dubai with our luxury travel packages and unforgettable adventures."}
-            </p>
+              {/* ================= FULL WIDTH DESCRIPTION ================= */}
+              <div className="md:col-span-2">
+                <p className="text-gray-700 text-sm md:text-base leading-relaxed">
+                  {tour.description ||
+                    "Experience the best of Dubai with our luxury travel packages and unforgettable adventures."}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Mobile / Tablet Check Availability */}
