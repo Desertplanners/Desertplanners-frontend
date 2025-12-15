@@ -596,41 +596,41 @@ export default function TourServiceDetails() {
           </Suspense>
 
           {/* Title + Price */}
-          <div className="bg-gradient-to-br from-[#fff7f7] via-[#fff1f1] to-[#ffecec] rounded-3xl shadow-lg p-6 md:p-7 border border-[#e82429]/20">
+          <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
             <div className="flex flex-col md:flex-row justify-between gap-6">
               {/* LEFT CONTENT */}
               <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011] leading-snug">
+                <h1 className="text-2xl md:text-3xl font-bold text-[#721011] leading-snug">
                   {tour.title}
                 </h1>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1 bg-[#e82429]/15 text-[#721011] font-semibold px-3 py-1 rounded-full text-xs">
+                  <span className="inline-flex items-center gap-1 bg-[#e82429]/10 text-[#721011] font-medium px-3 py-1 rounded-full text-xs">
                     <FaClock className="text-[#e82429]" />
                     {tour.duration || "Flexible"}
                   </span>
 
-                  <span className="inline-flex items-center bg-white/70 backdrop-blur text-[#721011] font-semibold px-3 py-1 rounded-full text-xs border border-[#e82429]/20">
+                  <span className="inline-flex items-center bg-gray-50 text-gray-700 font-medium px-3 py-1 rounded-full text-xs border">
                     {tour.category?.name || "Luxury Experience"}
                   </span>
                 </div>
               </div>
 
-              {/* RIGHT PRICE SECTION */}
-              <div className="flex flex-col items-start md:items-end justify-center gap-2">
+              {/* RIGHT PRICE BOX */}
+              <div className="min-w-[220px] rounded-2xl border border-gray-100 bg-[#fff7f7] p-5 flex flex-col justify-center">
                 {/* ===== ADULT PRICE ===== */}
                 {tour.discountPriceAdult ? (
-                  <div className="text-left md:text-right">
-                    <span className="block text-sm text-gray-400 line-through">
+                  <>
+                    <span className="text-xs text-gray-400 line-through">
                       AED {tour.priceAdult}
                     </span>
 
-                    <div className="flex items-center gap-2 justify-start md:justify-end">
-                      <span className="text-2xl md:text-3xl font-extrabold text-[#e82429]">
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-3xl font-bold text-[#e82429]">
                         AED {tour.discountPriceAdult}
                       </span>
 
-                      <span className="text-[11px] font-bold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                      <span className="text-[11px] font-semibold bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                         {calculateDiscountPercent(
                           tour.priceAdult,
                           tour.discountPriceAdult
@@ -638,22 +638,22 @@ export default function TourServiceDetails() {
                         % OFF
                       </span>
                     </div>
-                  </div>
+                  </>
                 ) : (
-                  <span className="text-2xl md:text-3xl font-extrabold text-[#e82429]">
-                    AED {tour.priceAdult || tour.price || "—"}
+                  <span className="text-3xl font-bold text-[#e82429]">
+                    AED {tour.priceAdult || "—"}
                   </span>
                 )}
 
                 {/* ===== CHILD PRICE ===== */}
                 {Number(tour.priceChild) > 0 && (
-                  <div className="text-left md:text-right mt-1">
+                  <div className="mt-3 pt-3 border-t border-gray-200">
                     {tour.discountPriceChild ? (
                       <>
                         <span className="block text-xs text-gray-400 line-through">
                           Child AED {tour.priceChild}
                         </span>
-                        <div className="flex items-center gap-2 justify-start md:justify-end">
+                        <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-sm font-semibold text-[#721011]">
                             Child AED {tour.discountPriceChild}
                           </span>
@@ -667,20 +667,21 @@ export default function TourServiceDetails() {
                         </div>
                       </>
                     ) : (
-                      <span className="text-sm font-semibold text-[#721011] bg-white/70 px-3 py-1 rounded-full border border-[#e82429]/20">
+                      <span className="text-sm font-semibold text-[#721011]">
                         Child AED {tour.priceChild}
                       </span>
                     )}
                   </div>
                 )}
 
-                {/* PER PERSON */}
-                <span className="text-[11px] text-gray-500">(Per Person)</span>
+                <span className="mt-2 text-[11px] text-gray-500">
+                  (Per Person)
+                </span>
               </div>
             </div>
 
             {/* DESCRIPTION */}
-            <p className="mt-5 text-gray-700 text-sm md:text-base leading-relaxed">
+            <p className="mt-6 text-gray-700 text-sm md:text-base leading-relaxed">
               {tour.description ||
                 "Experience the best of Dubai with our luxury travel packages and unforgettable adventures."}
             </p>

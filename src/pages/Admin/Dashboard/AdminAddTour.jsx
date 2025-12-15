@@ -267,7 +267,12 @@ export default function AdminAddTour({ tour, onSuccess }) {
     formData.append("slug", slug);
     formData.append("description", description);
     formData.append("priceAdult", priceAdult);
-    formData.append("discountPriceAdult", discountPriceAdult);
+    if (discountPriceAdult !== "" && discountPriceAdult !== null) {
+      formData.append("discountPriceAdult", discountPriceAdult);
+    } else {
+      formData.append("discountPriceAdult", "");
+    }
+    
     formData.append("duration", duration);
     formData.append("category", category);
 
