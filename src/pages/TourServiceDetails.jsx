@@ -606,7 +606,7 @@ export default function TourServiceDetails() {
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-start">
               {/* ================= LEFT TOP (TITLE + META) ================= */}
               <div>
-                <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011] leading-snug">
+                <h1 className="text-3xl md:text-3xl font-extrabold text-[#721011] leading-snug">
                   {tour.title}
                 </h1>
 
@@ -628,7 +628,7 @@ export default function TourServiceDetails() {
                   Number(tour.priceChild) > 0 ? "pt-4 pb-3" : "pt-3 pb-2"
                 } ${
                   Number(tour.priceChild) > 0
-                    ? "w-[230px] md:w-[245px]"
+                    ? "w-[230px] md:w-[268px]"
                     : "w-[180px] md:w-[200px]"
                 }`}
               >
@@ -663,65 +663,73 @@ export default function TourServiceDetails() {
 
                 {/* ================= PRICES ================= */}
                 {Number(tour.priceChild) > 0 ? (
-                  /* CHILD + ADULT */
-                  <div className="mt-1 grid grid-cols-2 gap-3">
+                  <div className="mt-1 grid grid-cols-2 gap-4">
                     {/* CHILD */}
-                    <div className="border-r border-gray-200 pr-2">
-                      <span className="block text-[10px] text-gray-500 mb-[2px]">
+                    <div className="border-r border-gray-200 pr-3">
+                      <span className="block text-[10px] text-gray-500 mb-1">
                         Child
                       </span>
 
                       {tour.discountPriceChild && (
-                        <div className="relative inline-block leading-none mb-[2px]">
-                          <span className="text-[11px] text-gray-400">
-                            AED {tour.priceChild}
-                          </span>
-                          <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
+                        <div className="flex items-center gap-1 mb-1">
+                          <span className="text-xs text-gray-500">from</span>
+                          <div className="relative inline-block">
+                            <span className="text-sm text-gray-500 font-medium">
+                              AED {tour.priceChild}
+                            </span>
+                            <span className="absolute left-0 right-0 top-1/2 h-[2px] bg-gradient-to-r from-[#e82429] to-[#ff7a7a]" />
+                          </div>
                         </div>
                       )}
 
-                      <span className="block text-base font-bold text-[#721011] leading-tight">
+                      <span className="block text-xl font-extrabold text-[#e82429]">
                         AED {tour.discountPriceChild || tour.priceChild}
                       </span>
                     </div>
 
                     {/* ADULT */}
                     <div className="text-right">
-                      <span className="block text-[10px] text-gray-500 mb-[2px]">
+                      <span className="block text-[10px] text-gray-500 mb-1">
                         Adult
                       </span>
 
                       {tour.discountPriceAdult && (
-                        <div className="relative inline-block leading-none mb-[2px]">
-                          <span className="text-[11px] text-gray-400">
-                            AED {tour.priceAdult}
-                          </span>
-                          <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
+                        <div className="flex justify-end gap-1 mb-1">
+                          <span className="text-xs text-gray-500">from</span>
+                          <div className="relative inline-block">
+                            <span className="text-sm text-gray-500 font-medium">
+                              AED {tour.priceAdult}
+                            </span>
+                            <span className="absolute left-0 right-0 top-1/2 h-[2px] bg-gradient-to-r from-[#e82429] to-[#ff7a7a]" />
+                          </div>
                         </div>
                       )}
 
-                      <span className="block text-base font-extrabold text-[#e82429] leading-tight">
+                      <span className="block text-xl font-extrabold text-[#e82429]">
                         AED {tour.discountPriceAdult || tour.priceAdult}
                       </span>
                     </div>
                   </div>
                 ) : (
-                  /* ONLY ADULT – COMPACT */
-                  <div className="mt-1 text-center flex flex-col items-center">
-                    <span className="block text-[10px] text-gray-500 mb-[2px]">
+                  /* ONLY ADULT */
+                  <div className="mt-1 text-center">
+                    <span className="block text-[10px] text-gray-500 mb-1">
                       Adult Price
                     </span>
 
                     {tour.discountPriceAdult && (
-                      <div className="relative inline-block leading-none mb-[2px]">
-                        <span className="text-[11px] text-gray-400">
-                          AED {tour.priceAdult}
-                        </span>
-                        <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/60" />
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <span className="text-xs text-gray-500">from</span>
+                        <div className="relative inline-block">
+                          <span className="text-sm text-gray-500 font-medium">
+                            AED {tour.priceAdult}
+                          </span>
+                          <span className="absolute left-0 right-0 top-1/2 h-[2px] bg-gradient-to-r from-[#e82429] to-[#ff7a7a]" />
+                        </div>
                       </div>
                     )}
 
-                    <span className="block text-xl font-extrabold text-[#e82429] leading-tight">
+                    <span className="block text-xl md:text-2xl font-extrabold text-[#e82429]">
                       AED {tour.discountPriceAdult || tour.priceAdult}
                     </span>
                   </div>
@@ -732,8 +740,8 @@ export default function TourServiceDetails() {
                 </span>
               </div>
 
-              {/* ================= FULL WIDTH DESCRIPTION ================= */}
-              <div className="md:col-span-2">
+              {/* ================= DESCRIPTION (FORCED FULL WIDTH) ================= */}
+              <div className="md:col-span-2 row-start-2">
                 <p className="text-gray-700 text-sm md:text-base leading-relaxed">
                   {tour.description ||
                     "Experience the best of Dubai with our luxury travel packages and unforgettable adventures."}
