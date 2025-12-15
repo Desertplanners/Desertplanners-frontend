@@ -14,18 +14,20 @@ export default function TourCategoryPage() {
   const api = DataService();
   const fallbackBanner = "/images/dubai-common-banner.jpg";
 
-  // ⭐ STEP 1 — Fetch Category Tours
+  // 🔥 Discount helper
+  const getDiscountPercent = (actual, discounted) => {
+    if (!actual || !discounted) return null;
+    return Math.round(((actual - discounted) / actual) * 100);
+  };
+
+  // ================= FETCH TOURS =================
   useEffect(() => {
     const loadData = async () => {
       try {
         const res = await api.get(API.GET_TOURS_BY_CATEGORY(slug));
         const list = res.data || [];
-
         setTours(list);
-
-        if (list.length > 0) {
-          setCategory(list[0].category);
-        }
+        if (list.length > 0) setCategory(list[0].category);
       } catch (err) {
         console.error(err);
         setTours([]);
@@ -35,7 +37,7 @@ export default function TourCategoryPage() {
     requestIdleCallback(loadData);
   }, [slug]);
 
-  // ⭐ STEP 2 — Fetch SEO (using correct backend type "tourCategory")
+  // ================= FETCH SEO =================
   useEffect(() => {
     if (!category?._id) return;
 
@@ -43,7 +45,7 @@ export default function TourCategoryPage() {
       try {
         const res = await api.get(API.GET_SEO("tourCategory", category._id));
         setSEO(res.data?.seo || null);
-      } catch (err) {
+      } catch {
         console.log("SEO missing => using fallback");
       } finally {
         setLoading(false);
@@ -62,28 +64,25 @@ export default function TourCategoryPage() {
       </h2>
     );
 
-  // ⭐ Dynamic SEO Fallbacks
-  const pageTitle =
-    seo?.seoTitle || `${category?.name} – Dubai Tour Packages`;
+  // ================= SEO FALLBACKS =================
+  const pageTitle = seo?.seoTitle || `${category?.name} – Dubai Tour Packages`;
   const pageDesc =
     seo?.seoDescription ||
     `Discover top Dubai tours under ${category?.name}. View prices, details & book online.`;
   const pageKeywords = seo?.seoKeywords || `${category?.name}, Dubai Tours`;
   const ogImage = seo?.seoOgImage || tours[0]?.mainImage || fallbackBanner;
-
   const canonicalURL = `https://www.desertplanners.net/tours/${slug}`;
 
   return (
     <div className="w-full">
-
-      {/* ⭐⭐⭐ Dynamic SEO Start ⭐⭐⭐ */}
+      {/* ================= SEO ================= */}
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
         <meta name="keywords" content={pageKeywords} />
         <link rel="canonical" href={canonicalURL} />
 
-        {/* OG Tags */}
+        {/* OG */}
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDesc} />
         <meta property="og:image" content={ogImage} />
@@ -96,7 +95,7 @@ export default function TourCategoryPage() {
         <meta name="twitter:description" content={pageDesc} />
         <meta name="twitter:image" content={ogImage} />
 
-        {/* Schema */}
+        {/* CollectionPage Schema */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -105,11 +104,14 @@ export default function TourCategoryPage() {
             description: pageDesc,
             image: ogImage,
             url: canonicalURL,
-            about: { "@type": "Thing", name: category?.name },
+            about: {
+              "@type": "Thing",
+              name: category?.name,
+            },
           })}
         </script>
 
-        {/* FAQ Schema */}
+        {/* FAQ Schema (RESTORED) */}
         {seo?.faqs?.length > 0 && (
           <script type="application/ld+json">
             {JSON.stringify({
@@ -118,15 +120,17 @@ export default function TourCategoryPage() {
               mainEntity: seo.faqs.map((f) => ({
                 "@type": "Question",
                 name: f.question,
-                acceptedAnswer: { "@type": "Answer", text: f.answer },
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: f.answer,
+                },
               })),
             })}
           </script>
         )}
       </Helmet>
-      {/* ⭐⭐⭐ Dynamic SEO End ⭐⭐⭐ */}
 
-      {/* Banner */}
+      {/* ================= BANNER ================= */}
       <div className="relative w-full h-[200px] md:h-[260px] lg:h-[320px] rounded-2xl overflow-hidden shadow-lg bg-black">
         <img
           src={ogImage}
@@ -134,9 +138,7 @@ export default function TourCategoryPage() {
           className="w-full h-full object-cover"
           onError={(e) => (e.currentTarget.src = fallbackBanner)}
         />
-
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
         <div className="absolute inset-0 flex justify-center items-center">
           <h1 className="text-3xl md:text-5xl font-extrabold text-white uppercase">
             {category?.name}
@@ -144,65 +146,76 @@ export default function TourCategoryPage() {
         </div>
       </div>
 
-      {/* ⭐ SEO Description Under Banner */}
-      {seo?.seoDescription && (
-        <div className="max-w-[1200px] mx-auto px-4 md:px-0 mt-8">
-          <div className="bg-white rounded-2xl shadow p-6 border">
-            <p className="text-gray-700 text-lg leading-relaxed">
-              {seo.seoDescription}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Cards */}
+      {/* ================= CARDS ================= */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-0 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {tours.map((tour) => (
-          <Link
-            key={tour._id}
-            to={`/tours/${slug}/${tour.slug}`}
-            className="block bg-white rounded-3xl shadow-lg hover:shadow-2xl transition"
-          >
-            <div className="h-64 overflow-hidden rounded-t-3xl">
-              <img
-                src={
-                  tour.mainImage?.startsWith("http")
-                    ? tour.mainImage
-                    : `${import.meta.env.VITE_API_URL}/${tour.mainImage}`
-                }
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
+        {tours.map((tour) => {
+          const discount = getDiscountPercent(
+            tour.priceAdult || tour.price,
+            tour.discountPriceAdult
+          );
 
-            <div className="p-6 h-56 flex flex-col">
-              <h2 className="text-xl font-bold text-[#e82429] mb-3">
-                {tour.title}
-              </h2>
+          return (
+            <Link
+              key={tour._id}
+              to={`/tours/${slug}/${tour.slug}`}
+              className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition overflow-hidden"
+            >
+              {/* IMAGE + % OFF */}
+              <div className="relative h-64 overflow-hidden">
+                {discount && (
+                  <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-[#e82429] to-[#ff5a5f] text-white text-sm font-extrabold px-3 py-1 rounded-full shadow-lg">
+                    {discount}% OFF
+                  </div>
+                )}
 
-              <p className="mb-4">
-  {tour.discountPriceAdult ? (
-    <>
-      <span className="text-gray-400 line-through mr-2">
-        AED {tour.priceAdult || tour.price}
-      </span>
-      <span className="text-[#e82429] font-bold">
-        AED {tour.discountPriceAdult}
-      </span>
-    </>
-  ) : (
-    <span className="text-gray-700 font-semibold">
-      AED {tour.priceAdult || tour.price}
-    </span>
-  )}
-</p>
+                <img
+                  src={
+                    tour.mainImage?.startsWith("http")
+                      ? tour.mainImage
+                      : `${import.meta.env.VITE_API_URL}/${tour.mainImage}`
+                  }
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
 
-
-              <div className="mt-auto text-center bg-[#404041] hover:bg-[#e82429] text-white py-3 rounded-2xl transition">
-                View Trip
+                <div className="absolute inset-0 bg-black/10" />
               </div>
-            </div>
-          </Link>
-        ))}
+
+              {/* CONTENT */}
+              <div className="p-6 h-56 flex flex-col">
+                <h2 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2">
+                  {tour.title}
+                </h2>
+
+                {/* PRICE */}
+                <div className="mb-4">
+                  {tour.discountPriceAdult ? (
+                    <>
+                      <div className="relative inline-block mr-2">
+                        <span className="text-sm text-gray-400">
+                          AED {tour.priceAdult || tour.price}
+                        </span>
+                        <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/70" />
+                      </div>
+
+                      <span className="text-xl font-extrabold text-[#e82429]">
+                        AED {tour.discountPriceAdult}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-bold text-gray-800">
+                      AED {tour.priceAdult || tour.price}
+                    </span>
+                  )}
+                </div>
+
+                {/* CTA */}
+                <div className="mt-auto text-center bg-[#404041] group-hover:bg-[#e82429] text-white py-3 rounded-2xl transition">
+                  View Trip
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
