@@ -687,28 +687,32 @@ export default function TourServiceDetails() {
                       </span>
                     </div>
 
-                    {/* ADULT */}
-                    <div className="text-right">
-                      <span className="block text-[10px] text-gray-500 mb-1">
-                        Adult
-                      </span>
+                   {/* ADULT */}
+<div className="text-right">
+  <span className="block text-[10px] text-gray-500 mb-1">
+    Adult
+  </span>
 
-                      {tour.discountPriceAdult && (
-                        <div className="flex justify-end gap-1 mb-1">
-                          <span className="text-xs text-gray-500">from</span>
-                          <div className="relative inline-block">
-                            <span className="text-sm text-gray-500 font-medium">
-                              AED {tour.priceAdult}
-                            </span>
-                            <span className="absolute left-0 right-0 top-1/2 h-[2px] bg-gradient-to-r from-[#e82429] to-[#ff7a7a]" />
-                          </div>
-                        </div>
-                      )}
+  {tour.discountPriceAdult && (
+    <div className="flex justify-end items-baseline gap-1 mb-1">
+      <span className="text-xs text-gray-500 leading-none mt-[1px]">
+        from
+      </span>
 
-                      <span className="block text-xl font-extrabold text-[#e82429]">
-                        AED {tour.discountPriceAdult || tour.priceAdult}
-                      </span>
-                    </div>
+      <div className="relative inline-block">
+        <span className="text-sm text-gray-500 font-medium">
+          AED {tour.priceAdult}
+        </span>
+        <span className="absolute left-0 right-0 top-1/2 h-[2px] bg-gradient-to-r from-[#e82429] to-[#ff7a7a]" />
+      </div>
+    </div>
+  )}
+
+  <span className="block text-xl font-extrabold text-[#e82429]">
+    AED {tour.discountPriceAdult || tour.priceAdult}
+  </span>
+</div>
+
                   </div>
                 ) : (
                   /* ONLY ADULT */
