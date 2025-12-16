@@ -782,73 +782,76 @@ export default function TourServiceDetails() {
               </div>
 
               {/* Guests Section */}
-              <div className="flex flex-col gap-4">
-                {tour.priceChild ? (
-                  <>
-                    {/* Adults */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-gray-700 font-semibold flex items-center gap-2">
-                        <span className="text-[#e82429] text-lg">👤</span>
-                        Adults (10+ years)
-                      </label>
-                      <select
-                        value={adults}
-                        onChange={(e) => setAdults(e.target.value)}
-                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-700 focus:ring-2 focus:ring-[#e82429] focus:border-[#e82429] transition-all"
-                      >
-                        <option value="">Select Adults</option>
-                        {[...Array(12)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+              <div className="flex flex-col gap-4 mt-2">
+              {hasChildPricing ? (
+                <>
+                  {/* Adults */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-700 font-semibold flex items-center gap-2">
+                      <span className="text-[#e82429] text-lg">👤</span>
+                      Adults (10+ years)
+                    </label>
 
-                    {/* Children */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-gray-700 font-semibold flex items-center gap-2">
-                        <span className="text-[#e82429] text-lg">🧒</span>
-                        Children (3 - 10 years)
-                      </label>
-                      <select
-                        value={children}
-                        onChange={(e) => setChildren(e.target.value)}
-                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm text-gray-700 focus:ring-2 focus:ring-[#e82429] focus:border-[#e82429] transition-all"
-                      >
-                        <option value="0">0</option>
-                        {[...Array(12)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* Guests */}
-                    <div className="flex flex-col gap-1">
-                      <label className="text-gray-700 font-semibold flex items-center gap-2">
-                        <span className="text-[#e82429] text-lg">👥</span>
-                        Adult (10+ years)
-                      </label>
-                      <select
-                        value={guests}
-                        onChange={(e) => setGuests(e.target.value)}
-                        className="w-full border border-gray-300 rounded-2xl px-4 py-3 bg-white shadow-sm text-gray-700 focus:ring-2 focus:ring-[#e82429] focus:border-[#e82429]"
-                      >
-                        <option value="">Select Guests</option>
-                        {[...Array(12)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </>
-                )}
-              </div>
+                    <select
+                      value={adults}
+                      onChange={(e) => setAdults(e.target.value)}
+                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                    >
+                      <option value="">Select Adults</option>
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Children */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-700 font-semibold flex items-center gap-2">
+                      <span className="text-[#e82429] text-lg">🧒</span>
+                      Children (3–10 years)
+                    </label>
+
+                    <select
+                      value={children}
+                      onChange={(e) => setChildren(e.target.value)}
+                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                    >
+                      <option value="0">0</option>
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* General Guests */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-gray-700 font-semibold flex items-center gap-2">
+                      <span className="text-[#e82429] text-lg">👥</span>
+                      General
+                    </label>
+
+                    <select
+                      value={guests}
+                      onChange={(e) => setGuests(e.target.value)}
+                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                    >
+                      <option value="">Select Guests</option>
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
+            </div>
 
               {/* Button */}
               <div className="mt-4">
