@@ -46,6 +46,9 @@ export default function TourServiceDetails() {
   const navigate = useNavigate();
   const pageUrl = window.location.href;
 
+  // ✅ ADD THIS
+  const hasChildPricing = tour?.priceChild !== null && tour?.priceChild > 0;
+
   // % OFF calculate helper
   const calculateDiscountPercent = (actual, discount) => {
     if (!actual || !discount) return null;
@@ -1270,7 +1273,7 @@ export default function TourServiceDetails() {
 
             {/* Guests */}
             <div className="flex flex-col gap-4 mt-2">
-              {tour.priceChild ? (
+              {hasChildPricing ? (
                 <>
                   {/* Adults */}
                   <div className="flex flex-col gap-1">
@@ -1279,83 +1282,62 @@ export default function TourServiceDetails() {
                       Adults (10+ years)
                     </label>
 
-                    <div className="relative">
-                      <select
-                        value={adults}
-                        onChange={(e) => setAdults(e.target.value)}
-                        className="
-              w-full px-4 py-3 rounded-2xl bg-white border 
-              border-gray-300 shadow-sm text-gray-700
-              focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
-              transition-all duration-300 cursor-pointer
-            "
-                      >
-                        <option value="">Select Adults</option>
-                        {[...Array(12)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <select
+                      value={adults}
+                      onChange={(e) => setAdults(e.target.value)}
+                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                    >
+                      <option value="">Select Adults</option>
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* Children */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-700 font-semibold flex items-center gap-2">
                       <span className="text-[#e82429] text-lg">🧒</span>
-                      Children (3 - 10 years)
+                      Children (3–10 years)
                     </label>
 
-                    <div className="relative">
-                      <select
-                        value={children}
-                        onChange={(e) => setChildren(e.target.value)}
-                        className="
-              w-full px-4 py-3 rounded-2xl bg-white border 
-              border-gray-300 shadow-sm text-gray-700
-              focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
-              transition-all duration-300 cursor-pointer
-            "
-                      >
-                        <option value="0">0</option>
-                        {[...Array(12)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <select
+                      value={children}
+                      onChange={(e) => setChildren(e.target.value)}
+                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                    >
+                      <option value="0">0</option>
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </>
               ) : (
                 <>
-                  {/* Guests (No child price tours) */}
+                  {/* General Guests */}
                   <div className="flex flex-col gap-1">
                     <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">👥</span> Adult
-                      (10+ years)
+                      <span className="text-[#e82429] text-lg">👥</span>
+                      General
                     </label>
 
-                    <div className="relative">
-                      <select
-                        value={guests}
-                        onChange={(e) => setGuests(e.target.value)}
-                        className="
-              w-full px-4 py-3 rounded-2xl bg-white border 
-              border-gray-300 shadow-sm text-gray-700
-              focus:ring-2 focus:ring-[#e82429]/50 focus:border-[#e82429]
-              transition-all duration-300 cursor-pointer
-            "
-                      >
-                        <option value="">Select Guests</option>
-                        {[...Array(12)].map((_, i) => (
-                          <option key={i + 1} value={i + 1}>
-                            {i + 1}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <select
+                      value={guests}
+                      onChange={(e) => setGuests(e.target.value)}
+                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                    >
+                      <option value="">Select Guests</option>
+                      {[...Array(12)].map((_, i) => (
+                        <option key={i + 1} value={i + 1}>
+                          {i + 1}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </>
               )}
