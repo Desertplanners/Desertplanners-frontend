@@ -218,15 +218,39 @@ export default function TourCategory() {
               </button>
             </div>
             <Editor
-              apiKey="8s89n75h7ygps6blc3zk8y0mkkid5zf3f505scrck14fx9ol" // ⭐ YAHAN
+              apiKey="8s89n75h7ygps6blc3zk8y0mkkid5zf3f505scrck14fx9ol"
               value={description}
               onEditorChange={setDescription}
               init={{
-                height: 350,
-                menubar: false,
-                plugins: "lists link image code",
+                height: 400,
+                menubar: true, // ⭐ menubar ON
+                plugins: [
+                  "advlist",
+                  "autolink",
+                  "lists",
+                  "link",
+                  "image",
+                  "charmap",
+                  "preview",
+                  "anchor",
+                  "searchreplace",
+                  "visualblocks",
+                  "code",
+                  "fullscreen",
+                  "insertdatetime",
+                  "media",
+                  "table",
+                  "help",
+                  "wordcount",
+                ],
                 toolbar:
-                  "undo redo | formatselect | bold italic underline | bullist numlist | link | code",
+                  "undo redo | formatselect | " +
+                  "bold italic underline strikethrough | forecolor backcolor | " +
+                  "alignleft aligncenter alignright alignjustify | " +
+                  "bullist numlist outdent indent | " +
+                  "removeformat | link image media table | fullscreen preview code",
+                content_style:
+                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
               }}
             />
 
