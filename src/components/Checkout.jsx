@@ -73,6 +73,12 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
 
+  // ⭐ CHECK — Pickup / Drop required or not
+  const isPickupRequired = cart.some((item) => {
+    const t = item.tourId || item;
+    return t?.pickupDropRequired === true;
+  });
+
   // TOTAL PRICE FIXED
   const totalPrice = cart.reduce((sum, item) => {
     const t = item.tourId || item;
@@ -131,12 +137,10 @@ export default function Checkout() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ⭐ VALIDATION
     if (
       !form.guestName ||
       !form.guestEmail ||
-      !form.pickupPoint ||
-      !form.dropPoint
+      (isPickupRequired && (!form.pickupPoint || !form.dropPoint))
     ) {
       toast.error("Please fill all required fields!");
       return;
@@ -243,8 +247,8 @@ export default function Checkout() {
         guestName: form.guestName,
         guestEmail: form.guestEmail,
         guestContact: form.guestContact,
-        pickupPoint: form.pickupPoint,
-        dropPoint: form.dropPoint,
+        pickupPoint: isPickupRequired ? form.pickupPoint : null,
+        dropPoint: isPickupRequired ? form.dropPoint : null,
         specialRequest: form.specialRequest,
         items,
       };
@@ -462,29 +466,33 @@ export default function Checkout() {
               }
             />
 
-            <div className="relative">
-              <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
-              <input
-                name="pickupPoint"
-                value={form.pickupPoint}
-                onChange={handleChange}
-                placeholder="Pickup Point"
-                className="w-full pl-10 border p-3 rounded-xl"
-                required
-              />
-            </div>
+            {isPickupRequired && (
+              <>
+                <div className="relative">
+                  <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
+                  <input
+                    name="pickupPoint"
+                    value={form.pickupPoint}
+                    onChange={handleChange}
+                    placeholder="Pickup Point"
+                    className="w-full pl-10 border p-3 rounded-xl"
+                    required
+                  />
+                </div>
 
-            <div className="relative">
-              <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
-              <input
-                name="dropPoint"
-                value={form.dropPoint}
-                onChange={handleChange}
-                placeholder="Drop Point"
-                className="w-full pl-10 border p-3 rounded-xl"
-                required
-              />
-            </div>
+                <div className="relative">
+                  <FaMapMarkerAlt className="absolute left-3 top-3 text-gray-400" />
+                  <input
+                    name="dropPoint"
+                    value={form.dropPoint}
+                    onChange={handleChange}
+                    placeholder="Drop Point"
+                    className="w-full pl-10 border p-3 rounded-xl"
+                    required
+                  />
+                </div>
+              </>
+            )}
 
             <textarea
               name="specialRequest"

@@ -39,7 +39,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [maxGuests, setMaxGuests] = useState(12);
-
+  const [pickupDropRequired, setPickupDropRequired] = useState(false);
   // NAYA FIELD - Terms and Conditions
   const [termsAndConditions, setTermsAndConditions] = useState("");
 
@@ -127,6 +127,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
           : ""
       );
 
+      setPickupDropRequired(tour.pickupDropRequired || false);
       setDuration(tour.duration || "");
       setCategory(tour.category?._id || "");
       setHighlights(tour.highlights || []);
@@ -272,7 +273,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
     } else {
       formData.append("discountPriceAdult", "");
     }
-    
+
     formData.append("duration", duration);
     formData.append("category", category);
 
@@ -308,6 +309,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
     formData.append("highlights", JSON.stringify(highlights));
     formData.append("inclusions", JSON.stringify(inclusions));
     formData.append("exclusions", JSON.stringify(exclusions));
+    formData.append("pickupDropRequired", pickupDropRequired);
     formData.append("timings", timings);
 
     // 🔄 UPDATED - Dynamic Cancellation Policy
@@ -615,6 +617,25 @@ export default function AdminAddTour({ tour, onSuccess }) {
               className="w-full border border-[#e82429] rounded-xl px-4 py-2"
               placeholder="Example: 9:00 AM - 5:00 PM"
             />
+          </div>
+
+          <div className="border rounded-xl p-4 bg-gray-50">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={pickupDropRequired}
+                onChange={(e) => setPickupDropRequired(e.target.checked)}
+                className="w-5 h-5 accent-[#e82429]"
+              />
+              <span className="font-semibold text-gray-800">
+                Pickup & Drop Required for this Tour
+              </span>
+            </label>
+
+            <p className="text-sm text-gray-500 mt-1">
+              Enable this if this tour requires pickup & drop details at
+              checkout.
+            </p>
           </div>
 
           {/* 🔄 UPDATED - Dynamic Cancellation Policy */}
