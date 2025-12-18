@@ -7,8 +7,10 @@ import DOMPurify from "dompurify";
 
 export default function TourCategoryPage() {
   const { slug } = useParams();
+
   const [tours, setTours] = useState([]);
   const [category, setCategory] = useState(null);
+  const [categoryDescription, setCategoryDescription] = useState(""); // ⭐ NEW
   const [seo, setSEO] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -27,8 +29,13 @@ export default function TourCategoryPage() {
       try {
         const res = await api.get(API.GET_TOURS_BY_CATEGORY(slug));
         const list = res.data || [];
+
         setTours(list);
-        if (list.length > 0) setCategory(list[0].category);
+
+        // category comes from tour (but WITHOUT description)
+        if (list.length > 0) {
+          setCategory(list[0].category);
+        }
       } catch (err) {
         console.error(err);
         setTours([]);
@@ -37,6 +44,22 @@ export default function TourCategoryPage() {
 
     requestIdleCallback(loadData);
   }, [slug]);
+
+  // ================= FETCH CATEGORY DESCRIPTION (⭐ IMPORTANT ⭐) =================
+  useEffect(() => {
+    if (!category?._id) return;
+
+    const fetchCategory = async () => {
+      try {
+        const res = await api.get(API.GET_CATEGORY_BY_ID(category._id));
+        setCategoryDescription(res.data?.description || "");
+      } catch (err) {
+        console.error("Failed to load category description", err);
+      }
+    };
+
+    fetchCategory();
+  }, [category]);
 
   // ================= FETCH SEO =================
   useEffect(() => {
@@ -106,13 +129,13 @@ export default function TourCategoryPage() {
         </div>
       </div>
 
-      {/* ================= CATEGORY DESCRIPTION (⭐ NEW ⭐) ================= */}
-      {category?.description && (
+      {/* ================= CATEGORY DESCRIPTION (⭐ NOW WORKING ⭐) ================= */}
+      {categoryDescription && (
         <section className="max-w-[1200px] mx-auto px-4 md:px-0 mt-8">
           <div
             className="prose max-w-none prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(category.description),
+              __html: DOMPurify.sanitize(categoryDescription),
             }}
           />
         </section>
