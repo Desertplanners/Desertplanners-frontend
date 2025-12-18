@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
 import { Helmet } from "react-helmet-async";
+import DOMPurify from "dompurify";
 
 export default function TourCategoryPage() {
   const { slug } = useParams();
@@ -82,52 +83,11 @@ export default function TourCategoryPage() {
         <meta name="keywords" content={pageKeywords} />
         <link rel="canonical" href={canonicalURL} />
 
-        {/* OG */}
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDesc} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:url" content={canonicalURL} />
         <meta property="og:type" content="website" />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDesc} />
-        <meta name="twitter:image" content={ogImage} />
-
-        {/* CollectionPage Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "CollectionPage",
-            name: pageTitle,
-            description: pageDesc,
-            image: ogImage,
-            url: canonicalURL,
-            about: {
-              "@type": "Thing",
-              name: category?.name,
-            },
-          })}
-        </script>
-
-        {/* FAQ Schema (RESTORED) */}
-        {seo?.faqs?.length > 0 && (
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: seo.faqs.map((f) => ({
-                "@type": "Question",
-                name: f.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: f.answer,
-                },
-              })),
-            })}
-          </script>
-        )}
       </Helmet>
 
       {/* ================= BANNER ================= */}
@@ -146,6 +106,18 @@ export default function TourCategoryPage() {
         </div>
       </div>
 
+      {/* ================= CATEGORY DESCRIPTION (⭐ NEW ⭐) ================= */}
+      {category?.description && (
+        <section className="max-w-[1200px] mx-auto px-4 md:px-0 mt-8">
+          <div
+            className="prose max-w-none prose-h2:text-2xl prose-h3:text-xl prose-p:text-gray-700"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(category.description),
+            }}
+          />
+        </section>
+      )}
+
       {/* ================= CARDS ================= */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-0 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {tours.map((tour) => {
@@ -160,10 +132,10 @@ export default function TourCategoryPage() {
               to={`/tours/${slug}/${tour.slug}`}
               className="group bg-white rounded-3xl shadow-lg hover:shadow-2xl transition overflow-hidden"
             >
-              {/* IMAGE + % OFF */}
+              {/* IMAGE */}
               <div className="relative h-64 overflow-hidden">
                 {discount && (
-                  <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-[#e82429] to-[#ff5a5f] text-white text-sm font-extrabold px-3 py-1 rounded-full shadow-lg">
+                  <div className="absolute top-4 left-4 z-10 bg-gradient-to-r from-[#e82429] to-[#ff5a5f] text-white text-sm font-extrabold px-3 py-1 rounded-full">
                     {discount}% OFF
                   </div>
                 )}
@@ -176,8 +148,6 @@ export default function TourCategoryPage() {
                   }
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-
-                <div className="absolute inset-0 bg-black/10" />
               </div>
 
               {/* CONTENT */}
@@ -186,17 +156,12 @@ export default function TourCategoryPage() {
                   {tour.title}
                 </h2>
 
-                {/* PRICE */}
                 <div className="mb-4">
                   {tour.discountPriceAdult ? (
                     <>
-                      <div className="relative inline-block mr-2">
-                        <span className="text-sm text-gray-400">
-                          AED {tour.priceAdult || tour.price}
-                        </span>
-                        <span className="absolute left-0 right-0 top-1/2 h-[1px] bg-[#e82429]/70" />
-                      </div>
-
+                      <span className="text-sm text-gray-400 line-through mr-2">
+                        AED {tour.priceAdult || tour.price}
+                      </span>
                       <span className="text-xl font-extrabold text-[#e82429]">
                         AED {tour.discountPriceAdult}
                       </span>
@@ -208,8 +173,7 @@ export default function TourCategoryPage() {
                   )}
                 </div>
 
-                {/* CTA */}
-                <div className="mt-auto text-center bg-[#404041] group-hover:bg-[#e82429] text-white py-3 rounded-2xl transition">
+                <div className="mt-auto text-center bg-[#404041] group-hover:bg-[#e82429] text-white py-3 rounded-2xl">
                   View Trip
                 </div>
               </div>
