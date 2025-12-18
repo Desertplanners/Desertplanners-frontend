@@ -223,7 +223,7 @@ export default function TourCategory() {
               onEditorChange={setDescription}
               init={{
                 height: 400,
-                menubar: true, // ⭐ menubar ON
+                menubar: "file edit view insert format tools table help", // ⭐ FORMAT MENU
                 plugins: [
                   "advlist",
                   "autolink",
@@ -243,12 +243,19 @@ export default function TourCategory() {
                   "help",
                   "wordcount",
                 ],
+
+                // ⭐⭐⭐ THIS ENABLES H1 / H2 / H3
                 toolbar:
-                  "undo redo | formatselect | " +
+                  "undo redo | blocks | " +
                   "bold italic underline strikethrough | forecolor backcolor | " +
                   "alignleft aligncenter alignright alignjustify | " +
                   "bullist numlist outdent indent | " +
                   "removeformat | link image media table | fullscreen preview code",
+
+                // ⭐ Define allowed headings
+                block_formats:
+                  "Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4",
+
                 content_style:
                   "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
               }}
