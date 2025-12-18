@@ -1,28 +1,43 @@
 import React, { useEffect, useState } from "react";
-import { FaTrashAlt, FaPlus, FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import {
+  FaTrashAlt,
+  FaPlus,
+  FaEdit,
+  FaSave,
+  FaTimes,
+  FaFileAlt,
+} from "react-icons/fa";
+import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../../config/API";
 import DataService from "../../../config/DataService";
+import toast from "react-hot-toast";
 
 export default function TourCategory() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [editId, setEditId] = useState(null); // currently editing category ID
-  const [editName, setEditName] = useState(""); // updated name
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState("");
 
-  // Fetch categories
+  // 🔥 MODAL STATES
+  const [showContentModal, setShowContentModal] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [description, setDescription] = useState("");
+  const [savingContent, setSavingContent] = useState(false);
+
+  // ================= FETCH CATEGORIES =================
   const fetchCategories = async () => {
     try {
       const api = DataService();
       const res = await api.get(API.GET_CATEGORIES);
       setCategories(res.data);
     } catch (err) {
-      console.error("Error fetching categories:", err);
+      console.error(err);
     }
   };
 
-  // Add new category
+  // ================= ADD CATEGORY =================
   const addCategory = async (e) => {
     e.preventDefault();
     if (!newCategory.trim()) return alert("Please enter a category name");
@@ -40,31 +55,29 @@ export default function TourCategory() {
     }
   };
 
-  // Delete category
+  // ================= DELETE CATEGORY =================
   const deleteCategory = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) return;
+    if (!window.confirm("Are you sure?")) return;
     try {
       const api = DataService();
       await api.delete(API.DELETE_CATEGORY(id));
       fetchCategories();
     } catch (err) {
-      console.error("Error deleting category:", err);
+      console.error(err);
     }
   };
 
-  // Edit category (start edit mode)
+  // ================= EDIT CATEGORY NAME =================
   const startEdit = (cat) => {
     setEditId(cat._id);
     setEditName(cat.name);
   };
 
-  // Cancel edit
   const cancelEdit = () => {
     setEditId(null);
     setEditName("");
   };
 
-  // Save updated category
   const saveCategory = async (id) => {
     if (!editName.trim()) return alert("Category name cannot be empty");
     try {
@@ -78,7 +91,36 @@ export default function TourCategory() {
     }
   };
 
-  // Load categories
+  // ================= OPEN CONTENT MODAL =================
+  const openContentModal = async (cat) => {
+    try {
+      const api = DataService();
+      const res = await api.get(API.GET_CATEGORY_BY_ID(cat._id));
+      setActiveCategory(cat);
+      setDescription(res.data?.description || "");
+      setShowContentModal(true);
+    } catch {
+      toast.error("Failed to load category content");
+    }
+  };
+
+  // ================= SAVE CONTENT =================
+  const saveContent = async () => {
+    try {
+      setSavingContent(true);
+      const api = DataService();
+      await api.put(API.UPDATE_CATEGORY_DESCRIPTION(activeCategory._id), {
+        description,
+      });
+      toast.success("Category content updated");
+      setShowContentModal(false);
+    } catch {
+      toast.error("Failed to save content");
+    } finally {
+      setSavingContent(false);
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -90,88 +132,116 @@ export default function TourCategory() {
           🗂️ Manage Tour Categories
         </h1>
 
-        {/* Add Category */}
+        {/* ADD CATEGORY */}
         <form
           onSubmit={addCategory}
-          className="flex flex-col sm:flex-row gap-3 justify-center mb-6"
+          className="flex flex-col sm:flex-row gap-3 mb-6"
         >
           <input
             type="text"
             placeholder="Enter new category name..."
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            className="flex-1 border border-gray-300 rounded-xl px-4 py-2 focus:ring-2 focus:ring-[#e82429] focus:outline-none"
+            className="flex-1 border rounded-xl px-4 py-2"
           />
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white font-semibold px-6 py-2 rounded-xl flex items-center justify-center gap-2 hover:scale-105 transition-transform"
-          >
-            <FaPlus /> {loading ? "Adding..." : "Add"}
+          <button className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white px-6 py-2 rounded-xl">
+            <FaPlus /> Add
           </button>
         </form>
 
-        {/* Category List */}
-        <div className="border-t border-gray-200 pt-4">
-          {categories.length === 0 ? (
-            <p className="text-center text-gray-500">No categories added yet.</p>
-          ) : (
-            <ul className="space-y-3">
-              {categories.map((cat) => (
-                <li
-                  key={cat._id}
-                  className="flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition rounded-xl px-4 py-3 border border-gray-200"
-                >
-                  {editId === cat._id ? (
-                    <div className="flex items-center gap-3 flex-1">
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        className="flex-1 border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-[#e82429] outline-none"
-                      />
-                      <button
-                        onClick={() => saveCategory(cat._id)}
-                        className="text-green-600 hover:text-green-800"
-                        title="Save"
-                      >
-                        <FaSave />
-                      </button>
-                      <button
-                        onClick={cancelEdit}
-                        className="text-gray-500 hover:text-gray-700"
-                        title="Cancel"
-                      >
-                        <FaTimes />
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      <span className="font-medium text-gray-700">{cat.name}</span>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => startEdit(cat)}
-                          className="text-blue-500 hover:text-blue-700"
-                          title="Edit"
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => deleteCategory(cat._id)}
-                          className="text-red-500 hover:text-red-700"
-                          title="Delete"
-                        >
-                          <FaTrashAlt />
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        {/* CATEGORY LIST */}
+        <ul className="space-y-3">
+          {categories.map((cat) => (
+            <li
+              key={cat._id}
+              className="flex justify-between items-center bg-gray-50 p-3 rounded-xl border"
+            >
+              {editId === cat._id ? (
+                <div className="flex gap-3 flex-1">
+                  <input
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="flex-1 border rounded px-3 py-1"
+                  />
+                  <button onClick={() => saveCategory(cat._id)}>
+                    <FaSave className="text-green-600" />
+                  </button>
+                  <button onClick={cancelEdit}>
+                    <FaTimes />
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <span className="font-medium">{cat.name}</span>
+                  <div className="flex gap-3">
+                    {/* ⭐ CONTENT BUTTON */}
+                    <button
+                      type="button" // ⭐⭐⭐ YE LINE SABSE IMPORTANT HAI
+                      onClick={() => openContentModal(cat)}
+                      className="text-purple-600"
+                      title="Manage Content"
+                    >
+                      <FaFileAlt />
+                    </button>
+
+                    <button
+                      onClick={() => startEdit(cat)}
+                      className="text-blue-600"
+                    >
+                      <FaEdit />
+                    </button>
+
+                    <button
+                      onClick={() => deleteCategory(cat._id)}
+                      className="text-red-600"
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
+
+      {/* ================= CONTENT MODAL ================= */}
+      {showContentModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+          <div className="bg-white w-[95%] max-w-4xl rounded-2xl p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-[#721011]">
+                SEO Content – {activeCategory?.name}
+              </h2>
+              <button onClick={() => setShowContentModal(false)}>
+                <FaTimes />
+              </button>
+            </div>
+            <Editor
+              apiKey="8s89n75h7ygps6blc3zk8y0mkkid5zf3f505scrck14fx9ol" // ⭐ YAHAN
+              value={description}
+              onEditorChange={setDescription}
+              init={{
+                height: 350,
+                menubar: false,
+                plugins: "lists link image code",
+                toolbar:
+                  "undo redo | formatselect | bold italic underline | bullist numlist | link | code",
+              }}
+            />
+
+            <div className="text-right mt-4">
+              <button
+                onClick={saveContent}
+                disabled={savingContent}
+                className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white px-6 py-2 rounded-xl"
+              >
+                {savingContent ? "Saving..." : "Save Content"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

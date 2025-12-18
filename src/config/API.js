@@ -70,6 +70,9 @@ export const API = {
   ADD_CATEGORY: `${categories}`,
   DELETE_CATEGORY: (id) => `${categories}/${id}`,
   UPDATE_CATEGORY: (id) => `${categories}/${id}`,
+  // ---- Tour Category Content (SEO / Editor) ----
+  GET_CATEGORY_BY_ID: (id) => `${categories}/${id}`,
+  UPDATE_CATEGORY_DESCRIPTION: (id) => `${categories}/${id}/description`,
 
   // ---- Visa Categories ----
   ADD_VISA_CATEGORY: `${visaCategories}`,
