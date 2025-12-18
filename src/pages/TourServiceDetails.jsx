@@ -217,6 +217,7 @@ export default function TourServiceDetails() {
 
           adultPrice,
           childPrice,
+          pickupDropRequired: tour.pickupDropRequired,
         };
 
         console.log("📤 Cart Payload:", payload);
@@ -267,6 +268,7 @@ export default function TourServiceDetails() {
         existing.childPrice = childPrice;
         existing.guestsAdult = adultCount;
         existing.guestsChild = childCount;
+        existing.pickupDropRequired = tour.pickupDropRequired; // ⭐ ADD
       } else {
         localCart.push({
           tourId: tour._id,
@@ -278,6 +280,7 @@ export default function TourServiceDetails() {
           adultPrice,
           childPrice,
           quantity: 1,
+          pickupDropRequired: tour.pickupDropRequired, // ⭐ ADD
         });
       }
 
