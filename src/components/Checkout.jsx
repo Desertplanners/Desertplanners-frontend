@@ -74,10 +74,11 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
 
   // ⭐ CHECK — Pickup / Drop required or not
-  const isPickupRequired = cart.some((item) => {
-    const t = item.tourId || item;
-    return t?.pickupDropRequired === true;
-  });
+  const isPickupRequired = cart.some(
+    (item) =>
+      item.pickupDropRequired === true ||
+      item.tourId?.pickupDropRequired === true
+  );
 
   // TOTAL PRICE FIXED
   const totalPrice = cart.reduce((sum, item) => {
