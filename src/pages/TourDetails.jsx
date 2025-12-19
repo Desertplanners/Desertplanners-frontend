@@ -130,59 +130,54 @@ export default function TourCategoryPage() {
       </div>
 
       {/* ================= CATEGORY DESCRIPTION (⭐ FIXED & CENTERED ⭐) ================= */}
+ {categoryDescription && (
+  <section className="w-full bg-gradient-to-b from-[#fffdf9] via-[#f7f3ee] to-[#ffffff]">
+    <div className="max-w-[1200px] mx-auto px-4 py-12">
 
-      {categoryDescription && (
-  <section className="w-full bg-[#f9fafb]">
-    <div className="max-w-[1200px] mx-auto px-4 py-4">
+      <div className="relative pl-6 md:pl-8">
 
-      {/* TOP SUBTLE DIVIDER */}
-      {/* <div className="w-20 h-[3px] bg-[#e82429] rounded-full mb-6" /> */}
+        {/* GRADIENT ACCENT LINE */}
+        <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#e82429] to-[#721011] rounded-full" />
 
-      <div
-        className="
-          prose prose-lg
-          max-w-full
+        <div
+          className="
+            prose prose-base
+            max-w-full
 
-          prose-h2:max-w-none
-          prose-h3:max-w-none
-          prose-p:max-w-none
-          prose-ul:max-w-none
-          prose-ol:max-w-none
+            prose-h2:text-2xl
+            md:prose-h2:text-3xl
+            prose-h2:font-extrabold
+            prose-h2:text-gray-900
+            prose-h2:mb-5
 
-          prose-h2:text-3xl
-          md:prose-h2:text-4xl
-          prose-h2:font-extrabold
-          prose-h2:text-gray-900
-          prose-h2:mb-6
+            prose-h3:text-lg
+            prose-h3:font-semibold
+            prose-h3:text-gray-800
+            prose-h3:mt-6
+            prose-h3:mb-3
 
-          prose-h3:text-xl
-          prose-h3:font-bold
-          prose-h3:text-gray-800
-          prose-h3:mt-8
-          prose-h3:mb-4
+            prose-p:text-gray-700
+            prose-p:text-[17px]
+            prose-p:leading-relaxed
+            prose-p:mb-4
 
-          prose-p:text-gray-700
-          prose-p:leading-relaxed
-          prose-p:text-lg
-          prose-p:mb-0
+            prose-a:text-[#e82429]
+            prose-a:font-semibold
+            prose-a:no-underline
+            hover:prose-a:text-[#721011]
 
-          prose-a:text-[#e82429]
-          prose-a:font-semibold
-          prose-a:no-underline
-          hover:prose-a:text-[#721011]
-
-          prose-ul:list-disc
-          prose-ul:pl-6
-          prose-li:marker:text-[#e82429]
-        "
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(categoryDescription),
-        }}
-      />
+            prose-ul:list-disc
+            prose-ul:pl-5
+            prose-li:marker:text-[#e82429]
+          "
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(categoryDescription),
+          }}
+        />
+      </div>
     </div>
   </section>
 )}
-
 
 
       {/* ================= CARDS ================= */}
