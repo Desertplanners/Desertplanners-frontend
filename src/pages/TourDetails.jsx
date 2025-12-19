@@ -129,41 +129,50 @@ export default function TourCategoryPage() {
         </div>
       </div>
 
-      {/* ================= CATEGORY DESCRIPTION (⭐ NOW WORKING ⭐) ================= */}
+      {/* ================= CATEGORY DESCRIPTION (⭐ FIXED & CENTERED ⭐) ================= */}
+      {/* ================= CATEGORY DESCRIPTION (REAL FIX) ================= */}
+
       {categoryDescription && (
-        <section className="max-w-[1200px] mx-auto px-4 md:px-0 mt-8">
-          <div
-            className="
-    prose 
-    max-w-none 
+        <section className="w-full mt-10">
+          <div className="w-full">
+            <div
+              className="
+          prose prose-lg
+          max-w-full
 
-    prose-h2:text-3xl 
-    prose-h2:font-extrabold 
-    prose-h2:text-gray-900 
-    prose-h2:mt-8 
-    prose-h2:mb-4
+          prose-h2:max-w-none
+          prose-h3:max-w-none
+          prose-p:max-w-none
+          prose-ul:max-w-none
+          prose-ol:max-w-none
 
-    prose-h3:text-xl 
-    prose-h3:font-bold 
-    prose-h3:text-gray-800 
-    prose-h3:mt-6 
-    prose-h3:mb-3
+          prose-h2:text-3xl
+          prose-h2:font-extrabold
+          prose-h2:text-gray-900
+          prose-h2:mt-8
+          prose-h2:mb-4
 
-    prose-p:text-gray-700 
-    prose-p:leading-relaxed
+          prose-h3:text-xl
+          prose-h3:font-bold
+          prose-h3:text-gray-800
+          prose-h3:mt-6
+          prose-h3:mb-3
 
-    prose-a:text-[#e82429] 
-    prose-a:font-semibold 
-    prose-a:underline 
-    hover:prose-a:text-[#721011]
+          prose-p:text-gray-700
+          prose-p:leading-relaxed
 
-    prose-ul:list-disc 
-    prose-ul:pl-6
-  "
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(categoryDescription),
-            }}
-          />
+          prose-a:text-[#e82429]
+          prose-a:font-semibold
+          hover:prose-a:text-[#721011]
+
+          prose-ul:list-disc
+          prose-ul:pl-6
+        "
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(categoryDescription),
+              }}
+            />
+          </div>
         </section>
       )}
 
