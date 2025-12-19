@@ -132,10 +132,14 @@ export default function TourCategoryPage() {
       {/* ================= CATEGORY DESCRIPTION (⭐ FIXED & CENTERED ⭐) ================= */}
 
       {categoryDescription && (
-        <section className="w-full mt-4">
-          <div className="max-w-[1200px] mx-auto ">
-            <div
-              className="
+  <section className="w-full bg-[#f9fafb]">
+    <div className="max-w-[1200px] mx-auto px-4 py-4">
+
+      {/* TOP SUBTLE DIVIDER */}
+      {/* <div className="w-20 h-[3px] bg-[#e82429] rounded-full mb-6" /> */}
+
+      <div
+        className="
           prose prose-lg
           max-w-full
 
@@ -146,36 +150,40 @@ export default function TourCategoryPage() {
           prose-ol:max-w-none
 
           prose-h2:text-3xl
+          md:prose-h2:text-4xl
           prose-h2:font-extrabold
           prose-h2:text-gray-900
-          prose-h2:mt-8
-          prose-h2:mb-4
+          prose-h2:mb-6
 
           prose-h3:text-xl
           prose-h3:font-bold
           prose-h3:text-gray-800
-          prose-h3:mt-6
-          prose-h3:mb-3
+          prose-h3:mt-8
+          prose-h3:mb-4
 
           prose-p:text-gray-700
           prose-p:leading-relaxed
+          prose-p:text-lg
+          prose-p:mb-0
 
           prose-a:text-[#e82429]
           prose-a:font-semibold
           prose-a:no-underline
-          hover:prose-a:no-underline
           hover:prose-a:text-[#721011]
 
           prose-ul:list-disc
           prose-ul:pl-6
+          prose-li:marker:text-[#e82429]
         "
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(categoryDescription),
-              }}
-            />
-          </div>
-        </section>
-      )}
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(categoryDescription),
+        }}
+      />
+    </div>
+  </section>
+)}
+
+
 
       {/* ================= CARDS ================= */}
       <div className="max-w-[1200px] mx-auto px-2 md:px-0 py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
