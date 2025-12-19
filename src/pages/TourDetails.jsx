@@ -162,6 +162,8 @@ export default function TourCategoryPage() {
 
           prose-a:text-[#e82429]
           prose-a:font-semibold
+          prose-a:no-underline
+          hover:prose-a:no-underline
           hover:prose-a:text-[#721011]
 
           prose-ul:list-disc
