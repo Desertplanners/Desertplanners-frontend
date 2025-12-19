@@ -11,6 +11,7 @@ import {
   Settings,
   Menu,
   X,
+  BookOpen,
   Layers,
   FileSpreadsheet,
   ImageIcon,
@@ -37,6 +38,8 @@ const ITEMS = [
 
   // Tour Categories
   { tab: "category", label: "Tour Categories", icon: <Grid size={18} /> },
+
+  { tab: "blogCategory", label: "Blog Categories", icon: <BookOpen size={18} /> },
 
   // Home Section Editor
   { tab: "sections", label: "Sections", icon: <Layers size={18} /> },

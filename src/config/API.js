@@ -20,6 +20,7 @@ const visaBookings = "/api/visa-bookings";
 const visaPayment = "/api/visa-payment";
 const holidayCategories = "/api/holiday-categories";
 const holidayTours = "/api/holiday-tour";
+const blogCategories = "/api/blog-categories";
 
 // ⭐ NEW SEO BASE ROUTE
 const seo = "/api/seo";
@@ -170,4 +171,11 @@ export const API = {
   GET_PACKAGES_BY_CATEGORY2: (slug) => `${holidayTours}/category/${slug}`,
   GET_HOLIDAY_PACKAGE_BY_SLUG: (category, slug) =>
     `${holidayTours}/category/${category}/${slug}`,
+
+  // ---- Blog Categories ----
+  ADD_BLOG_CATEGORY: `${blogCategories}`,
+  GET_BLOG_CATEGORIES: `${blogCategories}`,
+  UPDATE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
+  DELETE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
+  GET_BLOGS_BY_CATEGORY: (slug) => `${blogCategories}/category/${slug}`,
 };

@@ -17,7 +17,7 @@ import SectionsManagement from "./SectionsManagement";
 import BannerManagement from "./BannerManagement";
 import VisaBookings from "./VisaBookings";
 import HolidayManagement from "./HolidayManagement";
-
+import BlogCategory from "./BlogCategory";
 import SEOManagement from "./SEOManagement";
 import AdminSEOEditor from "./AdminSEOEditor";
 
@@ -37,6 +37,7 @@ export default function AdminDashboard() {
     visaCategory: VisaCategory,
     holidayManagement: HolidayManagement,
     holidayCategory: HolidayCategory,
+    blogCategory: BlogCategory,
     category: TourCategory,
     sections: SectionsManagement,
     bookings: Bookings,
