@@ -130,11 +130,10 @@ export default function TourCategoryPage() {
       </div>
 
       {/* ================= CATEGORY DESCRIPTION (⭐ FIXED & CENTERED ⭐) ================= */}
-      {/* ================= CATEGORY DESCRIPTION (REAL FIX) ================= */}
 
       {categoryDescription && (
-        <section className="w-full mt-10">
-          <div className="w-full">
+        <section className="w-full mt-4">
+          <div className="max-w-[1200px] mx-auto ">
             <div
               className="
           prose prose-lg
@@ -177,7 +176,7 @@ export default function TourCategoryPage() {
       )}
 
       {/* ================= CARDS ================= */}
-      <div className="max-w-[1200px] mx-auto px-4 md:px-0 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="max-w-[1200px] mx-auto px-2 md:px-0 py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {tours.map((tour) => {
           const discount = getDiscountPercent(
             tour.priceAdult || tour.price,
