@@ -20,6 +20,7 @@ import HolidayManagement from "./HolidayManagement";
 import BlogCategory from "./BlogCategory";
 import SEOManagement from "./SEOManagement";
 import AdminSEOEditor from "./AdminSEOEditor";
+import BlogManagement from "./BlogManagement";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -38,6 +39,7 @@ export default function AdminDashboard() {
     holidayManagement: HolidayManagement,
     holidayCategory: HolidayCategory,
     blogCategory: BlogCategory,
+    blogManagement: BlogManagement, // ⭐ NEW
     category: TourCategory,
     sections: SectionsManagement,
     bookings: Bookings,

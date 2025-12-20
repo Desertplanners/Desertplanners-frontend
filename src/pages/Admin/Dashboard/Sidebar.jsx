@@ -28,27 +28,57 @@ const ITEMS = [
   { tab: "visa", label: "Visa", icon: <Plane size={18} /> },
 
   // Holiday
-  { tab: "holidayManagement", label: "Holiday Tours", icon: <Briefcase size={18} /> },
+  {
+    tab: "holidayManagement",
+    label: "Holiday Tours",
+    icon: <Briefcase size={18} />,
+  },
 
   // Visa Categories
-  { tab: "visaCategory", label: "Visa Categories", icon: <FileSpreadsheet size={18} /> },
+  {
+    tab: "visaCategory",
+    label: "Visa Categories",
+    icon: <FileSpreadsheet size={18} />,
+  },
 
   // Holiday categories
-  { tab: "holidayCategory", label: "Holiday Categories", icon: <Grid size={18} /> },
+  {
+    tab: "holidayCategory",
+    label: "Holiday Categories",
+    icon: <Grid size={18} />,
+  },
 
   // Tour Categories
   { tab: "category", label: "Tour Categories", icon: <Grid size={18} /> },
 
-  { tab: "blogCategory", label: "Blog Categories", icon: <BookOpen size={18} /> },
+  {
+    tab: "blogCategory",
+    label: "Blog Categories",
+    icon: <BookOpen size={18} />,
+  },
+
+  {
+    tab: "blogManagement",
+    label: "Blog Management",
+    icon: <BookOpen size={18} />,
+  },
 
   // Home Section Editor
   { tab: "sections", label: "Sections", icon: <Layers size={18} /> },
 
   // Bookings
-  { tab: "bookings", label: "Tour Bookings", icon: <CalendarCheck size={18} /> },
+  {
+    tab: "bookings",
+    label: "Tour Bookings",
+    icon: <CalendarCheck size={18} />,
+  },
 
   // Visa Bookings
-  { tab: "visaBookings", label: "Visa Bookings", icon: <CalendarCheck size={18} /> },
+  {
+    tab: "visaBookings",
+    label: "Visa Bookings",
+    icon: <CalendarCheck size={18} />,
+  },
 
   // Payments
   { tab: "payments", label: "Payments", icon: <CreditCard size={18} /> },

@@ -21,6 +21,7 @@ const visaPayment = "/api/visa-payment";
 const holidayCategories = "/api/holiday-categories";
 const holidayTours = "/api/holiday-tour";
 const blogCategories = "/api/blog-categories";
+const blogs = "/api/blogs";
 
 // ⭐ NEW SEO BASE ROUTE
 const seo = "/api/seo";
@@ -178,4 +179,12 @@ export const API = {
   UPDATE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
   DELETE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
   GET_BLOGS_BY_CATEGORY: (slug) => `${blogCategories}/category/${slug}`,
+
+    // ---- Blogs ----
+    ADD_BLOG: `${blogs}`,                 // POST
+    GET_BLOGS: `${blogs}`,                // GET (admin / list)
+    GET_BLOG_BY_SLUG: (slug) => `${blogs}/${slug}`, // GET (frontend)
+    UPDATE_BLOG: (id) => `${blogs}/${id}`,          // PUT
+    DELETE_BLOG: (id) => `${blogs}/${id}`,          // DELETE
+  
 };

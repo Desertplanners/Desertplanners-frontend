@@ -34,6 +34,10 @@ import HolidayPackageDetails from "./pages/HolidayPackageDetails";
 import HolidayPage from "./pages/HolidayPage";
 import Admin from "./pages/Admin/Dashboard/Admin";
 import Visa from "./pages/Visa";
+import BlogList from "./pages/BlogList";
+import BlogCategory from "./pages/BlogCategory";
+import BlogDetails from "./pages/BlogDetails";
+
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -81,6 +85,9 @@ const AppRouter = () => (
         path="/holidays/:categorySlug/:packageSlug"
         element={<HolidayPackageDetails />}
       />
+      <Route path="/blogs" element={<BlogList />} />
+      <Route path="/blogs/category/:slug" element={<BlogCategory />} />
+      <Route path="/blog/:slug" element={<BlogDetails />} />
       <Route
         path="/admin/dashboard"
         element={
