@@ -1,27 +1,32 @@
-// src/pages/VisaCategoryPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
 import { Helmet } from "react-helmet-async";
+import DOMPurify from "dompurify";
 
 export default function VisaCategoryPage() {
   const { categorySlug } = useParams();
 
   const [visas, setVisas] = useState([]);
   const [category, setCategory] = useState(null);
+
+  const [categoryDescription, setCategoryDescription] = useState(""); // ⭐ NEW
   const [seo, setSEO] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const api = DataService();
+  const fallbackBanner = "/visa-banner.png";
 
   /* -------------------------------
-     ⭐ STEP 1 — Fetch Visas in Category
+     ⭐ STEP 1 — Fetch Visas by Category
   ------------------------------- */
   useEffect(() => {
     const loadCategoryVisas = async () => {
       try {
-        const res = await api.get(`${API.GET_VISAS}?categorySlug=${categorySlug}`);
+        const res = await api.get(
+          `${API.GET_VISAS}?categorySlug=${categorySlug}`
+        );
 
         const visaList = Array.isArray(res.data)
           ? res.data
@@ -33,9 +38,9 @@ export default function VisaCategoryPage() {
           setCategory(visaList[0].visaCategory);
         } else {
           setCategory({
-            name: categorySlug.replace(/-/g, " ").replace(/^\w/, (c) =>
-              c.toUpperCase()
-            ),
+            name: categorySlug
+              .replace(/-/g, " ")
+              .replace(/^\w/, (c) => c.toUpperCase()),
           });
         }
       } catch (err) {
@@ -48,7 +53,27 @@ export default function VisaCategoryPage() {
   }, [categorySlug]);
 
   /* -------------------------------
-     ⭐ STEP 2 — Fetch SEO for Visa Category
+     ⭐ STEP 2 — Fetch Visa Category Description (IMPORTANT)
+  ------------------------------- */
+  useEffect(() => {
+    if (!category?._id) return;
+
+    const fetchCategoryContent = async () => {
+      try {
+        const res = await api.get(
+          API.GET_VISA_CATEGORY_BY_ID(category._id)
+        );
+        setCategoryDescription(res.data?.description || "");
+      } catch (err) {
+        console.error("Failed to load visa category description", err);
+      }
+    };
+
+    fetchCategoryContent();
+  }, [category]);
+
+  /* -------------------------------
+     ⭐ STEP 3 — Fetch SEO
   ------------------------------- */
   useEffect(() => {
     if (!category?._id) {
@@ -60,7 +85,7 @@ export default function VisaCategoryPage() {
       try {
         const res = await api.get(API.GET_SEO("visaCategory", category._id));
         setSEO(res.data?.seo || null);
-      } catch (err) {
+      } catch {
         console.log("SEO Not Found => Using fallbacks");
       } finally {
         setLoading(false);
@@ -70,7 +95,8 @@ export default function VisaCategoryPage() {
     loadSEO();
   }, [category]);
 
-  if (loading) return <h2 className="text-center py-10 text-xl">Loading...</h2>;
+  if (loading)
+    return <h2 className="text-center py-10 text-xl">Loading...</h2>;
 
   if (visas.length === 0)
     return (
@@ -80,7 +106,7 @@ export default function VisaCategoryPage() {
     );
 
   /* -------------------------------
-     ⭐ STEP 3 — Dynamic SEO Values
+     ⭐ SEO FALLBACKS
   ------------------------------- */
   const pageTitle =
     seo?.seoTitle || `${category?.name} – UAE Visa Services`;
@@ -94,97 +120,90 @@ export default function VisaCategoryPage() {
   const ogImage =
     seo?.seoOgImage ||
     visas[0]?.gallery?.[0] ||
-    "/visa-banner.png"; // fallback for og but NOT for banner
+    fallbackBanner;
 
   const canonicalURL = `https://www.desertplanners.net/visa/${categorySlug}`;
 
-  /* -------------------------------
-     ⭐ PAGE RETURN
-  ------------------------------- */
   return (
     <div className="w-full">
-      {/* ⭐⭐⭐ Dynamic SEO Start ⭐⭐⭐ */}
+      {/* ================= SEO ================= */}
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
         <meta name="keywords" content={pageKeywords} />
         <link rel="canonical" href={canonicalURL} />
 
-        {/* OG Tags */}
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDesc} />
         <meta property="og:image" content={ogImage} />
         <meta property="og:url" content={canonicalURL} />
         <meta property="og:type" content="website" />
-
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDesc} />
-        <meta name="twitter:image" content={ogImage} />
-
-        {/* Schema */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "CollectionPage",
-            name: pageTitle,
-            description: pageDesc,
-            image: ogImage,
-            url: canonicalURL,
-            about: { "@type": "Thing", name: category?.name },
-          })}
-        </script>
-
-        {/* FAQ Schema */}
-        {seo?.faqs?.length > 0 && (
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: seo.faqs.map((f) => ({
-                "@type": "Question",
-                name: f.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: f.answer,
-                },
-              })),
-            })}
-          </script>
-        )}
       </Helmet>
-      {/* ⭐⭐⭐ Dynamic SEO End ⭐⭐⭐ */}
 
-      {/* ⭐ FIXED BANNER IMAGE (Always /visa-banner.png) ⭐ */}
-      <div className="relative w-full h-[200px] md:h-[260px] lg:h-[320px] rounded-2xl overflow-hidden shadow-lg">
+      {/* ================= BANNER ================= */}
+      <div className="relative w-full h-[200px] md:h-[260px] lg:h-[320px] rounded-2xl overflow-hidden shadow-lg bg-black">
         <img
-          src="/visa-banner.png"
-          alt={category?.name || "Visa Services"}
+          src={fallbackBanner}
+          alt={category?.name}
           className="w-full h-full object-cover"
         />
-
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-
         <div className="absolute inset-0 flex justify-center items-center">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white uppercase drop-shadow-lg">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white uppercase">
             {category?.name}
           </h1>
         </div>
       </div>
 
-      {/* ⭐ SEO Description Under Banner */}
-      {seo?.seoDescription && (
-        <div className="max-w-[1200px] mx-auto px-4 md:px-0 mt-8">
-          <div className="bg-white rounded-2xl shadow p-6 border">
-            <p className="text-gray-700 text-lg leading-relaxed">
-              {seo.seoDescription}
-            </p>
+      {/* ================= CATEGORY DESCRIPTION (⭐ SAME AS TOUR CATEGORY ⭐) ================= */}
+      {categoryDescription && (
+        <section className="w-full bg-gradient-to-b from-[#fffdf9] via-[#f7f3ee] to-[#ffffff]">
+          <div className="max-w-[1200px] mx-auto px-4 py-12">
+            <div className="relative pl-6 md:pl-8">
+              {/* GRADIENT ACCENT LINE */}
+              <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#e82429] to-[#721011] rounded-full" />
+
+              <div
+                className="
+                  prose prose-base
+                  max-w-full
+
+                  prose-h2:text-2xl
+                  md:prose-h2:text-3xl
+                  prose-h2:font-extrabold
+                  prose-h2:text-gray-900
+                  prose-h2:mb-5
+
+                  prose-h3:text-lg
+                  prose-h3:font-semibold
+                  prose-h3:text-gray-800
+                  prose-h3:mt-6
+                  prose-h3:mb-3
+
+                  prose-p:text-gray-700
+                  prose-p:text-[17px]
+                  prose-p:leading-relaxed
+                  prose-p:mb-4
+
+                  prose-a:text-[#e82429]
+                  prose-a:font-semibold
+                  prose-a:no-underline
+                  hover:prose-a:text-[#721011]
+
+                  prose-ul:list-disc
+                  prose-ul:pl-5
+                  prose-li:marker:text-[#e82429]
+                "
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(categoryDescription),
+                }}
+              />
+            </div>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Visa Cards */}
+      {/* ================= VISA CARDS ================= */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-0 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {visas.map((v) => (
           <Link

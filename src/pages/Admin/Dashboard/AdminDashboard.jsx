@@ -21,6 +21,7 @@ import BlogCategory from "./BlogCategory";
 import SEOManagement from "./SEOManagement";
 import AdminSEOEditor from "./AdminSEOEditor";
 import BlogManagement from "./BlogManagement";
+import CouponManagement from "./CouponManagement";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -48,6 +49,7 @@ export default function AdminDashboard() {
     users: Users,
     enquiries: Enquiries,
     banner: BannerManagement,
+    coupons: CouponManagement,
 
     // ⭐ SEO list screen
     seo: () => (

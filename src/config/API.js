@@ -22,6 +22,7 @@ const holidayCategories = "/api/holiday-categories";
 const holidayTours = "/api/holiday-tour";
 const blogCategories = "/api/blog-categories";
 const blogs = "/api/blogs";
+const coupons = "/api/coupons";
 
 // ⭐ NEW SEO BASE ROUTE
 const seo = "/api/seo";
@@ -81,6 +82,10 @@ export const API = {
   GET_VISA_CATEGORIES: `${visaCategories}`,
   DELETE_VISA_CATEGORY: (id) => `${visaCategories}/${id}`,
   UPDATE_VISA_CATEGORY: (id) => `${visaCategories}/${id}`,
+  // ---- Visa Category Content (SEO / Editor) ----
+  GET_VISA_CATEGORY_BY_ID: (id) => `${visaCategories}/${id}`,
+  UPDATE_VISA_CATEGORY_DESCRIPTION: (id) =>
+    `${visaCategories}/${id}/description`,
 
   // ---- Cart ----
   GET_CART: (userId) => `${cart}/${userId}`,
@@ -162,6 +167,12 @@ export const API = {
   DELETE_HOLIDAY_CATEGORY: (id) => `${holidayCategories}/${id}`,
   UPDATE_HOLIDAY_CATEGORY: (id) => `${holidayCategories}/${id}`,
   GET_PACKAGES_BY_CATEGORY: (slug) => `${holidayCategories}/category/${slug}`,
+  GET_HOLIDAY_CATEGORY_BY_ID: (id) => `${holidayCategories}/${id}`,
+  UPDATE_HOLIDAY_CATEGORY_DESCRIPTION: (id) =>
+    `${holidayCategories}/${id}/description`,
+// ---- Holiday Category Content ----
+GET_HOLIDAY_CATEGORY_BY_SLUG: (slug) =>
+  `${holidayCategories}/slug/${slug}`,
 
   // ---- Holiday Tours ----
   ADD_HOLIDAY_TOUR: `${holidayTours}/create`,
@@ -180,11 +191,25 @@ export const API = {
   DELETE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
   GET_BLOGS_BY_CATEGORY: (slug) => `${blogCategories}/category/${slug}`,
 
-    // ---- Blogs ----
-    ADD_BLOG: `${blogs}`,                 // POST
-    GET_BLOGS: `${blogs}`,                // GET (admin / list)
-    GET_BLOG_BY_SLUG: (slug) => `${blogs}/${slug}`, // GET (frontend)
-    UPDATE_BLOG: (id) => `${blogs}/${id}`,          // PUT
-    DELETE_BLOG: (id) => `${blogs}/${id}`,          // DELETE
-  
+  // ---- Blogs ----
+  ADD_BLOG: `${blogs}`, // POST
+  GET_BLOGS: `${blogs}`, // GET (admin / list)
+  GET_BLOG_BY_SLUG: (slug) => `${blogs}/${slug}`, // GET (frontend)
+  UPDATE_BLOG: (id) => `${blogs}/${id}`, // PUT
+  DELETE_BLOG: (id) => `${blogs}/${id}`, // DELETE
+
+  // ---- Coupons (ADMIN + CHECKOUT) ----
+
+  // ADMIN
+  CREATE_COUPON: `${coupons}/create`, // POST
+  GET_ALL_COUPONS: `${coupons}/all`, // GET
+  GET_COUPON_BY_ID: (id) => `${coupons}/${id}`, // GET
+  UPDATE_COUPON: (id) => `${coupons}/${id}`, // PUT
+  DELETE_COUPON: (id) => `${coupons}/${id}`, // DELETE
+  TOGGLE_COUPON_STATUS: (id) => `${coupons}/${id}/toggle`, // PATCH
+  // CHECKOUT — PUBLIC
+  GET_AVAILABLE_COUPONS: `${coupons}/available`,
+
+  // CHECKOUT
+  APPLY_COUPON: `${coupons}/apply`, // POST
 };

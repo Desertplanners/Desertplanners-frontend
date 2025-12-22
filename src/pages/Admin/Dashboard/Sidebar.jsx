@@ -16,6 +16,7 @@ import {
   FileSpreadsheet,
   ImageIcon,
   Search,
+  TicketPercent,
 } from "lucide-react";
 
 const ITEMS = [
@@ -83,6 +84,12 @@ const ITEMS = [
   // Payments
   { tab: "payments", label: "Payments", icon: <CreditCard size={18} /> },
 
+  // ⭐ Coupons
+  {
+    tab: "coupons",
+    label: "Coupons",
+    icon: <TicketPercent size={18} />,
+  },
   // Users
   { tab: "users", label: "Users", icon: <Users size={18} /> },
 

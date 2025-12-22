@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import PhoneInput from "./PhoneInput";
+import Confetti from "react-confetti";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -73,6 +74,20 @@ export default function Checkout() {
 
   const [loading, setLoading] = useState(false);
 
+  // 🎟️ COUPON STATES
+  const [couponCode, setCouponCode] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [finalPayable, setFinalPayable] = useState(0);
+  const [animatePrice, setAnimatePrice] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  // 🎟️ AVAILABLE COUPONS (Dropdown)
+  const [availableCoupons, setAvailableCoupons] = useState([]);
+  const [showCouponDropdown, setShowCouponDropdown] = useState(false);
+  const [couponListLoading, setCouponListLoading] = useState(false);
+
   // ⭐ CHECK — Pickup / Drop required or not
   const isPickupRequired = cart.some(
     (item) =>
@@ -103,6 +118,10 @@ export default function Checkout() {
   // FINAL AMOUNT
   const finalAmount = Number((totalPrice + fee).toFixed(2));
 
+  useEffect(() => {
+    setFinalPayable(Math.max(finalAmount - couponDiscount, 0).toFixed(2));
+  }, [finalAmount, couponDiscount]);
+
   // 🟢 TOTAL DISCOUNT CALCULATION
   const totalDiscount = cart.reduce((sum, item) => {
     const t = item.tourId || item;
@@ -132,6 +151,83 @@ export default function Checkout() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const applyCoupon = async (codeFromUI) => {
+    const finalCode = codeFromUI || couponCode;
+
+    if (!finalCode) {
+      toast.error("Please enter coupon code");
+      return;
+    }
+
+    try {
+      setCouponLoading(true);
+      const api = DataService();
+
+      const firstItem = cart[0];
+      const tourId =
+        typeof firstItem?.tourId === "object"
+          ? firstItem.tourId._id
+          : firstItem?.tourId;
+
+      const res = await api.post(API.APPLY_COUPON, {
+        code: finalCode,
+        orderAmount: finalAmount,
+        tourId,
+      });
+
+      if (res.data?.success) {
+        setCouponCode(finalCode);
+        setAppliedCoupon(res.data);
+        setCouponDiscount(res.data.discount);
+
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000);
+
+        toast.success("Coupon applied successfully 🎉");
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Invalid coupon");
+      setAppliedCoupon(null);
+      setCouponDiscount(0);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const fetchAvailableCoupons = async () => {
+    try {
+      setCouponListLoading(true);
+      const api = DataService();
+
+      const firstItem = cart[0];
+      const tourId =
+        typeof firstItem?.tourId === "object"
+          ? firstItem.tourId._id
+          : firstItem?.tourId;
+
+      const res = await api.get(
+        `${API.GET_AVAILABLE_COUPONS}?tourId=${tourId}`
+      );
+
+      setAvailableCoupons(res.data?.coupons || []);
+    } catch (err) {
+      toast.error("Failed to load coupons");
+    } finally {
+      setCouponListLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setCouponDiscount(0);
+
+    setAnimatePrice(true);
+    setTimeout(() => setAnimatePrice(false), 600);
+
+    toast("Coupon removed", { icon: "❌" });
   };
 
   // FINAL — BOOKING SUBMIT
@@ -252,6 +348,9 @@ export default function Checkout() {
         dropPoint: isPickupRequired ? form.dropPoint : null,
         specialRequest: form.specialRequest,
         items,
+        // ⭐ ADD THESE 2 LINES
+        couponCode: appliedCoupon?.code || null,
+        couponDiscount: couponDiscount || 0,
       };
 
       // ⭐ CREATE BOOKING API
@@ -271,7 +370,7 @@ export default function Checkout() {
       // ⭐ PAYMENT API
       const paymentRes = await api.post(
         API.CREATE_PAYMENT,
-        { bookingId, amount: finalAmount },
+        { bookingId },
         { headers }
       );
 
@@ -297,6 +396,16 @@ export default function Checkout() {
   // UI
   return (
     <div className="max-w-5xl mx-auto mt-12 p-8 bg-gradient-to-br from-[#ffffff] via-[#f9f7ff] to-[#fff1f3] rounded-3xl shadow-2xl">
+      {showConfetti && (
+        <Confetti
+          numberOfPieces={1500}
+          gravity={0.15}
+          initialVelocityY={40}
+          wind={0.04}
+          recycle={false}
+        />
+      )}
+
       <h2 className="text-4xl font-extrabold text-center mb-10 bg-gradient-to-r from-[#8000ff] to-[#e5006e] text-transparent bg-clip-text drop-shadow-lg">
         Checkout & Confirm Your Booking
       </h2>
@@ -403,6 +512,34 @@ export default function Checkout() {
                 <span className="font-bold text-[#e82429]">AED {fee}</span>
               </div>
 
+              {/* 🎟️ COUPON DISCOUNT — ONLY IF APPLIED */}
+              {couponDiscount > 0 && (
+                <div
+                  className="
+      flex
+      justify-between
+      items-center
+      text-lg
+      mt-1
+      px-2
+      py-1
+      rounded-lg
+      bg-green-50
+      border
+      border-green-200
+      animate-[fadeIn_0.4s_ease-in-out]
+    "
+                >
+                  <span className="font-bold text-green-700 flex items-center gap-1">
+                    🎟️ Coupon Discount
+                  </span>
+
+                  <span className="font-extrabold text-green-700">
+                    − AED {couponDiscount.toFixed(2)}
+                  </span>
+                </div>
+              )}
+
               {totalDiscount > 0 && (
                 <div className="flex justify-between text-lg text-green-700">
                   <span className="font-bold">You Saved:</span>
@@ -416,9 +553,169 @@ export default function Checkout() {
                 <span className="font-extrabold text-gray-900">
                   Final Payable:
                 </span>
-                <span className="font-extrabold text-green-700">
-                  AED {finalAmount}
+                <span
+                  className={`font-extrabold text-green-700 transition-all duration-500 ${
+                    animatePrice ? "scale-110" : ""
+                  }`}
+                >
+                  AED {finalPayable}
                 </span>
+              </div>
+
+              {/* 🎟️ COUPON APPLY — FINAL PAYABLE KE NICHE */}
+              <div className="mt-6 space-y-3">
+                {!appliedCoupon ? (
+                  <div className="relative overflow-hidden rounded-2xl border border-dashed border-[#e82429]/40 bg-gradient-to-br from-[#fff5f6] via-white to-[#fff0f3] p-4 shadow-sm">
+                    {/* glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#e82429]/10 to-[#721011]/10 blur-2xl opacity-40 pointer-events-none" />
+
+                    <p className="text-sm font-semibold text-[#721011] mb-2">
+                      🎟️ Have a coupon?
+                    </p>
+
+                    {/* INPUT + APPLY */}
+                    <div className="flex gap-3 relative z-10">
+                      <input
+                        value={couponCode}
+                        onChange={(e) =>
+                          setCouponCode(e.target.value.toUpperCase())
+                        }
+                        placeholder="ENTER COUPON CODE"
+                        className="
+            flex-1
+            rounded-xl
+            px-4
+            py-3
+            text-sm
+            font-semibold
+            tracking-widest
+            border
+            border-gray-300
+            bg-white
+            focus:outline-none
+            focus:ring-2
+            focus:ring-[#e82429]
+            focus:border-[#e82429]
+            placeholder:text-gray-400
+          "
+                      />
+
+                      <button
+                        type="button"
+                        onClick={applyCoupon}
+                        disabled={couponLoading}
+                        className="
+            relative
+            overflow-hidden
+            rounded-xl
+            px-6
+            py-3
+            font-extrabold
+            text-white
+            bg-gradient-to-r
+            from-[#e82429]
+            to-[#721011]
+            shadow-lg
+            hover:scale-105
+            transition-all
+            disabled:opacity-60
+          "
+                      >
+                        {couponLoading ? "APPLYING..." : "APPLY"}
+                      </button>
+                    </div>
+
+                    {/* VIEW OFFERS */}
+                    <p
+                      onClick={() => {
+                        setShowCouponDropdown((prev) => !prev);
+                        if (availableCoupons.length === 0) {
+                          fetchAvailableCoupons();
+                        }
+                      }}
+                      className="mt-3 text-xs font-semibold text-[#e82429] cursor-pointer hover:underline relative z-10"
+                    >
+                      View available offers
+                    </p>
+
+                    {/* DROPDOWN */}
+                    {showCouponDropdown && (
+                      <div className="mt-4 max-h-72 overflow-y-auto rounded-xl border bg-white shadow-xl relative z-20">
+                        {couponListLoading ? (
+                          <p className="p-4 text-center text-sm text-gray-500">
+                            Loading offers...
+                          </p>
+                        ) : availableCoupons.length === 0 ? (
+                          <p className="p-4 text-center text-sm text-gray-500">
+                            No coupons available
+                          </p>
+                        ) : (
+                          availableCoupons.map((coupon) => (
+                            <div
+                              key={coupon._id}
+                              className="flex items-center justify-between gap-4 p-4 border-b last:border-b-0 hover:bg-gray-50"
+                            >
+                              <div>
+                                <p className="font-extrabold text-[#721011] tracking-widest">
+                                  {coupon.code}
+                                </p>
+                                <p className="text-xs text-gray-600 mt-1">
+                                  {coupon.discountType === "percentage"
+                                    ? `${coupon.discountValue}% OFF`
+                                    : `AED ${coupon.discountValue} OFF`}
+                                  {coupon.minOrderAmount > 0 &&
+                                    ` • Min AED ${coupon.minOrderAmount}`}
+                                </p>
+                                <p className="text-[11px] text-gray-400 mt-1">
+                                  Expires on{" "}
+                                  {new Date(
+                                    coupon.expiryDate
+                                  ).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  setShowCouponDropdown(false);
+                                  applyCoupon(coupon.code); // ⭐ DIRECT PASS
+                                }}
+                                className="rounded-lg border border-[#e82429] px-4 py-2 text-sm font-bold text-[#e82429] hover:bg-[#e82429] hover:text-white transition"
+                              >
+                                APPLY
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    )}
+
+                    <p className="text-xs text-gray-500 mt-2">
+                      * Coupon will be validated instantly
+                    </p>
+                  </div>
+                ) : (
+                  /* APPLIED STATE */
+                  <div className="relative overflow-hidden rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 via-white to-green-100 p-4 shadow-md">
+                    <div className="absolute inset-0 bg-green-300/20 blur-2xl opacity-40 pointer-events-none" />
+
+                    <div className="flex items-center justify-between relative z-10">
+                      <div>
+                        <p className="text-lg font-extrabold text-green-700 flex items-center gap-2">
+                          ✅ Coupon Applied
+                        </p>
+                        <p className="text-sm text-green-800 mt-1">
+                          You saved <b>AED {couponDiscount.toFixed(2)}</b>
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={removeCoupon}
+                        className="text-sm font-bold text-red-600 hover:text-red-700 underline"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -508,7 +805,7 @@ export default function Checkout() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-[#e82429] to-[#721011] text-white py-3 rounded-xl text-lg font-bold hover:scale-[1.03]"
             >
-              {loading ? "Processing..." : `Confirm & Pay AED ${finalAmount}`}
+              {loading ? "Processing..." : `Confirm & Pay AED ${finalPayable}`}
             </button>
           </form>
         </div>
