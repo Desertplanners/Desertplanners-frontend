@@ -85,8 +85,8 @@ const AppRouter = () => (
         path="/holidays/:categorySlug/:packageSlug"
         element={<HolidayPackageDetails />}
       />
-      <Route path="/blogs" element={<BlogList />} />
-      <Route path="/blogs/category/:slug" element={<BlogCategory />} />
+      <Route path="/blog" element={<BlogList />} />
+      <Route path="/blog/category/:slug" element={<BlogCategory />} />
       <Route path="/blog/:slug" element={<BlogDetails />} />
       <Route
         path="/admin/dashboard"
