@@ -5,7 +5,6 @@ export default function BookingSuccess() {
   const navigate = useNavigate();
   const search = new URLSearchParams(window.location.search);
 
-  // bookingId from URL
   const bookingId = search.get("bookingId") || search.get("id");
 
   const [booking, setBooking] = useState(null);
@@ -27,10 +26,19 @@ export default function BookingSuccess() {
   }, [bookingId]);
 
   // -------------------------------------
-  // 2️⃣ META PURCHASE EVENT (FB Pixel)
+  // STATUS FLAGS
+  // -------------------------------------
+  const isPending =
+    booking?.paymentStatus === "pending" || booking?.status === "pending";
+
+  const isConfirmed =
+    booking?.paymentStatus === "paid" || booking?.status === "confirmed";
+
+  // -------------------------------------
+  // 2️⃣ META PURCHASE EVENT (ONLY PAID)
   // -------------------------------------
   useEffect(() => {
-    if (!booking) return;
+    if (!booking || !isConfirmed) return;
 
     if (typeof fbq === "function") {
       fbq("track", "Purchase", {
@@ -43,54 +51,33 @@ export default function BookingSuccess() {
         content_ids: booking.items.map((item) => item.tourId?._id),
         content_type: "product",
       });
-
-      console.log("🔥 Meta Purchase Event Fired!");
     }
-  }, [booking]);
+  }, [booking, isConfirmed]);
 
   // -------------------------------------
-  // 3️⃣ GA4 + Google Ads — PURCHASE EVENT
+  // 3️⃣ GA4 PURCHASE EVENT (ONLY PAID)
   // -------------------------------------
   useEffect(() => {
-    if (!booking) return;
-  
+    if (!booking || !isConfirmed) return;
+
     window.dataLayer = window.dataLayer || [];
-  
+
     window.dataLayer.push({
       event: "purchase",
       transaction_id: booking._id,
-      value: booking.totalPrice, // must be final paid amount
+      value: booking.totalPrice,
       currency: "AED",
-      tax: booking.transactionFee || 0,
-      subtotal: booking.subtotal || 0,
-      payment_status: booking.paymentStatus,
-  
       items: booking.items.map((item) => ({
         item_id: item.tourId?._id,
         item_name: item.tourId?.title,
-        date: item.date,
-  
-        // GA4 expects a single price field
+        quantity: item.adultCount + item.childCount,
         price: Number(item.adultPrice || 0),
-  
-        // Custom fields — allowed
-        price_adult: item.adultPrice,
-        price_child: item.childPrice,
-  
-        guests_adult: item.adultCount,
-        guests_child: item.childCount,
-  
-        // CORRECT QUANTITY
-        quantity: Number(item.adultCount + item.childCount),
       })),
     });
-  
-    console.log("📡 GA4 PURCHASE EVENT FIRED!", booking);
-  }, [booking]);
-  
+  }, [booking, isConfirmed]);
 
   // -------------------------------------
-  // LOADING / ERROR UI
+  // LOADING / ERROR
   // -------------------------------------
   if (loading) {
     return <div className="p-10 text-center text-lg">Loading...</div>;
@@ -105,25 +92,42 @@ export default function BookingSuccess() {
   }
 
   // -------------------------------------
-  // 4️⃣ MAIN UI
+  // MAIN UI (SAME DESIGN)
   // -------------------------------------
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white mt-8 shadow-lg rounded-xl border">
+      {/* HEADER */}
       <div className="text-center">
         <img
-          src="https://cdn-icons-png.flaticon.com/512/845/845646.png"
-          alt="Success"
-          className="w-24 h-24 mx-auto mb-4 animate-bounce"
+          src={
+            isPending
+              ? "https://cdn-icons-png.flaticon.com/512/833/833593.png"
+              : "https://cdn-icons-png.flaticon.com/512/845/845646.png"
+          }
+          alt="Status"
+          className={`w-24 h-24 mx-auto mb-4 ${
+            isConfirmed ? "animate-bounce" : ""
+          }`}
         />
-        <h2 className="text-3xl font-bold text-[#721011] mb-2">
-          Booking Confirmed 🎉
+
+        <h2
+          className={`text-3xl font-bold mb-2 ${
+            isPending ? "text-orange-600" : "text-[#721011]"
+          }`}
+        >
+          {isPending
+            ? "Payment Pending – Booking on Hold"
+            : "Booking Confirmed 🎉"}
         </h2>
+
         <p className="text-gray-600">
-          Your payment has been received successfully.
+          {isPending
+            ? "Payment is pending. Your booking will be confirmed after successful payment."
+            : "Your payment has been received successfully."}
         </p>
       </div>
 
-      {/* Booking Info */}
+      {/* BOOKING INFO */}
       <div className="mt-6 border-t pt-4">
         <h3 className="text-xl font-semibold mb-2 text-[#721011]">
           Booking Details
@@ -135,23 +139,29 @@ export default function BookingSuccess() {
           </p>
           <p>
             <b>Status:</b>{" "}
-            <span className="text-green-600 font-semibold">
+            <span
+              className={`font-semibold ${
+                isPending ? "text-orange-600" : "text-green-600"
+              }`}
+            >
               {booking.status}
             </span>
           </p>
           <p>
             <b>Payment:</b>{" "}
-            <span className="text-green-600 font-semibold">
+            <span
+              className={`font-semibold ${
+                isPending ? "text-orange-600" : "text-green-600"
+              }`}
+            >
               {booking.paymentStatus}
             </span>
           </p>
           <p>
-            <b>Subtotal:</b>{" "}
-            <span className="font-semibold">AED {booking.subtotal}</span>
+            <b>Subtotal:</b> AED {booking.subtotal}
           </p>
           <p>
-            <b>Transaction Fee:</b>{" "}
-            <span className="font-semibold">AED {booking.transactionFee}</span>
+            <b>Transaction Fee:</b> AED {booking.transactionFee}
           </p>
           <p>
             <b>Total Amount:</b>{" "}
@@ -162,7 +172,7 @@ export default function BookingSuccess() {
         </div>
       </div>
 
-      {/* User Details */}
+      {/* CUSTOMER INFO */}
       <div className="mt-6 border-t pt-4">
         <h3 className="text-xl font-semibold mb-2 text-[#721011]">
           Customer Information
@@ -176,23 +186,21 @@ export default function BookingSuccess() {
             <b>Email:</b> {booking.guestEmail || booking.userEmail}
           </p>
           <p>
-            <b>Contact:</b> {booking.guestContact || "---"}
+            <b>Contact:</b> {booking.guestContact || "—"}
           </p>
-
           <p>
             <b>Pickup:</b> {booking.pickupPoint || "N/A"}
           </p>
           <p>
             <b>Drop:</b> {booking.dropPoint || "N/A"}
           </p>
-
           <p>
             <b>Special Request:</b> {booking.specialRequest || "None"}
           </p>
         </div>
       </div>
 
-      {/* Items */}
+      {/* TOUR SUMMARY */}
       <div className="mt-6 border-t pt-4">
         <h3 className="text-xl font-semibold mb-4 text-[#721011]">
           Tour Summary
@@ -218,17 +226,17 @@ export default function BookingSuccess() {
             </p>
             <p>
               <b>Tour Total:</b>{" "}
-              <b className="text-[#e82429]">
+              <span className="text-[#e82429] font-bold">
                 AED{" "}
                 {item.adultCount * item.adultPrice +
                   item.childCount * item.childPrice}
-              </b>
+              </span>
             </p>
           </div>
         ))}
       </div>
 
-      {/* Invoice */}
+      {/* INVOICE */}
       <div className="text-center mt-8">
         <button
           onClick={() =>
@@ -237,7 +245,7 @@ export default function BookingSuccess() {
               "_blank"
             )
           }
-          className="bg-gradient-to-r from-[#721011] to-[#e82429] text-white px-6 py-3 rounded-xl mr-3 hover:scale-105 transition"
+          className="bg-gradient-to-r from-[#721011] to-[#e82429] text-white px-6 py-3 rounded-xl hover:scale-105 transition"
         >
           Download Invoice
         </button>
