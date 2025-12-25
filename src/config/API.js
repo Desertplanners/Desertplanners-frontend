@@ -170,9 +170,8 @@ export const API = {
   GET_HOLIDAY_CATEGORY_BY_ID: (id) => `${holidayCategories}/${id}`,
   UPDATE_HOLIDAY_CATEGORY_DESCRIPTION: (id) =>
     `${holidayCategories}/${id}/description`,
-// ---- Holiday Category Content ----
-GET_HOLIDAY_CATEGORY_BY_SLUG: (slug) =>
-  `${holidayCategories}/slug/${slug}`,
+  // ---- Holiday Category Content ----
+  GET_HOLIDAY_CATEGORY_BY_SLUG: (slug) => `${holidayCategories}/slug/${slug}`,
 
   // ---- Holiday Tours ----
   ADD_HOLIDAY_TOUR: `${holidayTours}/create`,
@@ -192,11 +191,12 @@ GET_HOLIDAY_CATEGORY_BY_SLUG: (slug) =>
   GET_BLOGS_BY_CATEGORY: (slug) => `${blogCategories}/category/${slug}`,
 
   // ---- Blogs ----
-  ADD_BLOG: `${blogs}`, // POST
-  GET_BLOGS: `${blogs}`, // GET (admin / list)
-  GET_BLOG_BY_SLUG: (slug) => `${blogs}/${slug}`, // GET (frontend)
-  UPDATE_BLOG: (id) => `${blogs}/${id}`, // PUT
-  DELETE_BLOG: (id) => `${blogs}/${id}`, // DELETE
+  ADD_BLOG: `${blogs}`, // POST (admin)
+  GET_BLOGS: `${blogs}`, // GET (admin + frontend list)
+  GET_BLOG_BY_SLUG: (slug) => `${blogs}/${slug}`, // GET (frontend details)
+  GET_BLOGS_BY_CATEGORY: (categoryId) => `${blogs}/category/${categoryId}`, // ✅ NEW (category page)
+  UPDATE_BLOG: (id) => `${blogs}/${id}`, // PUT (admin)
+  DELETE_BLOG: (id) => `${blogs}/${id}`, // DELETE (admin)
 
   // ---- Coupons (ADMIN + CHECKOUT) ----
 

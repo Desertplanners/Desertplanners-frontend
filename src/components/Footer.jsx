@@ -16,6 +16,7 @@ export default function Footer() {
   const quickLinks = [
     { name: "Home", path: "/" },
     { name: "About Us", path: "/about-us" },
+    { name: "Blog", path: "/blog" },
     { name: "Tour Packages", path: "/tours" },
     { name: "Holiday Packages", path: "/holidays" },
     { name: "Visa Services", path: "/visa" },
@@ -28,6 +29,7 @@ export default function Footer() {
       path: "/tours/abu-dhabi-city-tour/abu-dhabi-city-tour-with-ferrari-world",
     },
     { name: "Dubai City Tour", path: "/tours/dubai-city-tour" },
+    { name: "IMG World Of Adventures", path: "/tours/adventure-tours/img-world-of-adventures" },
     {
       name: "Yas WaterPark With Meal",
       path: "/tours/dubai-city-tour/dubai-city-tour",
