@@ -112,15 +112,18 @@ export default function Checkout() {
     return sum + adultPrice * adultCount + childPrice * childCount;
   }, 0);
 
-  // TRANSACTION FEE 3.75%
-  const fee = Number((totalPrice * 0.0375).toFixed(2));
+  // ✅ STEP 1 — Discounted Subtotal
+  const discountedSubtotal = Math.max(totalPrice - couponDiscount, 0);
 
-  // FINAL AMOUNT
-  const finalAmount = Number((totalPrice + fee).toFixed(2));
+  // ✅ STEP 2 — Transaction Fee on discounted subtotal
+  const fee = Number((discountedSubtotal * 0.0375).toFixed(2));
+
+  // ✅ STEP 3 — Final Payable Amount
+  const finalAmount = Number((discountedSubtotal + fee).toFixed(2));
 
   useEffect(() => {
-    setFinalPayable(Math.max(finalAmount - couponDiscount, 0).toFixed(2));
-  }, [finalAmount, couponDiscount]);
+    setFinalPayable(finalAmount.toFixed(2));
+  }, [discountedSubtotal, fee]);
 
   // 🟢 TOTAL DISCOUNT CALCULATION
   const totalDiscount = cart.reduce((sum, item) => {
@@ -173,7 +176,7 @@ export default function Checkout() {
 
       const res = await api.post(API.APPLY_COUPON, {
         code: finalCode,
-        orderAmount: finalAmount,
+        orderAmount: totalPrice,
         tourId,
       });
 
@@ -254,7 +257,7 @@ export default function Checkout() {
     window.dataLayer.push({
       event: "add_payment_info",
       payment_type: "online",
-      value: finalAmount,
+      value: finalPayable,
       currency: "AED",
       items: cart.map((item) => ({
         tour_id: item.tourId?._id || item.tourId || item._id,
