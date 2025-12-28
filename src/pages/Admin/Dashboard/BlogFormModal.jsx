@@ -20,10 +20,16 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
   const [categories, setCategories] = useState([]);
 
   /* ======================
-      AUTHOR (MANUAL)
+      AUTHOR
   ====================== */
   const [authorName, setAuthorName] = useState("");
   const [authorBio, setAuthorBio] = useState("");
+
+  /* ======================
+      AUTHOR IMAGE
+  ====================== */
+  const [authorImageFile, setAuthorImageFile] = useState(null);
+  const [authorImagePreview, setAuthorImagePreview] = useState("");
 
   /* ======================
       FEATURED IMAGE
@@ -67,8 +73,8 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
 
       setAuthorName(editBlog.authorName || "");
       setAuthorBio(editBlog.authorBio || "");
+      setAuthorImagePreview(editBlog.authorImage || "");
 
-      // ✅ MOST IMPORTANT FIX
       setRelatedTours(
         editBlog.relatedTours?.map((t) =>
           typeof t === "string" ? t : t?._id
@@ -83,15 +89,18 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
   }, [editBlog]);
 
   /* ======================
-      CLEANUP PREVIEW
+      CLEANUP PREVIEWS
   ====================== */
   useEffect(() => {
     return () => {
       if (featuredImagePreview?.startsWith("blob:")) {
         URL.revokeObjectURL(featuredImagePreview);
       }
+      if (authorImagePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(authorImagePreview);
+      }
     };
-  }, [featuredImagePreview]);
+  }, [featuredImagePreview, authorImagePreview]);
 
   /* ======================
       SUBMIT HANDLER
@@ -116,7 +125,6 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
     formData.append("seo[metaTitle]", seoTitle);
     formData.append("seo[metaDescription]", seoDescription);
 
-    // ✅ SAFE RELATED TOURS
     relatedTours
       .filter((id) => id && id !== "undefined")
       .forEach((id) => {
@@ -125,6 +133,10 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
 
     if (featuredImageFile) {
       formData.append("featuredImage", featuredImageFile);
+    }
+
+    if (authorImageFile) {
+      formData.append("authorImage", authorImageFile);
     }
 
     try {
@@ -154,7 +166,7 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
       <div className="bg-[#f9fafb] w-[1200px] h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden">
 
-        {/* ===== HEADER ===== */}
+        {/* HEADER */}
         <div className="bg-white border-b px-8 py-4 flex justify-between items-center">
           <input
             type="text"
@@ -187,10 +199,10 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
           </div>
         </div>
 
-        {/* ===== BODY ===== */}
+        {/* BODY */}
         <div className="flex flex-1 overflow-hidden">
 
-          {/* ===== EDITOR ===== */}
+          {/* EDITOR */}
           <div className="flex-1 p-8 overflow-y-auto">
             <Editor
               apiKey="8s89n75h7ygps6blc3zk8y0mkkid5zf3f505scrck14fx9ol"
@@ -213,15 +225,13 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
                   "undo redo | blocks | bold italic underline | " +
                   "alignleft aligncenter alignright | " +
                   "bullist numlist | link image media | fullscreen preview code",
-                block_formats:
-                  "Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4",
                 content_style:
                   "body{font-family:Inter,system-ui;font-size:16px;line-height:1.75}",
               }}
             />
           </div>
 
-          {/* ===== SIDEBAR ===== */}
+          {/* SIDEBAR */}
           <aside className="w-[360px] bg-white border-l p-6 overflow-y-auto space-y-6">
 
             {/* CATEGORY */}
@@ -258,6 +268,27 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
                 className="w-full border rounded-lg px-3 py-2 mt-2"
                 rows={3}
               />
+
+              {/* AUTHOR IMAGE */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  setAuthorImageFile(file);
+                  setAuthorImagePreview(URL.createObjectURL(file));
+                }}
+                className="mt-3"
+              />
+
+              {authorImagePreview && (
+                <img
+                  src={authorImagePreview}
+                  alt="Author"
+                  className="mt-3 w-20 h-20 rounded-full object-cover border shadow"
+                />
+              )}
             </div>
 
             {/* FEATURED IMAGE */}

@@ -363,7 +363,7 @@ export default function PrivacyPolicy() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
               <div className="p-3 bg-white/20 rounded-lg">
                 <FaEnvelope className="text-xl" />
