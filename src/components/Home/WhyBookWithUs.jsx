@@ -29,7 +29,7 @@ export default function WhyBookWithUs() {
           >
             Dubai City Tour
           </Link>{" "}
-          or Abu Dhabi Sightseeing Package , our process is quick, secure, and
+          or Abu Dhabi Sightseeing Package, our process is quick, secure, and
           hassle-free.
         </>
       ),
@@ -41,7 +41,7 @@ export default function WhyBookWithUs() {
         <>
           Get the best deals on Dubai tour packages guaranteed! Desert Planners
           partners directly with top operators to ensure you always get the
-          lowest rates on Desert Safari , Theme Park Tickets and City To .
+          lowest rates on Desert Safari, Theme Park Tickets and City To.
           Premium experiences at unbeatable prices.
         </>
       ),
@@ -76,7 +76,7 @@ export default function WhyBookWithUs() {
         <>
           Our expert travel consultants are available round-the-clock. Whether
           you need help customizing your Desert Safari or planning a family
-          holiday , we’re here via WhatsApp, phone, or live chat anytime,
+          holiday, we’re here via WhatsApp, phone, or live chat anytime,
           anywhere.
         </>
       ),
@@ -104,7 +104,7 @@ export default function WhyBookWithUs() {
           >
             Desert Safaris
           </Link>{" "}
-          to Burj Khalifa Tours , IMG World Tickets , and Abu Dhabi Packages 
+          to Burj Khalifa Tours, IMG World Tickets, and Abu Dhabi Packages 
           Desert Planners is your one-stop destination for unforgettable Dubai
           adventures.
         </>
