@@ -22,7 +22,6 @@ export default function BlogDetails() {
 
         const allBlogsRes = await api.get(API.GET_BLOGS);
         const allBlogs = allBlogsRes.data || [];
-
         setLatestBlogs(
           allBlogs.filter((b) => b._id !== blogData._id).slice(0, 3)
         );
@@ -38,19 +37,15 @@ export default function BlogDetails() {
   }, [slug]);
 
   if (loading) {
-    return (
-      <div className="py-16 text-center text-gray-500">Loading article…</div>
-    );
+    return <div className="py-20 text-center text-gray-500">Loading article…</div>;
   }
 
   if (!blog) {
-    return (
-      <div className="py-16 text-center text-gray-500">Blog not found</div>
-    );
+    return <div className="py-20 text-center text-gray-500">Blog not found</div>;
   }
 
   return (
-    <article className="w-full bg-gradient-to-b from-[#fafafa] to-white">
+    <article className="w-full bg-[#fafafa]">
 
       {/* HERO IMAGE */}
       <section className="w-full h-[380px] md:h-[420px]">
@@ -62,39 +57,44 @@ export default function BlogDetails() {
       </section>
 
       {/* BLOG META */}
-      <section className="max-w-[1280px] mx-auto px-4 pt-6 pb-4">
+      <section className="max-w-[1200px] mx-auto px-4 pt-8 pb-6">
         {blog.category?.name && (
-          <span className="inline-block mb-3 bg-[#e82429]/10 text-[#e82429] px-4 py-1 rounded-full text-xs font-semibold">
+          <span className="inline-block mb-4 bg-[#e82429]/10 text-[#e82429] px-4 py-1 rounded-full text-xs font-semibold">
             {blog.category.name}
           </span>
         )}
 
-        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 leading-tight">
           {blog.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
           <span>By {blog.authorName}</span>
           <span>•</span>
           <span>{new Date(blog.createdAt).toDateString()}</span>
-          <span>•</span>
-          <span>{blog.views} views</span>
+          {blog.views && (
+            <>
+              <span>•</span>
+              <span>{blog.views} views</span>
+            </>
+          )}
         </div>
       </section>
 
       {/* BODY */}
-      <section className="max-w-[1280px] mx-auto px-4 py-10 grid lg:grid-cols-[1fr_340px] gap-12">
+      <section className="max-w-[1200px] mx-auto px-4 pb-20 grid lg:grid-cols-[1fr_300px] gap-10">
 
-        {/* CONTENT */}
+        {/* MAIN CONTENT (WIDE & LESS PADDING) */}
         <div>
-          <div className="bg-white rounded-3xl shadow border px-6 md:px-8 py-8">
+          <div className="bg-white rounded-2xl shadow-sm px-4 md:px-6 py-8">
+
             <div
               className="
-                prose max-w-full
-                prose-h2:text-xl md:prose-h2:text-2xl prose-h2:font-extrabold
-                prose-h3:text-lg prose-h3:font-semibold
+                prose max-w-none
+                prose-h2:text-2xl prose-h2:font-extrabold
+                prose-h3:text-xl prose-h3:font-semibold
                 prose-p:text-[16px] prose-p:leading-relaxed
-                prose-blockquote:bg-[#fff4f4]
+                prose-blockquote:bg-[#fff5f5]
                 prose-blockquote:px-5 prose-blockquote:py-4
                 prose-blockquote:rounded-xl
                 prose-a:text-[#e82429] prose-a:font-semibold
@@ -106,24 +106,30 @@ export default function BlogDetails() {
             />
           </div>
 
-          {/* AUTHOR (UPDATED) */}
-          <div className="mt-8 bg-white rounded-2xl shadow border p-6 flex gap-5 items-center">
-            <img
-              src={blog.authorImage || "/images/default-avatar.png"}
-              alt={blog.authorName}
-              className="w-16 h-16 rounded-full object-cover border"
-            />
+          {/* AUTHOR */}
+          <div className="mt-8 bg-white rounded-2xl shadow-sm px-5 py-5 flex gap-4 items-center">
+  <img
+    src={blog.authorImage || "/images/default-avatar.png"}
+    alt={blog.authorName}
+    className="w-14 h-14 rounded-full object-cover"
+  />
 
-            <div>
-              <h4 className="font-bold text-gray-900 text-lg">
-                {blog.authorName}
-              </h4>
-              <p className="text-sm text-gray-600 mt-1 max-w-xl">
-                {blog.authorBio ||
-                  "Travel expert at Desert Planners sharing insights on Dubai tours, visas and premium travel experiences."}
-              </p>
-            </div>
-          </div>
+  <div>
+    <span className="text-xs uppercase tracking-wide text-gray-500">
+      Written by
+    </span>
+
+    <h4 className="font-semibold text-gray-900">
+      {blog.authorName}
+    </h4>
+
+    <p className="text-sm text-gray-600 mt-1 max-w-xl">
+      {blog.authorBio ||
+        "Travel expert at Desert Planners sharing insights on Dubai tours, visas, and premium travel experiences."}
+    </p>
+  </div>
+</div>
+
         </div>
 
         {/* SIDEBAR */}
@@ -131,8 +137,9 @@ export default function BlogDetails() {
 
           {/* LATEST BLOGS */}
           {latestBlogs.length > 0 && (
-            <div className="bg-white rounded-2xl shadow border p-5">
+            <div className="bg-white rounded-2xl shadow-sm p-5">
               <h3 className="text-base font-bold mb-4">Latest Articles</h3>
+
               <div className="space-y-4">
                 {latestBlogs.map((b) => (
                   <Link
@@ -143,13 +150,13 @@ export default function BlogDetails() {
                     <img
                       src={b.featuredImage || "/images/dubai-common-banner.jpg"}
                       alt={b.title}
-                      className="w-18 h-14 rounded-lg object-cover"
+                      className="w-16 h-14 rounded-lg object-cover"
                     />
                     <div>
-                      <p className="text-sm font-medium text-gray-700 group-hover:text-[#e82429]">
+                      <p className="text-sm font-medium text-gray-800 group-hover:text-[#e82429] leading-snug">
                         {b.title}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 mt-1">
                         {new Date(b.createdAt).toLocaleDateString()}
                       </p>
                     </div>
@@ -161,14 +168,15 @@ export default function BlogDetails() {
 
           {/* CATEGORIES */}
           {categories.length > 0 && (
-            <div className="bg-white rounded-2xl shadow border p-5">
+            <div className="bg-white rounded-2xl shadow-sm p-5">
               <h3 className="text-base font-bold mb-3">Categories</h3>
+
               <div className="flex flex-wrap gap-2">
                 {categories.map((cat) => (
                   <Link
                     key={cat._id}
                     to={`/blog/category/${cat.slug}`}
-                    className={`px-3 py-1 text-xs rounded-full border ${
+                    className={`px-3 py-1 text-xs rounded-full transition ${
                       blog.category?._id === cat._id
                         ? "bg-[#e82429] text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -183,14 +191,15 @@ export default function BlogDetails() {
 
           {/* RELATED TOURS */}
           {blog.relatedTours?.length > 0 && (
-            <div className="bg-white rounded-2xl shadow border p-5">
+            <div className="bg-white rounded-2xl shadow-sm p-5">
               <h3 className="text-base font-bold mb-4">Related Tours</h3>
+
               <div className="space-y-4">
                 {blog.relatedTours.map((tour) => (
                   <Link
                     key={tour._id}
                     to={`/tours/${tour.slug}`}
-                    className="flex gap-4 group"
+                    className="flex gap-3 group"
                   >
                     <img
                       src={
@@ -199,10 +208,10 @@ export default function BlogDetails() {
                         "/images/dubai-common-banner.jpg"
                       }
                       alt={tour.title}
-                      className="w-20 h-16 rounded-xl object-cover"
+                      className="w-16 h-14 rounded-lg object-cover"
                     />
                     <div>
-                      <p className="text-sm font-semibold text-gray-800 group-hover:text-[#e82429]">
+                      <p className="text-sm font-semibold text-gray-800 group-hover:text-[#e82429] leading-snug">
                         {tour.title}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">

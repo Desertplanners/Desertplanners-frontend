@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { 
-  FaShieldAlt, 
+import {
+  FaShieldAlt,
   FaDatabase,
   FaEye,
   FaShareAlt,
@@ -12,14 +12,13 @@ import {
   FaEnvelope,
   FaPhone,
   FaGlobeAmericas,
-  FaCookie
-} from 'react-icons/fa';
+  FaCookie,
+} from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
 
 export default function PrivacyPolicy() {
-
   // ⭐ Date
   const [currentDate] = useState(
     new Date().toLocaleDateString("en-US", {
@@ -58,8 +57,7 @@ export default function PrivacyPolicy() {
       title: "Introduction",
       content:
         "Welcome to Desert Planners Tourism LLC. We are committed to protecting your privacy and ensuring that your personal information is handled responsibly and transparently.",
-      note:
-        "This Privacy Policy explains how we collect, use, store, and protect your data when you visit our website or use our services, including tours, visa assistance, hotel bookings, and travel arrangements.",
+      note: "This Privacy Policy explains how we collect, use, store, and protect your data when you visit our website or use our services, including tours, visa assistance, hotel bookings, and travel arrangements.",
     },
     {
       icon: FaDatabase,
@@ -111,8 +109,7 @@ export default function PrivacyPolicy() {
       title: "Data Retention",
       content:
         "We retain your personal data only for as long as necessary to fulfill the purposes for which it was collected.",
-      note:
-        "After the retention period, your data is securely deleted or anonymized. We follow UAE data protection regulations for specific retention periods.",
+      note: "After the retention period, your data is securely deleted or anonymized. We follow UAE data protection regulations for specific retention periods.",
     },
     {
       icon: FaCookie,
@@ -124,8 +121,7 @@ export default function PrivacyPolicy() {
         "Analytics Cookies: Help us understand how visitors use our site",
         "Marketing Cookies: Used to display relevant advertisements",
       ],
-      note:
-        "You can control cookie settings through your browser, but disabling cookies may affect website functionality.",
+      note: "You can control cookie settings through your browser, but disabling cookies may affect website functionality.",
     },
     {
       icon: FaLock,
@@ -155,14 +151,16 @@ export default function PrivacyPolicy() {
     {
       icon: FaLink,
       title: "Third-Party Links",
-      content: "Our website may contain links to external websites and services.",
+      content:
+        "Our website may contain links to external websites and services.",
       warning:
         "We are not responsible for the privacy practices or content of these third-party sites. Please review their privacy policies separately.",
     },
     {
       icon: FaChild,
       title: "Children's Privacy",
-      content: "Our services are not directed at individuals under the age of 18.",
+      content:
+        "Our services are not directed at individuals under the age of 18.",
       warning:
         "We do not knowingly collect or process personal data from children. If we become aware of such collection, we will take steps to delete the information immediately.",
     },
@@ -171,14 +169,12 @@ export default function PrivacyPolicy() {
       title: "Changes to This Policy",
       content:
         "We may update this Privacy Policy to reflect changes in our practices or legal requirements.",
-      note:
-        "The latest version will always be posted on our website with the updated effective date. We encourage you to review this policy periodically.",
+      note: "The latest version will always be posted on our website with the updated effective date. We encourage you to review this policy periodically.",
     },
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12">
-
       {/* ⭐⭐⭐ FULL DYNAMIC SEO ⭐⭐⭐ */}
       <Helmet>
         <title>{seo?.seoTitle}</title>
@@ -356,6 +352,7 @@ export default function PrivacyPolicy() {
 
         {/* Contact Section */}
         <div className="bg-gradient-to-r from-[#e82429] to-[#721011] rounded-2xl shadow-2xl p-8 mt-12 text-white">
+          {/* Header */}
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-2">Privacy Questions?</h2>
             <p className="text-red-100">
@@ -363,36 +360,57 @@ export default function PrivacyPolicy() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-            <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="p-3 bg-white/20 rounded-lg">
+          {/* Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* EMAIL */}
+            <a
+              href="mailto:info@desertplanners.net"
+              className="group flex items-center gap-4 p-5 bg-white/10 rounded-xl backdrop-blur-sm
+                 hover:bg-white/20 transition cursor-pointer"
+            >
+              <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition">
                 <FaEnvelope className="text-xl" />
               </div>
-              <div>
-                <h3 className="font-semibold">Email Us</h3>
-                <p className="text-red-100">info@desertplanners.net</p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="p-3 bg-white/20 rounded-lg">
+              <div>
+                <h3 className="font-semibold text-lg">Email Us</h3>
+                <p className="text-red-100 text-sm">info@desertplanners.net</p>
+              </div>
+            </a>
+
+            {/* CALL */}
+            <a
+              href="tel:+971503694525"
+              className="group flex items-center gap-4 p-5 bg-white/10 rounded-xl backdrop-blur-sm
+                 hover:bg-white/20 transition cursor-pointer"
+            >
+              <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition">
                 <FaPhone className="text-xl" />
               </div>
-              <div>
-                <h3 className="font-semibold">Call Us</h3>
-                <p className="text-red-100">+971 50 369 4525</p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="p-3 bg-white/20 rounded-lg">
+              <div>
+                <h3 className="font-semibold text-lg">Call Us</h3>
+                <p className="text-red-100 text-sm">+971 50 369 4525</p>
+              </div>
+            </a>
+
+            {/* WEBSITE */}
+            <a
+              href="https://desertplanners.net"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-4 p-5 bg-white/10 rounded-xl backdrop-blur-sm
+                 hover:bg-white/20 transition cursor-pointer"
+            >
+              <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition">
                 <FaGlobeAmericas className="text-xl" />
               </div>
+
               <div>
-                <h3 className="font-semibold">Visit Us</h3>
-                <p className="text-red-100">desertplanners.net</p>
+                <h3 className="font-semibold text-lg">Visit Website</h3>
+                <p className="text-red-100 text-sm">desertplanners.net</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 

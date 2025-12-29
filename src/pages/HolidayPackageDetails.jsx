@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import PhoneInput from "../components/PhoneInput";
 import {
   FaClock,
   FaStar,
@@ -7,7 +8,7 @@ import {
   FaBed,
   FaUtensils,
   FaUser,
-  FaInfoCircle
+  FaInfoCircle,
 } from "react-icons/fa";
 import DataService from "../config/DataService";
 import { API } from "../config/API";
@@ -396,12 +397,11 @@ export default function HolidayPage() {
                 className="p-3 border rounded-xl w-full"
               />
 
-              <input
-                name="contact"
+              <PhoneInput
                 value={form.contact}
-                onChange={handleChange}
-                placeholder="Contact Number"
-                className="p-3 border rounded-xl w-full"
+                onChange={(value) =>
+                  setForm((prev) => ({ ...prev, contact: value }))
+                }
               />
 
               <select
@@ -552,12 +552,11 @@ export default function HolidayPage() {
               placeholder="Email"
               className="p-3 border rounded-xl w-full"
             />
-            <input
-              name="contact"
+            <PhoneInput
               value={form.contact}
-              onChange={handleChange}
-              placeholder="Contact Number"
-              className="p-3 border rounded-xl w-full"
+              onChange={(value) =>
+                setForm((prev) => ({ ...prev, contact: value }))
+              }
             />
 
             <select

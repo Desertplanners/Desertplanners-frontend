@@ -91,8 +91,10 @@ export default function TermsAndConditions() {
     {
       icon: FaPassport,
       title: "Visa / Travel Documentation",
-      content: "You must provide accurate personal information and documentation.",
-      warning: "We are not responsible for visa rejections or delays by authorities.",
+      content:
+        "You must provide accurate personal information and documentation.",
+      warning:
+        "We are not responsible for visa rejections or delays by authorities.",
     },
     {
       icon: FaShieldAlt,
@@ -124,13 +126,15 @@ export default function TermsAndConditions() {
     {
       icon: FaMoneyBillWave,
       title: "Pricing, Taxes and Fees",
-      content: "Unless stated otherwise, prices exclude applicable taxes or local fees.",
+      content:
+        "Unless stated otherwise, prices exclude applicable taxes or local fees.",
       note: "Any additional charges will be communicated before booking confirmation.",
     },
     {
       icon: FaMoneyBillWave,
       title: "Refunds",
-      content: "Refund eligibility depends on service type and cancellation timing.",
+      content:
+        "Refund eligibility depends on service type and cancellation timing.",
       warning:
         "Some services may not be refundable. Refunds will be processed in the same manner as payment.",
     },
@@ -150,7 +154,6 @@ export default function TermsAndConditions() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-12">
-
       {/* ⭐⭐⭐ FULL DYNAMIC SEO ⭐⭐⭐ */}
       <Helmet>
         <title>{seo?.seoTitle}</title>
@@ -218,7 +221,9 @@ export default function TermsAndConditions() {
           <div className="bg-white rounded-2xl shadow-sm p-6 inline-block">
             <p className="text-gray-600 text-lg">
               Last updated:{" "}
-              <span className="font-semibold text-[#e82429]">{currentDate}</span>
+              <span className="font-semibold text-[#e82429]">
+                {currentDate}
+              </span>
             </p>
           </div>
         </div>
@@ -328,31 +333,47 @@ export default function TermsAndConditions() {
 
         {/* Contact Section */}
         <div className="bg-gradient-to-r from-[#e82429] to-[#721011] rounded-2xl shadow-2xl p-8 mt-12 text-white">
+          {/* Header */}
           <div className="text-center mb-6">
             <h2 className="text-3xl font-bold mb-2">Need Help?</h2>
-            <p className="text-red-100">We're here to assist you</p>
+            <p className="text-red-100">
+              Our team is just a click away to assist you
+            </p>
           </div>
 
+          {/* Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="p-3 bg-white/20 rounded-lg">
+            {/* EMAIL */}
+            <a
+              href="mailto:info@desertplanners.net"
+              className="group flex items-center gap-4 p-5 bg-white/10 rounded-xl backdrop-blur-sm
+                 hover:bg-white/20 transition cursor-pointer"
+            >
+              <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition">
                 <FaEnvelope className="text-xl" />
               </div>
-              <div>
-                <h3 className="font-semibold">Email Us</h3>
-                <p className="text-red-100">info@desertplanners.net</p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
-              <div className="p-3 bg-white/20 rounded-lg">
+              <div>
+                <h3 className="font-semibold text-lg">Email Us</h3>
+                <p className="text-red-100 text-sm">info@desertplanners.net</p>
+              </div>
+            </a>
+
+            {/* CALL */}
+            <a
+              href="tel:+971503694525"
+              className="group flex items-center gap-4 p-5 bg-white/10 rounded-xl backdrop-blur-sm
+                 hover:bg-white/20 transition cursor-pointer"
+            >
+              <div className="p-3 bg-white/20 rounded-lg group-hover:scale-110 transition">
                 <FaPhone className="text-xl" />
               </div>
+
               <div>
-                <h3 className="font-semibold">Call Us</h3>
-                <p className="text-red-100">+971 50 369 4525</p>
+                <h3 className="font-semibold text-lg">Call Us</h3>
+                <p className="text-red-100 text-sm">+971 50 369 4525</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 
