@@ -254,7 +254,6 @@ export default function AdminAddTour({ tour, onSuccess }) {
       !title ||
       !description ||
       !priceAdult || // ⭐ NEW VALIDATION
-      !duration ||
       !category ||
       !startDate ||
       !endDate ||

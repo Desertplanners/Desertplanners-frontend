@@ -32,7 +32,7 @@ export default function BlogList() {
 
   return (
     <section className="w-full bg-gradient-to-b from-[#f7f8fa] to-[#ffffff]">
-      {/* ================= HERO BLOG HEADER ================= */}
+      {/* ================= HERO HEADER ================= */}
       <div className="w-full bg-gradient-to-r from-[#0f2027] via-[#203a43] to-[#2c5364] mb-8">
         <div className="max-w-[1200px] mx-auto px-4 py-10 text-center text-white">
           <span className="inline-block mb-4 text-sm tracking-widest uppercase text-white/80">
@@ -56,23 +56,28 @@ export default function BlogList() {
           Trending Blogs
         </h2>
 
-        <div className="grid lg:grid-cols-3 gap-5 mb-14">
+        {/* 🔥 LEFT & RIGHT SAME HEIGHT */}
+        <div className="grid lg:grid-cols-3 gap-5 mb-14 h-[560px]">
           {/* FEATURED LEFT */}
           {featured && (
-            <Link to={`/blog/${featured.slug}`} className="lg:col-span-2 group">
-              <div className="relative rounded-3xl overflow-hidden h-[520px]">
-                <img
-                  src={featured.featuredImage}
-                  alt={featured.title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <Link
+              to={`/blog/${featured.slug}`}
+              className="lg:col-span-2 h-full"
+            >
+              <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition h-full flex flex-col">
+                <div className="flex-1 overflow-hidden">
+                  <img
+                    src={featured.featuredImage}
+                    alt={featured.title}
+                    className="w-full h-full object-cover hover:scale-105 transition duration-700"
+                  />
+                </div>
 
-                <div className="absolute bottom-0 p-6">
-                  <h3 className="text-2xl font-extrabold text-white mb-2">
+                <div className="p-6">
+                  <h3 className="text-2xl font-extrabold text-gray-900 mb-2 leading-snug">
                     {featured.title}
                   </h3>
-                  <p className="text-sm text-white/80">
+                  <p className="text-sm text-gray-500">
                     By {featured.authorName || "Desert Planners"}
                   </p>
                 </div>
@@ -80,26 +85,27 @@ export default function BlogList() {
             </Link>
           )}
 
-          {/* RIGHT TRENDING (FIXED OVERLAY TITLES) */}
-          <div className="grid grid-rows-2 gap-5">
+          {/* RIGHT STACKED BLOGS */}
+          <div className="flex flex-col gap-5 h-full">
             {rightBlogs.map((blog) => (
               <Link
                 key={blog._id}
                 to={`/blog/${blog.slug}`}
-                className="group relative rounded-3xl overflow-hidden h-[250px] shadow-sm hover:shadow-xl transition"
+                className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition flex-1 flex flex-col"
               >
-                <img
-                  src={blog.featuredImage}
-                  alt={blog.title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <div className="flex-1 overflow-hidden">
+                  <img
+                    src={blog.featuredImage}
+                    alt={blog.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                  />
+                </div>
 
-                <div className="absolute bottom-0 p-4">
-                  <h4 className="text-lg font-bold text-white leading-snug">
+                <div className="p-4">
+                  <h4 className="text-lg font-bold text-gray-900 leading-snug line-clamp-2">
                     {blog.title}
                   </h4>
-                  <p className="text-xs text-white/80 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     By {blog.authorName || "Desert Planners"}
                   </p>
                 </div>
@@ -108,7 +114,7 @@ export default function BlogList() {
           </div>
         </div>
 
-        {/* ================= DUBAI CTA ================= */}
+        {/* ================= DUBAI CTA (RESTORED) ================= */}
         <div className="relative h-[460px] rounded-[2.5rem] overflow-hidden mb-16">
           <img
             src="https://images.unsplash.com/photo-1489516408517-0c0a15662682?q=80&w=1600&auto=format&fit=crop"
@@ -143,18 +149,16 @@ export default function BlogList() {
         </div>
 
         {/* ================= POPULAR BLOGS ================= */}
-        <div className="mb-6">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">
-            Popular Blogs
-          </h2>
-        </div>
+        <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6">
+          Popular Blogs
+        </h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
             <Link
               key={blog._id}
               to={`/blog/${blog.slug}`}
-              className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition"
+              className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition flex flex-col"
             >
               <div className="h-[220px] overflow-hidden">
                 <img
@@ -164,8 +168,8 @@ export default function BlogList() {
                 />
               </div>
 
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">
+              <div className="p-5 flex-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-1 line-clamp-2">
                   {blog.title}
                 </h3>
                 <p className="text-sm text-gray-500">
