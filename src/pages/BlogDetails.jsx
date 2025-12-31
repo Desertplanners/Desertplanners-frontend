@@ -88,7 +88,7 @@ export default function BlogDetails() {
             datePublished: blog.createdAt,
             dateModified: blog.updatedAt,
             author: {
-              "@type": "Person",
+              "@type": "Author",
               name: blog.authorName || "Desert Planners",
             },
             publisher: {
