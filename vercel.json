@@ -9,6 +9,14 @@
       "destination": "https://desertplanners-backend.onrender.com/sitemap.xml"
     },
     {
+      "source": "/sitemap-main.xml",
+      "destination": "https://desertplanners-backend.onrender.com/sitemap-main.xml"
+    },
+    {
+      "source": "/sitemap-blog.xml",
+      "destination": "https://desertplanners-backend.onrender.com/sitemap-blog.xml"
+    },
+    {
       "source": "/sitemap.html",
       "destination": "https://desertplanners-backend.onrender.com/sitemap.html"
     },
