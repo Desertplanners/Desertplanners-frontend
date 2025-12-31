@@ -25,6 +25,8 @@ export default function SEOManagement() {
     { id: "tours", title: "Tours Page" },
     { id: "visa", title: "Visa Page" },
     { id: "holidays", title: "Holidays Page" },
+    { id: "blog", title: "Blog Main Page" },
+
   ]);
   
 
@@ -34,14 +36,15 @@ export default function SEOManagement() {
   const [tourCategories, setTourCategories] = useState([]);
   const [visaCategories, setVisaCategories] = useState([]);
   const [holidayCategories, setHolidayCategories] = useState([]);
-
+  const [blogCategories, setBlogCategories] = useState([]);
+  
   useEffect(() => {
     (async () => {
       try {
         setTours((await api.get(API.GET_TOURS)).data || []);
         setVisas((await api.get(API.GET_VISAS)).data || []);
         setHolidays((await api.get(API.GET_ALL_HOLIDAY_TOURS)).data?.tours || []);
-
+        setBlogCategories((await api.get(API.GET_BLOG_CATEGORIES)).data || []);        
         setTourCategories((await api.get(API.GET_CATEGORIES)).data || []);
         setVisaCategories((await api.get(API.GET_VISA_CATEGORIES)).data || []);
         setHolidayCategories((await api.get(API.GET_HOLIDAY_CATEGORIES)).data || []);
@@ -58,7 +61,8 @@ export default function SEOManagement() {
     holiday: holidays,
     tourCategory: tourCategories,
     visaCategory: visaCategories,
-    holidayCategory: holidayCategories,
+    holidayCategory: holidayCategories,              // ✅ NEW
+    blogCategory: blogCategories // ✅ NEW
   };
 
   const tabs = [
@@ -69,6 +73,7 @@ export default function SEOManagement() {
     { key: "tourCategory", label: "Tour Categories", icon: <Grid size={16} /> },
     { key: "visaCategory", label: "Visa Categories", icon: <Grid size={16} /> },
     { key: "holidayCategory", label: "Holiday Categories", icon: <Layers size={16} /> },
+    { key: "blogCategory", label: "Blog Categories", icon: <Grid size={16} /> }, // ✅
   ];
 
   // ⭐ FILTERED LIST ACCORDING TO SEARCH

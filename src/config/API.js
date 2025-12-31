@@ -184,11 +184,17 @@ export const API = {
     `${holidayTours}/category/${category}/${slug}`,
 
   // ---- Blog Categories ----
+  // ---- Blog Categories ----
   ADD_BLOG_CATEGORY: `${blogCategories}`,
   GET_BLOG_CATEGORIES: `${blogCategories}`,
   UPDATE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
   DELETE_BLOG_CATEGORY: (id) => `${blogCategories}/${id}`,
-  GET_BLOGS_BY_CATEGORY: (slug) => `${blogCategories}/category/${slug}`,
+
+  // ⭐ NEW — slug → category (_id) fetch
+  GET_BLOG_CATEGORY_BY_SLUG: (slug) => `${blogCategories}/slug/${slug}`,
+
+  // ⭐ Blogs under category (by slug)
+  GET_BLOGS_BY_CATEGORY_SLUG: (slug) => `${blogCategories}/category/${slug}`,
 
   // ---- Blogs ----
   ADD_BLOG: `${blogs}`, // POST (admin)

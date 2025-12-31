@@ -7,6 +7,7 @@ import {
   FaStar,
 } from "react-icons/fa";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 import DataService from "../config/DataService";
 import { API } from "../config/API";
@@ -32,8 +33,7 @@ export default function AboutUs() {
   }, []);
 
   // ⭐ Fallbacks
-  const pageTitle =
-    seo?.seoTitle || "About Us | Desert Planners UAE";
+  const pageTitle = seo?.seoTitle || "About Us | Desert Planners UAE";
 
   const pageDesc =
     seo?.seoDescription ||
@@ -45,12 +45,10 @@ export default function AboutUs() {
 
   const canonicalURL = "https://www.desertplanners.net/about-us";
 
-  const ogImage =
-    seo?.seoOgImage || "/travel-header-1.jpg";
+  const ogImage = seo?.seoOgImage || "/travel-header-1.jpg";
 
   return (
     <div className="bg-white">
-
       {/* ⭐⭐⭐ SEO START ⭐⭐⭐ */}
       <Helmet>
         <title>{pageTitle}</title>
@@ -139,8 +137,9 @@ export default function AboutUs() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="text-white/90 max-w-2xl mx-auto mt-3 text-lg leading-relaxed"
           >
-            Discover the story, passion, and vision behind Desert Planners Tourism LLC - 
-            your trusted partner for unforgettable UAE travel experiences.
+            Discover the story, passion, and vision behind Desert Planners
+            Tourism LLC - your trusted partner for unforgettable UAE travel
+            experiences.
           </motion.p>
         </div>
       </section>
@@ -222,7 +221,6 @@ export default function AboutUs() {
       {/* ⭐ MISSION & VISION */}
       <section className="py-12 bg-gray-50 border-y">
         <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-8">
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -230,7 +228,9 @@ export default function AboutUs() {
             transition={{ duration: 0.5 }}
             className="bg-white p-8 rounded-3xl shadow-md border"
           >
-            <h3 className="text-2xl font-bold text-[#721011] mb-3">Our Mission</h3>
+            <h3 className="text-2xl font-bold text-[#721011] mb-3">
+              Our Mission
+            </h3>
             <p className="text-gray-700 leading-relaxed">
               To provide travelers with smooth, enjoyable, and memorable UAE
               experiences through reliable services, curated tours, and
@@ -245,13 +245,14 @@ export default function AboutUs() {
             transition={{ delay: 0.2, duration: 0.5 }}
             className="bg-white p-8 rounded-3xl shadow-md border"
           >
-            <h3 className="text-2xl font-bold text-[#721011] mb-3">Our Vision</h3>
+            <h3 className="text-2xl font-bold text-[#721011] mb-3">
+              Our Vision
+            </h3>
             <p className="text-gray-700 leading-relaxed">
               To become one of the UAE’s most trusted and customer-preferred
               tourism companies, delivering excellence across all services.
             </p>
           </motion.div>
-
         </div>
       </section>
 
@@ -328,15 +329,20 @@ export default function AboutUs() {
 
       {/* ⭐ CTA */}
       <section className="py-8 text-center bg-gradient-to-r from-[#721011] to-[#e82429] text-white">
-        <h2 className="text-4xl font-bold mb-3">Plan Your UAE Journey With Us</h2>
+        <h2 className="text-4xl font-bold mb-3">
+          Plan Your UAE Journey With Us
+        </h2>
 
         <p className="text-white/90 text-lg max-w-2xl mx-auto mb-5">
-          From desert safaris to visa support - we make your UAE travel smooth and unforgettable.
+          From desert safaris to visa support - we make your UAE travel smooth
+          and unforgettable.
         </p>
 
-        <button className="px-8 py-4 bg-white text-[#721011] rounded-xl shadow-lg font-semibold hover:scale-105 transition">
-          Start Booking
-        </button>
+        <Link to="/">
+          <button className="px-8 py-4 bg-white text-[#721011] rounded-xl shadow-lg font-semibold hover:scale-105 transition">
+            Start Booking
+          </button>
+        </Link>
       </section>
     </div>
   );

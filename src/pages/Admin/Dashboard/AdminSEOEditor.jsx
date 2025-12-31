@@ -16,6 +16,8 @@ export default function AdminSEOEditor({ data, closeModal }) {
     tour: "tour",
     visa: "visa",
     holiday: "holiday",
+    blog: "blog",               // ✅ NEW
+    blogCategory: "blogCategory" // ✅ NEW
   };
 
   const rawType = data?.type || "";
@@ -52,6 +54,7 @@ export default function AdminSEOEditor({ data, closeModal }) {
           tours: "Tours Listing Page",
           visa: "Visa Listing Page",
           holidays: "Holiday Packages Listing Page",
+          blog: "Blog Main Page",
         };
         return setItemTitle(titles[id] || "Static Page");
       }
@@ -85,6 +88,11 @@ export default function AdminSEOEditor({ data, closeModal }) {
         res = await api.get(API.GET_HOLIDAY_CATEGORY_BY_ID(id));
         return setItemTitle(res.data?.name || "Holiday Category");
       }
+      if (backendType === "blogCategory") {
+        res = await api.get(API.GET_BLOG_CATEGORY_BY_ID(id));
+        return setItemTitle(res.data?.name || "Blog Category");
+      }
+      
     } catch {
       setItemTitle("Not Found");
     }

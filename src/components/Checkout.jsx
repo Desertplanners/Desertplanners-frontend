@@ -552,26 +552,25 @@ export default function Checkout() {
                 </div>
               )}
 
-<div className="flex flex-col gap-1 pt-3 border-t">
-  <div className="flex justify-between text-xl">
-    <span className="font-extrabold text-gray-900">
-      Final Payable:
-    </span>
-    <span
-      className={`font-extrabold text-green-700 transition-all duration-500 ${
-        animatePrice ? "scale-110" : ""
-      }`}
-    >
-      AED {finalPayable}
-    </span>
-  </div>
+              <div className="flex flex-col gap-1 pt-3 border-t">
+                <div className="flex justify-between text-xl">
+                  <span className="font-extrabold text-gray-900">
+                    Final Payable:
+                  </span>
+                  <span
+                    className={`font-extrabold text-green-700 transition-all duration-500 ${
+                      animatePrice ? "scale-110" : ""
+                    }`}
+                  >
+                    AED {finalPayable}
+                  </span>
+                </div>
 
-  {/* VAT NOTE */}
-  <div className="text-sm text-gray-500 text-right">
-    VAT 5% included
-  </div>
-</div>
-
+                {/* VAT NOTE */}
+                <div className="text-sm text-gray-500 text-right">
+                  VAT 5% included
+                </div>
+              </div>
 
               {/* 🎟️ COUPON APPLY — FINAL PAYABLE KE NICHE */}
               <div className="mt-6 space-y-3">
