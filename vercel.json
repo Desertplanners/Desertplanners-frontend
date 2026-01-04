@@ -14,7 +14,7 @@
     },
     {
       "source": "/sitemap-blog.xml",
-      "destination": "https://desertplanners-backend.onrender.com/sitemap-blog.xml"
+      "destination": "https://desertplanners-backend.onrender.com/blog/sitemap-blog.xml"
     },
     {
       "source": "/sitemap.html",
