@@ -115,27 +115,16 @@ export default function BlogDetails() {
       {/* ⭐⭐⭐ SEO END ⭐⭐⭐ */}
 
       <article className="w-full bg-[#fafafa]">
-        {/* HERO IMAGE */}
-        <section className="w-full">
-          <div className="relative w-full aspect-[16/9] bg-black">
-            <img
-              src={blog.featuredImage}
-              alt={blog.title}
-              className="absolute inset-0 w-full h-full object-contain"
-            />
-          </div>
-        </section>
-
-        {/* BLOG META */}
-        <section className="max-w-[1200px] mx-auto px-4 pt-8 pb-6">
-          {blog.category?.name && (
-            <Link
-              to={`/blog/category/${blog.category.slug}`}
-              className="inline-block mb-4 bg-[#e82429]/10 text-[#e82429] px-4 py-1 rounded-full text-xs font-semibold"
-            >
-              {blog.category.name}
-            </Link>
-          )}
+        {/* ================= BLOG HEADER (FULL WIDTH) ================= */}
+        <section className="max-w-[1200px] mx-auto px-4 pt-10 pb-6">
+          {/* {blog.category?.name && (
+          <Link
+            to={`/blog/category/${blog.category.slug}`}
+            className="inline-block mb-3 bg-[#e82429]/10 text-[#e82429] px-4 py-1 rounded-full text-xs font-semibold"
+          >
+            {blog.category.name}
+          </Link>
+        )} */}
 
           <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
             {blog.title}
@@ -154,18 +143,23 @@ export default function BlogDetails() {
           </div>
         </section>
 
-        {/* BODY */}
-        <section className="max-w-[1200px] mx-auto px-4 pb-20 grid lg:grid-cols-[1fr_300px] gap-10">
-          {/* MAIN CONTENT */}
+        {/* ================= CONTENT GRID ================= */}
+        <section className="max-w-[1200px] mx-auto px-4 pb-20 grid lg:grid-cols-[1fr_320px] gap-10">
+          {/* ================= LEFT SIDE ================= */}
           <div>
-            <div className="bg-white rounded-2xl shadow-sm px-4 md:px-6 py-8">
+            {/* FEATURED IMAGE */}
+            <div className="w-full rounded-2xl overflow-hidden mb-8">
+              <img
+                src={blog.featuredImage}
+                alt={blog.title}
+                className="w-full h-[220px] sm:h-[280px] md:h-[360px] lg:h-[420px] object-cover"
+              />
+            </div>
+
+            {/* BLOG CONTENT */}
+            <div className="bg-white rounded-2xl shadow-sm px-5 md:px-7 py-8">
               <div
-                className="
-    prose max-w-none
-    prose-a:no-underline
-    prose-a:text-[#721011]
-    hover:prose-a:underline
-  "
+                className="prose max-w-none prose-a:no-underline prose-a:text-[#e82429] hover:prose-a:no-underline"
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(blog.content),
                 }}
@@ -173,7 +167,7 @@ export default function BlogDetails() {
             </div>
 
             {/* AUTHOR */}
-            <div className="mt-8 bg-white rounded-2xl shadow-sm px-5 py-5 flex gap-4">
+            <div className="mt-10 bg-white rounded-2xl shadow-sm px-5 py-5 flex gap-4">
               <img
                 src={blog.authorImage || "/images/default-avatar.png"}
                 alt={blog.authorName}
@@ -188,18 +182,28 @@ export default function BlogDetails() {
                 </h4>
                 <p className="text-sm text-gray-600 mt-1">
                   {blog.authorBio ||
-                    "Travel expert at Desert Planners sharing insights on Dubai tours, visas, and premium travel experiences."}
+                    "Travel expert sharing insights on tours, visas, and premium travel experiences."}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* SIDEBAR */}
+          {/* ================= RIGHT SIDE ================= */}
           <aside className="space-y-6 sticky top-24 h-fit">
+            {/* STATIC IMAGE */}
+            <div className="rounded-2xl overflow-hidden shadow-sm">
+              <img
+                src="/blogstatic.png"
+                alt="Blog Sidebar Banner"
+                className="w-full h-[250px] object-cover"
+              />
+            </div>
+
             {/* LATEST BLOGS */}
             {latestBlogs.length > 0 && (
               <div className="bg-white rounded-2xl shadow-sm p-5">
                 <h3 className="text-base font-bold mb-4">Latest Articles</h3>
+
                 <div className="space-y-4">
                   {latestBlogs.map((b) => (
                     <Link
@@ -213,7 +217,7 @@ export default function BlogDetails() {
                         className="w-16 h-14 rounded-lg object-cover"
                       />
                       <div>
-                        <p className="text-sm font-medium group-hover:text-[#e82429] leading-snug">
+                        <p className="text-sm font-medium group-hover:text-[#e82429]">
                           {b.title}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
@@ -248,10 +252,11 @@ export default function BlogDetails() {
               </div>
             )}
 
-            {/* RELATED TOURS */}
+            {/* ================= RELATED TOURS ================= */}
             {blog.relatedTours?.length > 0 && (
               <div className="bg-white rounded-2xl shadow-sm p-5">
                 <h3 className="text-base font-bold mb-4">Related Tours</h3>
+
                 <div className="space-y-4">
                   {blog.relatedTours.map((tour) => (
                     <Link
@@ -264,10 +269,12 @@ export default function BlogDetails() {
                         alt={tour.title}
                         className="w-16 h-14 rounded-lg object-cover"
                       />
+
                       <div>
-                        <p className="text-sm font-semibold group-hover:text-[#e82429] leading-snug">
+                        <p className="text-sm font-semibold leading-snug group-hover:text-[#e82429] transition">
                           {tour.title}
                         </p>
+
                         <p className="text-xs text-gray-500 mt-1">
                           From AED {tour.discountPriceAdult || tour.priceAdult}
                         </p>
