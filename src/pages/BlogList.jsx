@@ -14,10 +14,14 @@ export default function BlogList() {
   // ================= FETCH BLOGS =================
   useEffect(() => {
     api.get(API.GET_BLOGS).then((res) => {
-      setBlogs(res.data || []);
+      const publishedBlogs = (res.data || []).filter(
+        (b) => b.status === "published"
+      );
+      setBlogs(publishedBlogs);
       setLoading(false);
     });
   }, []);
+  
 
   // ================= FETCH SEO =================
   useEffect(() => {

@@ -38,11 +38,15 @@ export default function BlogDetails() {
   }, [slug]);
 
   if (loading) {
-    return <div className="py-20 text-center text-gray-500">Loading article…</div>;
+    return (
+      <div className="py-20 text-center text-gray-500">Loading article…</div>
+    );
   }
 
   if (!blog) {
-    return <div className="py-20 text-center text-gray-500">Blog not found</div>;
+    return (
+      <div className="py-20 text-center text-gray-500">Blog not found</div>
+    );
   }
 
   /* ================= SEO ================= */
@@ -53,8 +57,7 @@ export default function BlogDetails() {
 
   const canonicalUrl = `https://www.desertplanners.net/blog/${blog.slug}`;
   const ogImage =
-    blog.featuredImage ||
-    "https://www.desertplanners.net/default-og.jpg";
+    blog.featuredImage || "https://www.desertplanners.net/default-og.jpg";
 
   return (
     <>
@@ -111,15 +114,14 @@ export default function BlogDetails() {
       <article className="w-full bg-[#fafafa]">
         {/* HERO IMAGE */}
         <section className="w-full">
-  <div className="relative w-full aspect-[16/9] bg-black">
-    <img
-      src={blog.featuredImage}
-      alt={blog.title}
-      className="absolute inset-0 w-full h-full object-contain"
-    />
-  </div>
-</section>
-
+          <div className="relative w-full aspect-[16/9] bg-black">
+            <img
+              src={blog.featuredImage}
+              alt={blog.title}
+              className="absolute inset-0 w-full h-full object-contain"
+            />
+          </div>
+        </section>
 
         {/* BLOG META */}
         <section className="max-w-[1200px] mx-auto px-4 pt-8 pb-6">
@@ -259,8 +261,7 @@ export default function BlogDetails() {
                           {tour.title}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          From AED{" "}
-                          {tour.discountPriceAdult || tour.priceAdult}
+                          From AED {tour.discountPriceAdult || tour.priceAdult}
                         </p>
                       </div>
                     </Link>
@@ -274,4 +275,3 @@ export default function BlogDetails() {
     </>
   );
 }
-
