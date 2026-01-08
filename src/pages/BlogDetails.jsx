@@ -191,12 +191,31 @@ export default function BlogDetails() {
           {/* ================= RIGHT SIDE ================= */}
           <aside className="space-y-6 sticky top-24 h-fit">
             {/* STATIC IMAGE */}
-            <div className="rounded-2xl overflow-hidden shadow-sm">
+            <div className="relative rounded-2xl overflow-hidden shadow-sm">
+              {/* Image */}
               <img
                 src="/blogstatic.png"
                 alt="Blog Sidebar Banner"
                 className="w-full h-[250px] object-cover"
               />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
+                <h3 className="text-white text-xl font-semibold mb-2">
+                  Explore Our Desert Tours
+                </h3>
+
+                <p className="text-white/90 text-sm mb-4">
+                  Discover best UAE tour packages
+                </p>
+
+                <a
+  href="/"
+  className="bg-[#721011] hover:bg-[#5e0d0f] text-white font-semibold px-5 py-2 rounded-full transition"
+>
+  Go to Home
+</a>
+              </div>
             </div>
 
             {/* LATEST BLOGS */}
