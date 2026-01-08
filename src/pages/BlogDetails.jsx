@@ -110,13 +110,16 @@ export default function BlogDetails() {
 
       <article className="w-full bg-[#fafafa]">
         {/* HERO IMAGE */}
-        <section className="w-full h-[380px] md:h-[420px]">
-          <img
-            src={blog.featuredImage}
-            alt={blog.title}
-            className="w-full h-full object-cover"
-          />
-        </section>
+        <section className="w-full">
+  <div className="relative w-full aspect-[16/9] bg-black">
+    <img
+      src={blog.featuredImage}
+      alt={blog.title}
+      className="absolute inset-0 w-full h-full object-contain"
+    />
+  </div>
+</section>
+
 
         {/* BLOG META */}
         <section className="max-w-[1200px] mx-auto px-4 pt-8 pb-6">
