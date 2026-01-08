@@ -10,7 +10,7 @@ body {
 
 :root {
   /* Logo Colors */
-  --color-primary: #e82429; /* Bright Red - main color for buttons, highlights */
+  --color-primary: #c1494d; /* Bright Red - main color for buttons, highlights */
   --color-primary-dark: #721011; /* Dark Red - hover, navbar hover, accents */
   --color-neutral: #404041; /* Dark Gray - text, neutral elements */
 

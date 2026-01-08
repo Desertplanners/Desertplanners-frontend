@@ -23,9 +23,12 @@ export default function BlogDetails() {
 
         const allBlogsRes = await api.get(API.GET_BLOGS);
         const allBlogs = allBlogsRes.data || [];
-        setLatestBlogs(
-          allBlogs.filter((b) => b._id !== blogData._id).slice(0, 3)
-        );
+
+        const publishedLatestBlogs = allBlogs
+          .filter((b) => b.status === "published" && b._id !== blogData._id)
+          .slice(0, 3);
+
+        setLatestBlogs(publishedLatestBlogs);
 
         const catRes = await api.get(API.GET_BLOG_CATEGORIES);
         setCategories(catRes.data || []);
@@ -157,7 +160,12 @@ export default function BlogDetails() {
           <div>
             <div className="bg-white rounded-2xl shadow-sm px-4 md:px-6 py-8">
               <div
-                className="prose max-w-none"
+                className="
+    prose max-w-none
+    prose-a:no-underline
+    prose-a:text-[#721011]
+    hover:prose-a:underline
+  "
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(blog.content),
                 }}
