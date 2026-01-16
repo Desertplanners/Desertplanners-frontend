@@ -91,7 +91,7 @@ export default function BlogDetails() {
             headline: seoTitle,
             description: seoDescription,
             image: ogImage,
-            datePublished: blog.createdAt,
+            datePublished: blog.publishedAt || blog.createdAt,
             dateModified: blog.updatedAt,
             author: {
               "@type": "Author",
@@ -133,7 +133,10 @@ export default function BlogDetails() {
           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
             <span>By {blog.authorName}</span>
             <span>•</span>
-            <span>{new Date(blog.createdAt).toDateString()}</span>
+            <span>
+              {new Date(blog.publishedAt || blog.createdAt).toDateString()}
+            </span>
+
             {blog.views && (
               <>
                 <span>•</span>
@@ -192,28 +195,27 @@ export default function BlogDetails() {
           <aside className="space-y-6 sticky top-24 h-fit">
             {/* STATIC IMAGE */}
             <div className="relative rounded-2xl overflow-hidden shadow-sm">
-  {/* Image */}
-  <img
-    src="/blogstatic.png"
-    alt="Explore UAE Tours"
-    className="w-full h-[250px] object-cover "
-  />
+              {/* Image */}
+              <img
+                src="/blogstatic.png"
+                alt="Explore UAE Tours"
+                className="w-full h-[250px] object-cover "
+              />
 
-  {/* Overlay */}
-  <div className="absolute inset-0 bg-black/10 flex flex-col items-center justify-center text-center px-4">
-    <h3 className="text-white text-xl font-semibold mb-3">
-      Explore UAE Tours
-    </h3>
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/10 flex flex-col items-center justify-center text-center px-4">
+                <h3 className="text-white text-xl font-semibold mb-3">
+                  Explore UAE Tours
+                </h3>
 
-    <a
-      href="/"
-      className="bg-[#721011] hover:bg-[#5e0d0f] text-white font-medium px-5 py-2 rounded-full transition"
-    >
-      Explore Now
-    </a>
-  </div>
-</div>
-
+                <a
+                  href="/"
+                  className="bg-[#721011] hover:bg-[#5e0d0f] text-white font-medium px-5 py-2 rounded-full transition"
+                >
+                  Explore Now
+                </a>
+              </div>
+            </div>
 
             {/* LATEST BLOGS */}
             {latestBlogs.length > 0 && (
@@ -237,7 +239,9 @@ export default function BlogDetails() {
                           {b.title}
                         </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {new Date(b.createdAt).toLocaleDateString()}
+                          {new Date(
+                            b.publishedAt || b.createdAt
+                          ).toLocaleDateString()}
                         </p>
                       </div>
                     </Link>
