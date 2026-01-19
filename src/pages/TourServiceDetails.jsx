@@ -786,75 +786,75 @@ export default function TourServiceDetails() {
 
               {/* Guests Section */}
               <div className="flex flex-col gap-4 mt-2">
-              {hasChildPricing ? (
-                <>
-                  {/* Adults */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">👤</span>
-                      Adults (10+ years)
-                    </label>
+                {hasChildPricing ? (
+                  <>
+                    {/* Adults */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-gray-700 font-semibold flex items-center gap-2">
+                        <span className="text-[#e82429] text-lg">👤</span>
+                        Adults (10+ years)
+                      </label>
 
-                    <select
-                      value={adults}
-                      onChange={(e) => setAdults(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
-                    >
-                      <option value="">Select Adults</option>
-                      {[...Array(12)].map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                      <select
+                        value={adults}
+                        onChange={(e) => setAdults(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                      >
+                        <option value="">Select Adults</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                  {/* Children */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">🧒</span>
-                      Children (3–10 years)
-                    </label>
+                    {/* Children */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-gray-700 font-semibold flex items-center gap-2">
+                        <span className="text-[#e82429] text-lg">🧒</span>
+                        Children (3–10 years)
+                      </label>
 
-                    <select
-                      value={children}
-                      onChange={(e) => setChildren(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
-                    >
-                      <option value="0">0</option>
-                      {[...Array(12)].map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* General Guests */}
-                  <div className="flex flex-col gap-1">
-                    <label className="text-gray-700 font-semibold flex items-center gap-2">
-                      <span className="text-[#e82429] text-lg">👥</span>
-                      General
-                    </label>
+                      <select
+                        value={children}
+                        onChange={(e) => setChildren(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                      >
+                        <option value="0">0</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* General Guests */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-gray-700 font-semibold flex items-center gap-2">
+                        <span className="text-[#e82429] text-lg">👥</span>
+                        General
+                      </label>
 
-                    <select
-                      value={guests}
-                      onChange={(e) => setGuests(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
-                    >
-                      <option value="">Select Guests</option>
-                      {[...Array(12)].map((_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-            </div>
+                      <select
+                        value={guests}
+                        onChange={(e) => setGuests(e.target.value)}
+                        className="w-full px-4 py-3 rounded-2xl bg-white border border-gray-300 shadow-sm"
+                      >
+                        <option value="">Select Guests</option>
+                        {[...Array(12)].map((_, i) => (
+                          <option key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
+              </div>
 
               {/* Button */}
               <div className="mt-4">
@@ -896,15 +896,20 @@ export default function TourServiceDetails() {
           </div>
 
           {/* HIGHLIGHTS */}
-          <section className="bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] rounded-2xl shadow p-8">
-            <h2 className="text-2xl font-bold text-[#721011] mb-4 flex items-center gap-2">
-              <FaInfoCircle className="text-[#e82429]" /> Highlights
+          <section className="bg-gradient-to-br from-[#fff4f4] to-[#ffeaea] rounded-2xl shadow p-6 md:p-8">
+            <h2 className="text-xl md:text-2xl font-bold text-[#721011] mb-4 flex items-center gap-2">
+              <FaInfoCircle className="text-[#e82429] shrink-0" />
+              Highlights
             </h2>
 
-            <ul className="space-y-3 text-gray-700">
+            <ul className="space-y-4 text-gray-700 text-sm md:text-base">
               {(tour.highlights || []).map((point, index) => (
-                <li key={index} className="flex items-center gap-2">
-                  <FaCheckCircle className="text-[#e82429]" /> {point}
+                <li
+                  key={index}
+                  className="flex items-start gap-3 leading-relaxed"
+                >
+                  <FaCheckCircle className="text-[#e82429] mt-1 shrink-0" />
+                  <span className="flex-1">{point}</span>
                 </li>
               ))}
             </ul>
