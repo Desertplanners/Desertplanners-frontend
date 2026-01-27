@@ -14,16 +14,36 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const api = DataService("admin");
       const res = await api.post(API.ADMIN_LOGIN, { email, password });
+  
+      // ✅ TOKEN SAVE
       localStorage.setItem("adminToken", res.data.token);
+  
+      // ✅ USER DATA SAVE (MOST IMPORTANT)
+      localStorage.setItem(
+        "adminAuth",
+        JSON.stringify({
+          _id: res.data._id,
+          name: res.data.name,
+          email: res.data.email,
+          isAdmin: res.data.isAdmin,
+          isSuperAdmin: res.data.isSuperAdmin,
+        })
+      );
+  
+      console.log("ADMIN AUTH SAVED 👉", res.data);
+  
       navigate("/admin/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Invalid credentials");
     }
   };
+  
+
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f4f6f9] px-4">

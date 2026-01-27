@@ -15,8 +15,16 @@ export default function UsersList() {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("adminAuth"));
-    setCurrentUser(user);
+    const storedUser = localStorage.getItem("adminAuth");
+
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      console.log("CURRENT USER 👉", user);
+      setCurrentUser(user);
+    } else {
+      console.log("NO adminAuth FOUND");
+      setCurrentUser(null);
+    }
   }, []);
 
   // ----------------- FETCH USERS -------------------
@@ -133,56 +141,74 @@ export default function UsersList() {
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 p-6">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-        <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight drop-shadow-sm">
-          User Management
-        </h2>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div>
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">
+            User Management
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage users, roles & admin permissions
+          </p>
+        </div>
 
         {/* SEARCH BAR */}
-        <div className="relative w-full md:w-1/3 mt-4 md:mt-0">
+        <div className="relative w-full md:w-80">
           <input
             type="text"
-            placeholder="Search users..."
+            placeholder="Search by name, email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full px-12 py-3 rounded-full bg-white border border-gray-300 shadow-lg focus:ring-2 focus:ring-red-500 outline-none transition-all"
+            className="w-full pl-12 pr-4 py-3 rounded-xl bg-white/80 backdrop-blur border border-gray-200 shadow-md focus:ring-2 focus:ring-red-500 outline-none transition"
           />
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg">
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-lg">
             🔍
           </span>
         </div>
       </div>
 
+      {/* SUPER ADMIN INDICATOR */}
+      {currentUser?.isSuperAdmin && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl border border-purple-200 bg-gradient-to-r from-purple-50 to-purple-100 px-5 py-4 shadow-sm">
+          <span className="text-2xl">👑</span>
+          <div className="text-sm text-purple-800">
+            <p className="font-bold">Logged in as Super Admin</p>
+            <p className="opacity-80">
+              You can grant or revoke admin access for users.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* SUCCESS MESSAGE */}
       {successMsg && (
-        <div className="mb-4 px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm shadow">
+        <div className="mb-5 rounded-xl bg-green-50 border border-green-200 px-4 py-3 text-green-700 shadow-sm">
           {successMsg}
         </div>
       )}
 
-      {/* TABLE */}
-      <div className="overflow-x-auto bg-white shadow-2xl rounded-2xl border border-gray-200">
+      {/* TABLE CARD */}
+      <div className="rounded-2xl bg-white/80 backdrop-blur shadow-2xl border border-gray-200 overflow-hidden">
         <table className="min-w-full text-gray-700">
-          <thead className="bg-gradient-to-r from-red-600 to-red-800 text-white">
+          <thead className="bg-gradient-to-r from-red-600 to-red-700 text-white">
             <tr>
-              <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
                 User
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
                 Email
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
                 Mobile
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
                 Role
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
                 Created
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wide">
+              <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -192,79 +218,92 @@ export default function UsersList() {
             {filteredUsers.map((user) => (
               <tr
                 key={user._id}
-                className="border-b hover:bg-gray-50 transition-all cursor-pointer"
+                className="border-b last:border-none hover:bg-red-50/40 transition"
               >
-                {/* USER NAME */}
-                <td className="px-6 py-4 font-semibold text-gray-900">
-                  {user.name}
+                {/* USER */}
+                <td className="px-6 py-4">
+                  <div className="font-semibold text-gray-900">
+                    {user.name}
+                    {currentUser?._id === user._id && (
+                      <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold">
+                        You
+                      </span>
+                    )}
+                  </div>
                 </td>
 
                 {/* EMAIL */}
-                <td className="px-6 py-4">{user.email}</td>
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {user.email}
+                </td>
 
                 {/* MOBILE */}
-                <td className="px-6 py-4">
-                  {user.country && (
-                    <span className="text-gray-600 font-medium">
-                      {user.country}{" "}
-                    </span>
-                  )}
+                <td className="px-6 py-4 text-sm text-gray-600">
+                  {user.country && <span>{user.country} </span>}
                   {user.mobile}
                 </td>
 
                 {/* ROLE */}
                 <td className="px-6 py-4">
-                  {user.isAdmin ? (
-                    <span className="px-4 py-1 rounded-full text-sm bg-green-100 text-green-800 font-semibold shadow-sm flex items-center gap-2 w-fit">
-                      <FaUserShield className="text-green-700" /> Admin
+                  {user.isSuperAdmin ? (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-purple-100 px-4 py-1 text-sm font-bold text-purple-800">
+                      <FaUserShield /> Super Admin
+                    </span>
+                  ) : user.isAdmin ? (
+                    <span className="inline-flex items-center gap-2 rounded-full bg-green-100 px-4 py-1 text-sm font-bold text-green-800">
+                      <FaUserShield /> Admin
                     </span>
                   ) : (
-                    <span className="px-4 py-1 rounded-full text-sm bg-gray-200 text-gray-700 w-fit">
+                    <span className="inline-flex items-center rounded-full bg-gray-200 px-4 py-1 text-sm font-medium text-gray-700">
                       User
                     </span>
                   )}
                 </td>
 
                 {/* DATE */}
-                <td className="px-6 py-4 text-gray-600">
+                <td className="px-6 py-4 text-sm text-gray-500">
                   {user.createdAt
                     ? new Date(user.createdAt).toLocaleDateString()
                     : "-"}
                 </td>
 
-                {/* ACTION BUTTONS */}
-                <td className="px-6 py-4 flex items-center gap-3">
+                {/* ACTIONS */}
+                <td className="px-6 py-4 flex flex-wrap gap-2">
                   {/* EDIT */}
                   <button
-                    className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition shadow-sm"
+                    className="p-2 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 transition shadow-sm"
                     onClick={() => openEditModal(user)}
                   >
                     <FaEdit />
                   </button>
 
                   {/* DELETE */}
-                  <button
-                    className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition shadow-sm"
-                    onClick={() => deleteUser(user._id)}
-                  >
-                    <FaTrash />
-                  </button>
+                  {!user.isSuperAdmin && (
+                    <button
+                      className="p-2 rounded-xl bg-red-100 text-red-600 hover:bg-red-200 transition shadow-sm"
+                      onClick={() => deleteUser(user._id)}
+                    >
+                      <FaTrash />
+                    </button>
+                  )}
 
-                  {/* ADMIN TOGGLE (ONLY SUPER ADMIN CAN SEE THESE BUTTONS) */}
+                  {/* ADMIN ACCESS TOGGLE */}
                   {currentUser?.isSuperAdmin &&
+                    !user.isSuperAdmin &&
+                    currentUser._id !== user._id &&
                     (user.isAdmin ? (
                       <button
-                        className="px-3 py-1 rounded-lg bg-yellow-100 text-yellow-700 hover:bg-yellow-200 shadow-sm font-semibold"
+                        className="px-4 py-2 rounded-xl bg-yellow-100 text-yellow-800 font-semibold text-xs hover:bg-yellow-200 transition"
                         onClick={() => removeAdmin(user._id)}
                       >
-                        Remove Admin
+                        🔒 Remove Admin
                       </button>
                     ) : (
                       <button
-                        className="px-3 py-1 rounded-lg bg-green-100 text-green-700 hover:bg-green-200 shadow-sm font-semibold"
+                        className="px-4 py-2 rounded-xl bg-green-100 text-green-800 font-semibold text-xs hover:bg-green-200 transition"
                         onClick={() => promoteUser(user._id)}
                       >
-                        Make Admin
+                        🔓 Make Admin
                       </button>
                     ))}
                 </td>
@@ -273,84 +312,6 @@ export default function UsersList() {
           </tbody>
         </table>
       </div>
-
-      {/* EDIT MODAL */}
-      {editModalOpen && selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50">
-          <div className="bg-white p-7 rounded-2xl shadow-2xl w-full max-w-md relative animate-fadeIn scale-100">
-            <button
-              className="absolute top-4 right-4 text-gray-600 hover:text-black"
-              onClick={() => setEditModalOpen(false)}
-            >
-              <FaTimes size={18} />
-            </button>
-
-            <h3 className="text-2xl font-bold mb-5 text-gray-800">
-              Edit User Details
-            </h3>
-
-            <form onSubmit={handleUpdateUser} className="space-y-4">
-              <div>
-                <label className="font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-red-500 outline-none"
-                  value={selectedUser.name}
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, name: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  className="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-red-500 outline-none"
-                  value={selectedUser.email}
-                  onChange={(e) =>
-                    setSelectedUser({ ...selectedUser, email: e.target.value })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-gray-700">Country</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-red-500 outline-none"
-                  value={selectedUser.country || ""}
-                  onChange={(e) =>
-                    setSelectedUser({
-                      ...selectedUser,
-                      country: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="font-medium text-gray-700">Mobile</label>
-                <input
-                  type="text"
-                  className="w-full border rounded-lg px-3 py-2 shadow-sm focus:ring-2 focus:ring-red-500 outline-none"
-                  value={selectedUser.mobile || ""}
-                  onChange={(e) =>
-                    setSelectedUser({
-                      ...selectedUser,
-                      mobile: e.target.value,
-                    })
-                  }
-                />
-              </div>
-
-              <button className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold shadow-lg hover:bg-red-700 mt-3 transition">
-                Update User
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
