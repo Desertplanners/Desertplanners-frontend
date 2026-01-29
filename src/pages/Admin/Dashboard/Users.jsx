@@ -270,12 +270,12 @@ export default function UsersList() {
                 {/* ACTIONS */}
                 <td className="px-6 py-4 flex flex-wrap gap-2">
                   {/* EDIT */}
-                  <button
+                  {/* <button
                     className="p-2 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 transition shadow-sm"
                     onClick={() => openEditModal(user)}
                   >
                     <FaEdit />
-                  </button>
+                  </button> */}
 
                   {/* DELETE */}
                   {!user.isSuperAdmin && (
