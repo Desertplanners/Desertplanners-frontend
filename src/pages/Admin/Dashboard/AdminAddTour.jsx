@@ -481,6 +481,10 @@ export default function AdminAddTour({ tour, onSuccess }) {
               onChange={(e) => setMainImage(e.target.files[0])}
               className="w-full"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Recommended size:{" "}
+              <span className="font-semibold">1600 × 900 px</span>
+            </p>
           </div>
           <div>
             <label className="font-semibold">Gallery Images</label>
@@ -494,6 +498,10 @@ export default function AdminAddTour({ tour, onSuccess }) {
               }}
               className="w-full"
             />
+            <p className="text-xs text-gray-500 mt-1">
+              Recommended size:{" "}
+              <span className="font-semibold">1600 × 900 px</span>
+            </p>
 
             {/* SHOW OLD GALLERY IMAGES IN EDIT MODE */}
             {tour && tour.galleryImages && tour.galleryImages.length > 0 && (

@@ -229,21 +229,21 @@ export default function AdminAddHolidayTour({
   const onSliderFilesChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
-  
+
     // NEW PREVIEWS
     const newPreviews = files.map((file) => {
       const url = URL.createObjectURL(file);
       registerUrl(url);
       return url;
     });
-  
+
     // 1️⃣ Append new files with old files
     setSliderFiles((prev) => [...prev, ...files]);
-  
+
     // 2️⃣ Append new previews with old previews
     setSliderPreviews((prev) => [...prev, ...newPreviews]);
   };
-  
+
   const onItineraryImageChange = (e, index) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -438,6 +438,11 @@ export default function AdminAddHolidayTour({
             Slider Images
           </h3>
 
+          <p className="text-xs text-gray-500 mt-1">
+            Recommended size:{" "}
+            <span className="font-semibold">1600 × 900 px</span>
+          </p>
+
           <label className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 rounded-xl cursor-pointer transition">
             <span className="text-gray-600 text-sm mb-2">
               Upload Slider Images
@@ -514,6 +519,10 @@ export default function AdminAddHolidayTour({
           <h3 className="text-xl font-semibold text-[#721011]">
             Itinerary Images & Titles
           </h3>
+          <p className="text-xs text-gray-500 mt-1">
+            Recommended size:{" "}
+            <span className="font-semibold">1600 × 900 px</span>
+          </p>
 
           <div className="space-y-5">
             {itinerary.map((it, idx) => (

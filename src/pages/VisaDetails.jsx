@@ -583,12 +583,12 @@ export default function VisaDetails() {
               </div>
             </div>
 
-            <label className="text-sm text-gray-600">Upload Documents</label>
+            {/* <label className="text-sm text-gray-600">Upload Documents</label>
             <div className="border-2 border-dashed border-gray-300 rounded-xl p-5 text-center text-gray-500 hover:bg-gray-50 transition">
               <FaFileUpload className="mx-auto text-3xl mb-2 text-[#e82429]" />
               <p>Drag & drop files here or click to upload</p>
               <input type="file" multiple className="hidden" />
-            </div>
+            </div> */}
 
             <Link
               to={`/visa/${categorySlug}/${visaSlug}/apply?visaId=${visa._id}`}

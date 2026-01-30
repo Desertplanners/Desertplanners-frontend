@@ -55,8 +55,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
         howToApply: editVisa.howToApply || [],
         termsAndConditions: editVisa.termsAndConditions || [],
         relatedVisas: editVisa.relatedVisas || [],
-        visaCategory:
-          editVisa.visaCategory?._id || editVisa.visaCategory || "",
+        visaCategory: editVisa.visaCategory?._id || editVisa.visaCategory || "",
       }));
     }
   }, [editVisa]);
@@ -269,10 +268,14 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
                 onChange={handleMainImageChange}
               />
             </label>
+            <p className="text-xs text-gray-500 mt-1">
+              Recommended size:{" "}
+              <span className="font-semibold">350 × 250 px</span>
+            </p>
           </div>
 
           {/* GALLERY UPLOAD */}
-          <div className="border rounded-xl p-4 bg-gray-50">
+          {/* <div className="border rounded-xl p-4 bg-gray-50">
             <h3 className="font-semibold text-[#e82429] mb-3">
               Gallery Images
             </h3>
@@ -306,7 +309,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
                 onChange={handleGalleryChange}
               />
             </label>
-          </div>
+          </div> */}
 
           {/* ARRAY FIELDS */}
           {[

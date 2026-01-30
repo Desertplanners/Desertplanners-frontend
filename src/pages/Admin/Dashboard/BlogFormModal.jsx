@@ -58,13 +58,11 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
       LOAD INITIAL DATA
   ====================== */
   useEffect(() => {
-    api.get(API.GET_BLOG_CATEGORIES).then((res) =>
-      setCategories(res.data || [])
-    );
+    api
+      .get(API.GET_BLOG_CATEGORIES)
+      .then((res) => setCategories(res.data || []));
 
-    api.get(API.GET_TOURS).then((res) =>
-      setTours(res.data || [])
-    );
+    api.get(API.GET_TOURS).then((res) => setTours(res.data || []));
 
     if (editBlog) {
       setTitle(editBlog.title || "");
@@ -107,9 +105,7 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
   ====================== */
   const submit = async () => {
     if (!title || !content || !category || !authorName) {
-      return toast.error(
-        "Title, Author Name, Content & Category are required"
-      );
+      return toast.error("Title, Author Name, Content & Category are required");
     }
 
     const formData = new FormData();
@@ -165,7 +161,6 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
       <div className="bg-[#f9fafb] w-[1200px] h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden">
-
         {/* HEADER */}
         <div className="bg-white border-b px-8 py-4 flex justify-between items-center">
           <input
@@ -177,10 +172,7 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
           />
 
           <div className="flex gap-3 ml-6">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 border rounded-lg"
-            >
+            <button onClick={onClose} className="px-4 py-2 border rounded-lg">
               Cancel
             </button>
 
@@ -201,7 +193,6 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
 
         {/* BODY */}
         <div className="flex flex-1 overflow-hidden">
-
           {/* EDITOR */}
           <div className="flex-1 p-8 overflow-y-auto">
             <Editor
@@ -233,7 +224,6 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
 
           {/* SIDEBAR */}
           <aside className="w-[360px] bg-white border-l p-6 overflow-y-auto space-y-6">
-
             {/* CATEGORY */}
             <div>
               <label className="font-bold text-sm">Category</label>
@@ -294,6 +284,10 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
             {/* FEATURED IMAGE */}
             <div>
               <label className="font-bold text-sm">Featured Image</label>
+              <p className="text-xs text-gray-500 mt-1">
+                Recommended size:{" "}
+                <span className="font-semibold">1600 × 900 px</span>
+              </p>
               <input
                 type="file"
                 accept="image/*"
@@ -365,7 +359,6 @@ export default function BlogFormModal({ onClose, onSuccess, editBlog }) {
                 <option value="published">Published</option>
               </select>
             </div>
-
           </aside>
         </div>
       </div>

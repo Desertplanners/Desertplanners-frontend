@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
 import {
   FaUpload,
-  FaPlaneArrival,
   FaPassport,
   FaCheckCircle,
   FaExclamationTriangle,
@@ -181,12 +180,7 @@ export default function VisaBooking() {
     passportFront: null,
     passportBack: null,
     passportCover: null,
-    photo: null,
-    accommodation: null,
-    emiratesId: null, // optional
     extraId: null, // optional
-    oldVisa: null, // optional
-    flightTicket: null,
   });
 
   const [selectedVisa, setSelectedVisa] = useState(null);
@@ -195,7 +189,7 @@ export default function VisaBooking() {
   const visaId = params.get("visaId");
   const [beginCheckoutFired, setBeginCheckoutFired] = useState(false);
 
-  const api = DataService();
+  const api = useMemo(() => DataService(), []);
 
   // ----------------------------------------------------------------
   // Fetch Visa Details (when visaId present)
@@ -294,22 +288,10 @@ export default function VisaBooking() {
     "issuePlace",
     "issueDate",
     "expiryDate",
-    "entryDate",
-    "returnDate",
     "visaId",
   ];
 
-  const requiredFileKeys = [
-    "passportFront",
-    "passportBack",
-    "passportCover",
-    "photo",
-    "accommodation",
-    // emiratesId -> OPTIONAL
-    // extraId -> OPTIONAL
-    // oldVisa -> OPTIONAL
-    "flightTicket",
-  ];
+  const requiredFileKeys = ["passportFront", "passportBack", "passportCover"];
 
   const validateBeforeSubmit = () => {
     // fields
@@ -477,18 +459,16 @@ export default function VisaBooking() {
       if (v === null || v === undefined || v === "") return acc + 1;
       return acc;
     }, 0);
-  }, 0);
+  }, [fields]);
+  
 
   const missingFileCount = useMemo(() => {
-    return requiredFileKeys.reduce(
-      (acc, k) => {
-        if (!files[k]) return acc + 1;
-        return acc;
-      },
-      [files]
-    );
+    return requiredFileKeys.reduce((acc, k) => {
+      if (!files[k]) return acc + 1;
+      return acc;
+    }, 0);
   }, [files]);
-
+  
   // ----------------------------------------------------------------
   // UI
   // ----------------------------------------------------------------
@@ -693,6 +673,7 @@ export default function VisaBooking() {
                 onChange={handleFile}
                 accept="image/*,application/pdf"
               />
+
               <FileUpload
                 label="Passport Back Page"
                 name="passportBack"
@@ -700,6 +681,7 @@ export default function VisaBooking() {
                 onChange={handleFile}
                 accept="image/*,application/pdf"
               />
+
               <FileUpload
                 label="Passport Cover"
                 name="passportCover"
@@ -707,49 +689,12 @@ export default function VisaBooking() {
                 onChange={handleFile}
                 accept="image/*,application/pdf"
               />
-              <FileUpload
-                label="Photo (White BG)"
-                name="photo"
-                file={files.photo}
-                onChange={handleFile}
-                accept="image/*"
-              />
-              <FileUpload
-                label="Accommodation Proof"
-                name="accommodation"
-                file={files.accommodation}
-                onChange={handleFile}
-                accept="image/*,application/pdf"
-              />
-              <FileUpload
-                label="Return Ticket"
-                name="flightTicket"
-                file={files.flightTicket}
-                onChange={handleFile}
-                accept="image/*,application/pdf"
-              />
 
-              {/* Optional ones */}
-              <FileUpload
-                label="Emirates ID"
-                name="emiratesId"
-                file={files.emiratesId}
-                onChange={handleFile}
-                optional
-                accept="image/*,application/pdf"
-              />
+              {/* Optional */}
               <FileUpload
                 label="Additional ID"
                 name="extraId"
                 file={files.extraId}
-                onChange={handleFile}
-                optional
-                accept="image/*,application/pdf"
-              />
-              <FileUpload
-                label="Old Visa (Optional)"
-                name="oldVisa"
-                file={files.oldVisa}
                 onChange={handleFile}
                 optional
                 accept="image/*,application/pdf"

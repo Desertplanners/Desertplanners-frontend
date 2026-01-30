@@ -147,6 +147,10 @@ export default function BannerManagement() {
           {/* Image upload */}
           <div>
             <label className="block text-gray-700 mb-1">Desktop Image</label>
+            <p className="text-xs text-gray-500 mt-1">
+            Recommended size:{" "}
+            <span className="font-semibold">1200 × 768 px</span>
+          </p>
             <input
               type="file"
               name="desktopImage"
@@ -159,6 +163,10 @@ export default function BannerManagement() {
 
           <div>
             <label className="block text-gray-700 mb-1">Mobile Image</label>
+            <p className="text-xs text-gray-500 mt-1">
+            Recommended size:{" "}
+            <span className="font-semibold">768 × 1200 px</span>
+          </p>
             <input
               type="file"
               name="mobileImage"
