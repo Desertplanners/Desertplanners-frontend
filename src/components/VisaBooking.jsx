@@ -123,18 +123,23 @@ const FileUpload = React.memo(
 
         <input
           type="file"
+          multiple // ✅ multiple enable
           accept={accept || "*/*"}
           className="hidden"
-          onChange={(e) => onChange(name, e.target.files[0])}
+          onChange={(e) => onChange(name, Array.from(e.target.files))}
         />
       </label>
 
-      {file && (
-        <div className="flex items-center gap-2">
-          <FaCheckCircle className="text-green-500" />
-          <p className="text-sm text-gray-700 truncate">✔ {file.name}</p>
-        </div>
-      )}
+      {Array.isArray(file) && file.length > 0 && (
+  <div className="space-y-1">
+    {file.map((f, i) => (
+      <p key={i} className="text-sm text-gray-700 truncate">
+        ✔ {f.name}
+      </p>
+    ))}
+  </div>
+)}
+
     </div>
   )
 );
@@ -180,7 +185,7 @@ export default function VisaBooking() {
     passportFront: null,
     passportBack: null,
     passportCover: null,
-    extraId: null, // optional
+    extraId: [], // optional
   });
 
   const [selectedVisa, setSelectedVisa] = useState(null);
@@ -254,8 +259,12 @@ export default function VisaBooking() {
   const handleChange = (key, val) =>
     setFields((prev) => ({ ...prev, [key]: val }));
 
-  const handleFile = (key, file) =>
-    setFiles((prev) => ({ ...prev, [key]: file }));
+  const handleFile = (key, value) =>
+    setFiles((prev) => ({
+      ...prev,
+      [key]: Array.isArray(value) ? value : [value],
+    }));
+  
 
   // ----------------------------------------------------------------
   // Pricing: transaction fee 3.75%
@@ -410,8 +419,15 @@ export default function VisaBooking() {
 
       // files
       Object.keys(files).forEach((k) => {
-        if (files[k]) fd.append(k, files[k]);
+        if (Array.isArray(files[k])) {
+          files[k].forEach((file) => {
+            fd.append(k, file); // same key multiple times
+          });
+        } else if (files[k]) {
+          fd.append(k, files[k]);
+        }
       });
+      
 
       // send as guest (like existing code)
       const guest = DataService("guest");
@@ -460,7 +476,6 @@ export default function VisaBooking() {
       return acc;
     }, 0);
   }, [fields]);
-  
 
   const missingFileCount = useMemo(() => {
     return requiredFileKeys.reduce((acc, k) => {
@@ -468,7 +483,7 @@ export default function VisaBooking() {
       return acc;
     }, 0);
   }, [files]);
-  
+
   // ----------------------------------------------------------------
   // UI
   // ----------------------------------------------------------------
