@@ -14,8 +14,8 @@ export default function ToursManagement() {
   // Fetch Tours
   const fetchTours = async () => {
     try {
-      const api = DataService();
-      const res = await api.get(API.GET_TOURS);
+      const api = DataService("admin");
+      const res = await api.get(`${API.GET_TOURS}?admin=true`);
       setTours(res.data);
     } catch (err) {
       toast.error("Error fetching tours:", err);
@@ -58,10 +58,8 @@ export default function ToursManagement() {
 
   return (
     <Section title="Manage Tours">
-
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
-
         <h2 className="text-2xl font-bold text-[var(--color-neutral)]">
           All Tours
         </h2>
@@ -120,7 +118,6 @@ export default function ToursManagement() {
       {open && (
         <div className="fixed top-0 left-0 w-full h-full flex items-start justify-center z-50 bg-black/30">
           <div className="bg-[var(--color-white)] rounded-3xl shadow-2xl w-full max-w-4xl max-h-[80vh] p-6 overflow-y-auto relative animate-slide-down mt-10">
-
             <button
               onClick={() => {
                 setOpen(false);
@@ -146,7 +143,9 @@ export default function ToursManagement() {
       {/* TOURS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTours.length === 0 ? (
-          <p className="text-gray-500 col-span-full text-center">No matching tours found</p>
+          <p className="text-gray-500 col-span-full text-center">
+            No matching tours found
+          </p>
         ) : (
           filteredTours.map((tour) => (
             <div
@@ -175,12 +174,12 @@ export default function ToursManagement() {
 
                 <span
                   className={`absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full shadow ${
-                    tour.status === "active"
+                    tour.status === "published"
                       ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
+                      : "bg-yellow-100 text-yellow-800"
                   }`}
                 >
-                  {tour.status || "Active"}
+                  {tour.status || "draft"}
                 </span>
               </div>
 
@@ -230,7 +229,6 @@ export default function ToursManagement() {
           animation: slide-down 0.3s ease-out forwards;
         }
       `}</style>
-
     </Section>
   );
 }

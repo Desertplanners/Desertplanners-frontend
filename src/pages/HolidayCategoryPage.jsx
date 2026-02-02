@@ -24,22 +24,20 @@ export default function HolidayCategoryPage() {
   /* ======================================
    STEP 1 — Fetch Holiday Packages (MISSING FIX)
 ====================================== */
-useEffect(() => {
-  const loadPackages = async () => {
-    try {
-      const res = await api.get(
-        API.GET_PACKAGES_BY_CATEGORY(categorySlug)
-      );
-      console.log("PACKAGES API:", res.data); // 🔥 DEBUG
-      setPackages(res.data || []);
-    } catch (err) {
-      console.error("Failed to load packages", err);
-      setPackages([]);
-    }
-  };
+  useEffect(() => {
+    const loadPackages = async () => {
+      try {
+        const res = await api.get(API.GET_PACKAGES_BY_CATEGORY2(categorySlug));
+        console.log("PACKAGES API:", res.data); // 🔥 DEBUG
+        setPackages(res.data || []);
+      } catch (err) {
+        console.error("Failed to load packages", err);
+        setPackages([]);
+      }
+    };
 
-  loadPackages();
-}, [categorySlug]);
+    loadPackages();
+  }, [categorySlug]);
 
   /* ======================================
      STEP 1 — Fetch Holiday Packages
@@ -47,25 +45,24 @@ useEffect(() => {
   /* ======================================
    STEP 1.5 — Fetch Holiday Category (FIX)
 ====================================== */
-/* ======================================
+  /* ======================================
    STEP 1.5 — Fetch Holiday Category (FIX)
 ====================================== */
-useEffect(() => {
-  const fetchCategory = async () => {
-    try {
-      const res = await api.get(
-        API.GET_HOLIDAY_CATEGORY_BY_SLUG(categorySlug)
-      );
-      setCategory(res.data);
-      setCategoryDescription(res.data?.description || "");
-    } catch (err) {
-      console.error("Failed to load holiday category", err);
-    }
-  };
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res = await api.get(
+          API.GET_HOLIDAY_CATEGORY_BY_SLUG(categorySlug)
+        );
+        setCategory(res.data);
+        setCategoryDescription(res.data?.description || "");
+      } catch (err) {
+        console.error("Failed to load holiday category", err);
+      }
+    };
 
-  fetchCategory();
-}, [categorySlug]);
-
+    fetchCategory();
+  }, [categorySlug]);
 
   /* ======================================
      STEP 2 — Fetch Holiday Category Description (IMPORTANT)
@@ -90,24 +87,20 @@ useEffect(() => {
   /* ======================================
      STEP 3 — Fetch SEO
      ====================================== */
-     useEffect(() => {
-      if (!category?. _id) return;
-    
-      const fetchSEO = async () => {
-        const res = await api.get(
-          API.GET_SEO("holidayCategory", category._id)
-        );
-        setSEO(res.data?.seo || null);
-        setLoading(false);
-      };
-    
-      fetchSEO();
-    }, [category]);
-    
+  useEffect(() => {
+    if (!category?._id) return;
+
+    const fetchSEO = async () => {
+      const res = await api.get(API.GET_SEO("holidayCategory", category._id));
+      setSEO(res.data?.seo || null);
+      setLoading(false);
+    };
+
+    fetchSEO();
+  }, [category]);
 
   // LOADING
-  if (loading)
-    return <h2 className="text-center py-10 text-xl">Loading...</h2>;
+  if (loading) return <h2 className="text-center py-10 text-xl">Loading...</h2>;
 
   // NO PACKAGES
   if (!packages.length)
@@ -120,20 +113,16 @@ useEffect(() => {
   /* ======================================
      SEO FALLBACKS
      ====================================== */
-  const pageTitle =
-    seo?.seoTitle || `${categoryName} Holiday Packages`;
+  const pageTitle = seo?.seoTitle || `${categoryName} Holiday Packages`;
 
   const pageDesc =
     seo?.seoDescription ||
     `Explore the best ${categoryName} holiday packages with Desert Planners.`;
 
-  const pageKeywords =
-    seo?.seoKeywords || `${categoryName}, Holiday Packages`;
+  const pageKeywords = seo?.seoKeywords || `${categoryName}, Holiday Packages`;
 
   const ogImage =
-    seo?.seoOgImage ||
-    packages[0]?.sliderImages?.[0] ||
-    fallbackBanner;
+    seo?.seoOgImage || packages[0]?.sliderImages?.[0] || fallbackBanner;
 
   const canonicalURL = `https://www.desertplanners.net/holidays/${categorySlug}`;
 
@@ -219,11 +208,7 @@ useEffect(() => {
       <div className="max-w-[1200px] mx-auto px-4 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {packages.map((pkg) => (
-            <ImageCard
-              key={pkg._id}
-              pkg={pkg}
-              categorySlug={categorySlug}
-            />
+            <ImageCard key={pkg._id} pkg={pkg} categorySlug={categorySlug} />
           ))}
         </div>
       </div>
@@ -241,9 +226,7 @@ function ImageCard({ pkg, categorySlug }) {
     if (!pkg.sliderImages || pkg.sliderImages.length <= 1) return;
 
     const interval = setInterval(() => {
-      setIndex((prev) =>
-        prev + 1 < pkg.sliderImages.length ? prev + 1 : 0
-      );
+      setIndex((prev) => (prev + 1 < pkg.sliderImages.length ? prev + 1 : 0));
     }, 2500);
 
     return () => clearInterval(interval);

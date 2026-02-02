@@ -79,13 +79,13 @@ export default function Navbar() {
           holidayCats.map(async (cat) => {
             try {
               const packagesRes = await api.get(
-                API.GET_PACKAGES_BY_CATEGORY(cat.slug)
+                API.GET_PACKAGES_BY_CATEGORY2(cat.slug)
               );
 
               return {
                 ...cat,
                 slug: cat.slug,
-                packages: packagesRes.data || [],
+                packages: packagesRes.data || [], // ✅ FIX HERE
               };
             } catch {
               return { ...cat, slug: cat.slug, packages: [] };

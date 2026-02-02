@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaEdit,
-  FaTrash,
-  FaPlus,
-  FaMoneyBillWave,
-} from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus, FaMoneyBillWave } from "react-icons/fa";
 import AdminAddVisa from "./AdminAddVisa";
 import DataService from "../../../config/DataService";
 import { API } from "../../../config/API";
@@ -20,7 +15,7 @@ export default function AdminVisaManagement() {
 
   const fetchVisas = async () => {
     try {
-      const res = await api.get(API.GET_VISAS);
+      const res = await api.get(`${API.GET_VISAS}?admin=true`);
       const visasArray = Array.isArray(res.data)
         ? res.data
         : res.data.visas || [];
@@ -63,12 +58,9 @@ export default function AdminVisaManagement() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h1 className="text-3xl font-bold text-gray-800">
-          Visa Management
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-800">Visa Management</h1>
 
         {/* ⭐ PREMIUM SEARCH BAR */}
         <div className="relative w-full md:w-1/3">
@@ -141,6 +133,18 @@ export default function AdminVisaManagement() {
                     {v.visaCategory?.name}
                   </div>
                 )}
+
+                <span
+                  className={`absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full shadow
+    ${
+      v.status === "published"
+        ? "bg-green-100 text-green-800"
+        : "bg-yellow-100 text-yellow-800"
+    }
+  `}
+                >
+                  {v.status || "draft"}
+                </span>
               </div>
 
               {/* Content */}
@@ -149,13 +153,10 @@ export default function AdminVisaManagement() {
                   {v.title}
                 </h2>
 
-                <p className="text-sm text-gray-500 truncate">
-                  Slug: {v.slug}
-                </p>
+                <p className="text-sm text-gray-500 truncate">Slug: {v.slug}</p>
 
                 <p className="text-sm text-gray-700 flex items-center gap-1 font-semibold">
-                  <FaMoneyBillWave className="text-[#e82429]" /> AED{" "}
-                  {v.price}
+                  <FaMoneyBillWave className="text-[#e82429]" /> AED {v.price}
                 </p>
 
                 <p className="text-gray-600 text-sm line-clamp-3">

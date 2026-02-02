@@ -26,6 +26,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
     termsAndConditions: [],
     relatedVisas: [],
     visaCategory: "",
+    status: "draft",
   });
 
   const [allVisas, setAllVisas] = useState([]);
@@ -56,6 +57,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
         termsAndConditions: editVisa.termsAndConditions || [],
         relatedVisas: editVisa.relatedVisas || [],
         visaCategory: editVisa.visaCategory?._id || editVisa.visaCategory || "",
+        status: editVisa.status || "draft",
       }));
     }
   }, [editVisa]);
@@ -245,6 +247,18 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
                     {cat.name}
                   </option>
                 ))}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label className="text-gray-700 font-medium mb-1">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e82429]"
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
               </select>
             </div>
           </div>

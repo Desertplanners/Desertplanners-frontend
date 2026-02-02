@@ -55,6 +55,7 @@ export default function AdminAddHolidayTour({
   const [sliderFiles, setSliderFiles] = useState([]);
   const [sliderPreviews, setSliderPreviews] = useState([]);
   const [removeSliderImages, setRemoveSliderImages] = useState([]);
+  const [status, setStatus] = useState("draft");
 
   // blob url cleanup registry
   const createdUrlsRef = useRef([]);
@@ -291,6 +292,7 @@ export default function AdminAddHolidayTour({
       fd.append("priceChild", priceChild);
       fd.append("description", description);
       fd.append("highlights", JSON.stringify(highlights));
+      fd.append("status", status);
 
       const arrayMap = {
         knowBefore,
@@ -423,6 +425,15 @@ export default function AdminAddHolidayTour({
               }
             />
           </div>
+
+          <select
+            className="p-3 border rounded-lg"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
 
           <textarea
             className="p-3 border rounded-lg w-full h-28"

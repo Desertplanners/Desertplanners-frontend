@@ -13,7 +13,7 @@ import { API } from "../../../config/API";
 import toast from "react-hot-toast";
 
 export default function HolidayManagement() {
-  const api = DataService();
+  const api = DataService("admin");
 
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ export default function HolidayManagement() {
   // FETCH HOLIDAY TOURS
   const fetchTours = async () => {
     try {
-      const res = await api.get(API.GET_ALL_HOLIDAY_TOURS);
+      const res = await api.get(`${API.GET_ALL_HOLIDAY_TOURS}?admin=true`);
       setTours(res.data.tours || []);
     } catch (error) {
       toast.error("Failed to load holiday tours");
@@ -65,7 +65,6 @@ export default function HolidayManagement() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h1 className="text-3xl font-bold text-gray-800">Holiday Management</h1>
@@ -143,6 +142,16 @@ export default function HolidayManagement() {
                     {t.category?.name || "Category"}
                   </div>
                 )}
+
+                <span
+                  className={`absolute top-3 right-3 text-xs font-semibold px-2 py-1 rounded-full shadow ${
+                    t.status === "published"
+                      ? "bg-green-100 text-green-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }`}
+                >
+                  {t.status || "draft"}
+                </span>
               </div>
 
               {/* Card content */}

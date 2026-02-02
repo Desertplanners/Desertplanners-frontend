@@ -45,6 +45,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
 
   // 🔄 UPDATED - Dynamic Cancellation Policy Array
   const [cancellationPolicy, setCancellationPolicy] = useState([]);
+  const [status, setStatus] = useState("draft");
 
   // Cancellation Policy Handlers
   const addCancellationPolicy = () => {
@@ -126,7 +127,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
           ? tour.discountPriceChild
           : ""
       );
-
+      setStatus(tour.status || "draft");
       setPickupDropRequired(tour.pickupDropRequired || false);
       setDuration(tour.duration || "");
       setCategory(tour.category?._id || "");
@@ -310,6 +311,7 @@ export default function AdminAddTour({ tour, onSuccess }) {
     formData.append("exclusions", JSON.stringify(exclusions));
     formData.append("pickupDropRequired", pickupDropRequired);
     formData.append("timings", timings);
+    formData.append("status", status);
 
     // 🔄 UPDATED - Dynamic Cancellation Policy
     formData.append("cancellationPolicy", JSON.stringify(cancellationPolicy));
@@ -469,6 +471,18 @@ export default function AdminAddTour({ tour, onSuccess }) {
                   {cat.name}
                 </option>
               ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="font-semibold">Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full border border-[#e82429] rounded-xl px-4 py-2"
+            >
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
             </select>
           </div>
 
