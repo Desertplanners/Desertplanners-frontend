@@ -11,6 +11,7 @@ export default function AdminSEOEditor({ data, closeModal }) {
   const typeMap = {
     "tour-category": "tourCategory",
     "visa-category": "visaCategory",
+    "visa-sub-category": "visaSubCategory", 
     "holiday-category": "holidayCategory",
     page: "page",
     tour: "tour",
@@ -82,6 +83,11 @@ export default function AdminSEOEditor({ data, closeModal }) {
       if (backendType === "visaCategory") {
         res = await api.get(API.GET_VISA_CATEGORY_BY_ID(id));
         return setItemTitle(res.data?.name || "Visa Category");
+      }
+
+      if (backendType === "visaSubCategory") {
+        res = await api.get(API.GET_VISA_SUBCATEGORY_BY_ID(id));
+        return setItemTitle(res.data?.name || "Visa Sub Category");
       }
 
       if (backendType === "holidayCategory") {

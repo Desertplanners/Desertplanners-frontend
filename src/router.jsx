@@ -34,6 +34,7 @@ import HolidayPackageDetails from "./pages/HolidayPackageDetails";
 import HolidayPage from "./pages/HolidayPage";
 import Admin from "./pages/Admin/Dashboard/Admin";
 import Visa from "./pages/Visa";
+import VisaSubCategoryPage from "./pages/VisaSubCategoryPage";
 import BlogList from "./pages/BlogList";
 import BlogCategory from "./pages/BlogCategory";
 import BlogDetails from "./pages/BlogDetails";
@@ -52,8 +53,15 @@ const AppRouter = () => (
       {/* <Route path="/holidays" element={<HolidayPackages />} />
       <Route path="/holidays/:slug" element={<HolidayDetails />} /> */}
       <Route path="/visa" element={<Visa />} />
-      <Route path="/visa/:categorySlug" element={<VisaList />} /> {/* 👈 new */}
-      <Route path="/visa/:categorySlug/:visaSlug" element={<VisaDetails />} />
+      <Route path="/visa/:categorySlug" element={<VisaSubCategoryPage />} />
+      <Route
+        path="/visa/:categorySlug/:subCategorySlug"
+        element={<VisaList />}
+      />
+      <Route
+        path="/visa/:categorySlug/:subCategorySlug/:visaSlug"
+        element={<VisaDetails />}
+      />
       <Route path="/visa-success" element={<VisaSuccess />} />
       <Route path="/contact-us" element={<ContactUs />} />
       <Route

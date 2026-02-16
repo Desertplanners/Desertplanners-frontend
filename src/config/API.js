@@ -14,6 +14,7 @@ const enquiries = "/api/enquiries";
 const visas = "/api/visas";
 const sections = "/api/sections";
 const visaCategories = "/api/visa-categories";
+const visaSubCategories = "/api/visa-sub-categories";
 const payment = "/api/payment";
 const banners = "/api/banner";
 const visaBookings = "/api/visa-bookings";
@@ -87,6 +88,21 @@ export const API = {
   UPDATE_VISA_CATEGORY_DESCRIPTION: (id) =>
     `${visaCategories}/${id}/description`,
 
+  // ---- Visa Sub Categories ----
+  // ---- Visa Sub Categories ----
+  GET_VISA_SUBCATEGORIES_BY_CATEGORY: (categoryId) =>
+    `${visaSubCategories}/category/${categoryId}`,
+
+  ADD_VISA_SUBCATEGORY: `${visaSubCategories}`,
+  GET_ALL_VISA_SUBCATEGORIES: `${visaSubCategories}/all`,
+
+  UPDATE_VISA_SUBCATEGORY: (id) => `${visaSubCategories}/${id}`, // ⭐⭐ THIS WAS MISSING ⭐⭐
+
+  UPDATE_VISA_SUBCATEGORY_DESCRIPTION: (id) =>
+    `${visaSubCategories}/${id}/description`,
+
+  DELETE_VISA_SUBCATEGORY: (id) => `${visaSubCategories}/${id}`,
+
   // ---- Cart ----
   GET_CART: (userId) => `${cart}/${userId}`,
   ADD_TO_CART: `${cart}/add`,
@@ -123,6 +139,7 @@ export const API = {
   UPDATE_VISA: (id) => `${visas}/${id}`,
   DELETE_VISA: (id) => `${visas}/${id}`,
   GET_VISA_BY_ID: (id) => `${visas}/id/${id}`,
+  GET_VISA_NAVBAR: `${visas}/visa-navbar`,
 
   // ---- Sections ----
   GET_SECTIONS: `${sections}`,

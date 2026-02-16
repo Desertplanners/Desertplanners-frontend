@@ -130,17 +130,15 @@ export default function TourCategoryPage() {
       </div>
 
       {/* ================= CATEGORY DESCRIPTION (⭐ FIXED & CENTERED ⭐) ================= */}
- {categoryDescription && (
-  <section className="w-full bg-gradient-to-b from-[#fffdf9] via-[#f7f3ee] to-[#ffffff]">
-    <div className="max-w-[1200px] mx-auto px-4 py-12">
+      {categoryDescription && (
+        <section className="w-full bg-gradient-to-b from-[#fffdf9] via-[#f7f3ee] to-[#ffffff]">
+          <div className="max-w-[1200px] mx-auto px-4 py-12">
+            <div className="relative pl-6 md:pl-8">
+              {/* GRADIENT ACCENT LINE */}
+              <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#e82429] to-[#721011] rounded-full" />
 
-      <div className="relative pl-6 md:pl-8">
-
-        {/* GRADIENT ACCENT LINE */}
-        <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#e82429] to-[#721011] rounded-full" />
-
-        <div
-          className="
+              <div
+                className="
             prose prose-base
             max-w-full
 
@@ -170,15 +168,14 @@ export default function TourCategoryPage() {
             prose-ul:pl-5
             prose-li:marker:text-[#e82429]
           "
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(categoryDescription),
-          }}
-        />
-      </div>
-    </div>
-  </section>
-)}
-
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(categoryDescription),
+                }}
+              />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ================= CARDS ================= */}
       <div className="max-w-[1200px] mx-auto px-2 md:px-0 py-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">

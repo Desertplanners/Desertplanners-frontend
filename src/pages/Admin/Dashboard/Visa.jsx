@@ -177,7 +177,11 @@ export default function AdminVisaManagement() {
                     </span>
                   )}
                 </div>
-
+                {v.visaSubCategory && (
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-medium">
+                    {v.visaSubCategory.name}
+                  </span>
+                )}
                 {/* Actions */}
                 <div className="flex justify-end gap-3 mt-3">
                   <button

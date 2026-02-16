@@ -14,9 +14,19 @@ export default function Navbar() {
   const [visaCategories, setVisaCategories] = useState([]);
 
   const [openIndex, setOpenIndex] = useState(null);
+  const [openSubIndex, setOpenSubIndex] = useState({});
+  const [openVisaIndex, setOpenVisaIndex] = useState(null);
 
   const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [visaTree, setVisaTree] = useState([]);
 
+  useEffect(() => {
+    const api = DataService();
+    api
+      .get(API.GET_VISA_NAVBAR)
+      .then((res) => setVisaTree(res.data || []))
+      .catch(() => console.log("Visa navbar load failed"));
+  }, []);
   // ================================
   // CHECK IF USER LOGGED IN
   // ================================
@@ -161,22 +171,6 @@ export default function Navbar() {
           })) || [],
       })),
     },
-
-    {
-      title: "Visa Services",
-      path: "/visa",
-      subLinks: visaCategories.map((vCat) => ({
-        name: vCat.name,
-        path: `/visa/${vCat.slug}`,
-        subSubLinks:
-          vCat.visas?.map((visa) => ({
-            name: visa.title,
-            path: `/visa/${vCat.slug}/${visa.slug}`,
-          })) || [],
-      })),
-    },
-
-    { title: "About Us", path: "/about-us" },
   ];
 
   // ================================
@@ -194,6 +188,7 @@ export default function Navbar() {
 
         {/* DESKTOP MENU */}
         <div className="hidden lg:flex items-center space-x-6">
+          {/* ================= NORMAL NAV LINKS ================= */}
           {navLinks.map((link, i) => (
             <div key={i} className="relative group">
               <Link
@@ -206,7 +201,10 @@ export default function Navbar() {
 
               {/* DROPDOWN */}
               {link.subLinks?.length > 0 && (
-                <div className="absolute left-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
+                <div
+                  className="absolute left-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl
+                      opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
+                >
                   <ul className="py-3">
                     {link.subLinks.map((sublink, j) => (
                       <li key={j} className="relative group/sub">
@@ -216,13 +214,16 @@ export default function Navbar() {
                         >
                           {sublink.name}
                           {sublink.subSubLinks?.length > 0 && (
-                            <FiChevronDown className="ml-2" />
+                            <FiChevronDown size={14} />
                           )}
                         </Link>
 
-                        {/* NESTED SUBMENU */}
+                        {/* LEVEL 2 */}
                         {sublink.subSubLinks?.length > 0 && (
-                          <ul className="absolute left-full top-0 ml-2 w-56 bg-white rounded-xl shadow-lg opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all">
+                          <ul
+                            className="absolute left-full top-0 ml-2 w-56 bg-white rounded-xl shadow-lg
+                                opacity-0 invisible group-hover/sub:opacity-100 group-hover/sub:visible transition-all"
+                          >
                             {sublink.subSubLinks.map((sub, k) => (
                               <li key={k}>
                                 <Link
@@ -242,6 +243,140 @@ export default function Navbar() {
               )}
             </div>
           ))}
+
+          {/* ================= VISA SERVICES – MEGA MENU ================= */}
+
+          <div className="relative group">
+            {/* TRIGGER */}
+            <Link
+              to="/visa"
+              className="flex items-center gap-2   transition"
+            >
+              <span className="relative">
+                Visa Services
+                <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[#e82429] group-hover:w-full transition-all"></span>
+              </span>
+              <FiChevronDown size={16} />
+            </Link>
+
+            {/* DROPDOWN */}
+            <div
+              className="absolute left-1/2 -translate-x-1/2 top-full mt-4
+      w-[980px]
+      bg-white
+      rounded-3xl
+      shadow-[0_28px_80px_rgba(0,0,0,0.18)]
+      border border-[#e82429]/10
+      p-7
+      opacity-0 invisible translate-y-4
+      group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+      transition-all duration-300 ease-out
+    "
+            >
+              {/* HEADER */}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-base font-bold text-[#721011]">
+                    🌍 Visa Services by Destination
+                  </h3>
+                 
+                </div>
+                <Link
+                  to="/visa"
+                  className="text-sm text-[#e82429] font-medium hover:underline"
+                >
+                  Explore All →
+                </Link>
+              </div>
+
+              {/* GRID */}
+              <div
+                className="  grid
+  grid-cols-2
+  md:grid-cols-3
+  lg:grid-cols-6
+  gap-5
+  max-h-[380px]
+  overflow-y-auto
+  pr-2"
+              >
+                {visaTree.map((region) => (
+                  <div key={region._id}>
+                    {/* REGION TITLE */}
+                    <div className="mb-3">
+                      <h4 className="text-xs font-extrabold tracking-wider text-[#721011] uppercase">
+                        {region.name}
+                      </h4>
+                      <div className="h-[2px] w-10 bg-[#e82429] mt-1 rounded-full"></div>
+                    </div>
+
+                    {/* COUNTRY LIST */}
+                    <ul className="space-y-2">
+                      {region.subCategories?.map((country) => (
+                        <li key={country._id}>
+                          <Link
+                            to={`/visa/${region.slug}/${country.slug}`}
+                            className="
+                    group/item
+                    flex items-center gap-3
+                    px-3 py-2
+                    rounded-xl
+                    text-sm
+                    bg-transparent
+                    hover:bg-gradient-to-r hover:from-[#fbeaea] hover:to-white
+                    transition-all duration-200
+                  "
+                          >
+                            {/* BIG FLAG */}
+                            {country.countryCode && (
+                              <img
+                                src={`https://flagcdn.com/w40/${country.countryCode.toLowerCase()}.png`}
+                                alt={country.countryCode}
+                                className="
+                        w-8 h-5
+                        rounded-md
+                        border
+                        shadow-md
+                        group-hover/item:scale-110
+                        transition-transform
+                      "
+                              />
+                            )}
+
+                            {/* COUNTRY NAME */}
+                            <span className="text-[15px] font-semibold text-gray-700 group-hover/item:text-[#721011]">
+                              {country.name}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+
+              {/* FOOTER */}
+              <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                <span className="text-xs text-gray-500">
+                  Trusted visa experts • High success rate • Fast processing
+                </span>
+                <Link
+                  to="/contact-us"
+                  className="text-sm px-5 py-2 rounded-lg bg-[#e82429] text-white hover:bg-[#c51b22] transition"
+                >
+                  Get Assistance
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* ABOUT US – AFTER VISA SERVICES */}
+          <Link
+            to="/about-us"
+            className="flex items-center font-medium text-[#404041] hover:text-[#e82429]"
+          >
+            About Us
+          </Link>
 
           {/* SEARCH */}
           <form onSubmit={(e) => e.preventDefault()} className="relative ml-4">
@@ -302,17 +437,56 @@ export default function Navbar() {
                   )}
                 </div>
 
+                {/* LEVEL 2 */}
                 {openIndex === i && link.subLinks?.length > 0 && (
-                  <ul className="pl-4 mt-2 space-y-1">
+                  <ul className="pl-4 mt-2 space-y-2">
                     {link.subLinks.map((sublink, j) => (
                       <li key={j}>
-                        <Link
-                          to={sublink.path}
-                          className="block py-1 text-sm"
-                          onClick={() => setMenuOpen(false)}
-                        >
-                          {sublink.name}
-                        </Link>
+                        <div className="flex justify-between items-center">
+                          <Link
+                            to={sublink.path}
+                            className="block py-1 text-sm font-medium"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            {sublink.name}
+                          </Link>
+
+                          {sublink.subSubLinks?.length > 0 && (
+                            <button
+                              onClick={() =>
+                                setOpenSubIndex((prev) => ({
+                                  ...prev,
+                                  [i]: prev[i] === j ? null : j,
+                                }))
+                              }
+                            >
+                              <FiChevronDown
+                                size={14}
+                                className={`transition ${
+                                  openSubIndex[i] === j ? "rotate-180" : ""
+                                }`}
+                              />
+                            </button>
+                          )}
+                        </div>
+
+                        {/* LEVEL 3 */}
+                        {openSubIndex[i] === j &&
+                          sublink.subSubLinks?.length > 0 && (
+                            <ul className="pl-4 mt-1 space-y-1">
+                              {sublink.subSubLinks.map((sub, k) => (
+                                <li key={k}>
+                                  <Link
+                                    to={sub.path}
+                                    className="block py-1 text-xs text-gray-600"
+                                    onClick={() => setMenuOpen(false)}
+                                  >
+                                    {sub.name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                       </li>
                     ))}
                   </ul>
@@ -320,6 +494,79 @@ export default function Navbar() {
               </li>
             ))}
 
+            {/* VISA SERVICES MOBILE */}
+            <li>
+              <div className="flex justify-between items-center">
+                <Link
+                  to="/visa"
+                  className="flex-1 font-medium"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Visa Services
+                </Link>
+
+                {visaTree?.length > 0 && (
+                  <button
+                    onClick={() =>
+                      setOpenVisaIndex(openVisaIndex === 0 ? null : 0)
+                    }
+                  >
+                    <FiChevronDown
+                      className={`transition ${
+                        openVisaIndex === 0 ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                )}
+              </div>
+
+              {/* LEVEL 2 – REGION */}
+              {openVisaIndex === 0 && (
+                <ul className="pl-4 mt-2 space-y-2">
+                  {visaTree.map((region, rIndex) => (
+                    <li key={region._id}>
+                      <div className="font-medium text-sm">{region.name}</div>
+
+                      {/* LEVEL 3 – COUNTRY */}
+                      <ul className="pl-4 mt-1 space-y-1">
+                        {region.subCategories?.map((country) => (
+                          <li key={country._id}>
+                            <Link
+                              to={`/visa/${region.slug}/${country.slug}`}
+                              className="block py-1 text-xs text-gray-600"
+                              onClick={() => setMenuOpen(false)}
+                            >
+                              {country.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+            {/* ABOUT US */}
+            <li>
+              <Link
+                to="/about-us"
+                className="block  font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                About Us
+              </Link>
+            </li>
+
+            {/* CONTACT US */}
+            <li>
+              <Link
+                to="/contact-us"
+                className="block  font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                Contact Us
+              </Link>
+            </li>
             {/* PROFILE */}
             <li className="border-t pt-3">
               {/* ⭐ CHECK BOOKING (Always show) */}

@@ -26,12 +26,16 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
     termsAndConditions: [],
     relatedVisas: [],
     visaCategory: "",
+    visaSubCategory: "",
     status: "draft",
   });
 
   const [allVisas, setAllVisas] = useState([]);
   const [visaCategories, setVisaCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [visaSubCategories, setVisaSubCategories] = useState([]);
+  const [loadingSubs, setLoadingSubs] = useState(false);
+
   const api = DataService();
 
   // ✅ Prefill if editing
@@ -57,6 +61,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
         termsAndConditions: editVisa.termsAndConditions || [],
         relatedVisas: editVisa.relatedVisas || [],
         visaCategory: editVisa.visaCategory?._id || editVisa.visaCategory || "",
+        visaSubCategory: editVisa.visaSubCategory?._id || "",
         status: editVisa.status || "draft",
       }));
     }
@@ -96,6 +101,30 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
     };
     fetchVisaCategories();
   }, []);
+
+  useEffect(() => {
+    if (!formData.visaCategory) {
+      setVisaSubCategories([]);
+      setFormData((prev) => ({ ...prev, visaSubCategory: "" }));
+      return;
+    }
+
+    const fetchSubCategories = async () => {
+      try {
+        setLoadingSubs(true);
+        const res = await api.get(
+          API.GET_VISA_SUBCATEGORIES_BY_CATEGORY(formData.visaCategory)
+        );
+        setVisaSubCategories(res.data || []);
+      } catch {
+        toast.error("Failed to load visa sub categories");
+      } finally {
+        setLoadingSubs(false);
+      }
+    };
+
+    fetchSubCategories();
+  }, [formData.visaCategory]);
 
   // ✅ Input Change
   const handleChange = (e) => {
@@ -248,6 +277,41 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
                   </option>
                 ))}
               </select>
+              {/* Visa Sub Category */}
+              <div className="flex flex-col">
+                <label className="text-gray-700 font-medium mb-1">
+                  Visa Sub Category
+                </label>
+
+                <select
+                  name="visaSubCategory"
+                  value={formData.visaSubCategory}
+                  onChange={handleChange}
+                  disabled={!formData.visaCategory || loadingSubs}
+                  required
+                  className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#e82429]"
+                >
+                  <option value="">
+                    {loadingSubs
+                      ? "Loading sub categories..."
+                      : "Select Visa Sub Category"}
+                  </option>
+
+                  {visaSubCategories.map((sub) => (
+                    <option key={sub._id} value={sub._id}>
+                      {sub.name}
+                    </option>
+                  ))}
+                </select>
+
+                {!loadingSubs &&
+                  formData.visaCategory &&
+                  visaSubCategories.length === 0 && (
+                    <span className="text-xs text-red-500 mt-1">
+                      No sub categories found for this category
+                    </span>
+                  )}
+              </div>
             </div>
             <div className="flex flex-col">
               <label className="text-gray-700 font-medium mb-1">Status</label>

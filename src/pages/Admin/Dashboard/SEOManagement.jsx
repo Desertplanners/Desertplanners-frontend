@@ -37,7 +37,8 @@ export default function SEOManagement() {
   const [visaCategories, setVisaCategories] = useState([]);
   const [holidayCategories, setHolidayCategories] = useState([]);
   const [blogCategories, setBlogCategories] = useState([]);
-  
+  const [visaSubCategories, setVisaSubCategories] = useState([]);
+
   useEffect(() => {
     (async () => {
       try {
@@ -47,6 +48,9 @@ export default function SEOManagement() {
         setBlogCategories((await api.get(API.GET_BLOG_CATEGORIES)).data || []);        
         setTourCategories((await api.get(API.GET_CATEGORIES)).data || []);
         setVisaCategories((await api.get(API.GET_VISA_CATEGORIES)).data || []);
+        setVisaSubCategories(
+          (await api.get(API.GET_ALL_VISA_SUBCATEGORIES)).data || []
+        );        
         setHolidayCategories((await api.get(API.GET_HOLIDAY_CATEGORIES)).data || []);
       } catch (err) {
         console.log(err);
@@ -61,6 +65,7 @@ export default function SEOManagement() {
     holiday: holidays,
     tourCategory: tourCategories,
     visaCategory: visaCategories,
+    visaSubCategory: visaSubCategories, 
     holidayCategory: holidayCategories,              // ✅ NEW
     blogCategory: blogCategories // ✅ NEW
   };
@@ -72,6 +77,7 @@ export default function SEOManagement() {
     { key: "holiday", label: "Holiday Packages", icon: <Files size={16} /> },
     { key: "tourCategory", label: "Tour Categories", icon: <Grid size={16} /> },
     { key: "visaCategory", label: "Visa Categories", icon: <Grid size={16} /> },
+    { key: "visaSubCategory", label: "Visa Sub Categories", icon: <Grid size={16} /> },
     { key: "holidayCategory", label: "Holiday Categories", icon: <Layers size={16} /> },
     { key: "blogCategory", label: "Blog Categories", icon: <Grid size={16} /> }, // ✅
   ];

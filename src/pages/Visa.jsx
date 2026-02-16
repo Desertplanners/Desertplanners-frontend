@@ -12,7 +12,6 @@ import { API } from "../config/API";
 
 export default function VisaPage() {
   const [visaTypes, setVisaTypes] = useState([]);
-  const [visaImages, setVisaImages] = useState({});
   const [seo, setSEO] = useState(null);
   const navigate = useNavigate();
 
@@ -35,33 +34,11 @@ export default function VisaPage() {
     api.get("/api/visa-categories").then((res) => {
       const list = res.data || [];
       setVisaTypes(list);
-      list.forEach((v) => fetchVisaImage(v));
     });
-
-    // ⭐ Fetch First Visa Image Per Category
-    const fetchVisaImage = async (visa) => {
-      try {
-        const res = await api.get(`/api/visas?categorySlug=${visa.slug}`);
-        const items = res.data || [];
-        const firstVisa = items[0] || {};
-
-        const firstImage =
-          firstVisa.gallery?.[0] ||
-          firstVisa.img ||
-          firstVisa.image ||
-          firstVisa.thumbnail ||
-          (firstVisa.images?.length > 0 ? firstVisa.images[0] : null);
-
-        setVisaImages((prev) => ({ ...prev, [visa.slug]: firstImage }));
-      } catch (err) {
-        console.log("Visa image load error:", err);
-      }
-    };
   }, []);
 
   return (
     <div className="w-full">
-
       {/* ⭐⭐⭐ SEO START ⭐⭐⭐ */}
       {seo && (
         <Helmet>
@@ -74,7 +51,10 @@ export default function VisaPage() {
           <meta property="og:title" content={seo.seoTitle} />
           <meta property="og:description" content={seo.seoDescription} />
           <meta property="og:image" content={seo.seoOgImage} />
-          <meta property="og:url" content="https://www.desertplanners.net/visa" />
+          <meta
+            property="og:url"
+            content="https://www.desertplanners.net/visa"
+          />
           <meta property="og:type" content="website" />
 
           {/* Twitter */}
@@ -120,7 +100,6 @@ export default function VisaPage() {
       {/* ⭐⭐⭐ VISA BANNER ⭐⭐⭐ */}
       <section className="bg-gradient-to-br from-[#f9fafc] via-[#f5f6f9] to-[#f8f8fb] py-16">
         <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between px-6 gap-10">
-          
           {/* LEFT TEXT */}
           <div className="md:w-1/2 space-y-6">
             <h1 className="text-3xl md:text-4xl font-bold text-[#1c1c1c] leading-snug">
@@ -141,8 +120,6 @@ export default function VisaPage() {
                 Support for urgent & express visa requests.
               </li>
             </ul>
-
-  
           </div>
 
           {/* RIGHT IMAGE */}
@@ -159,7 +136,9 @@ export default function VisaPage() {
 
       {/* ⭐ CATEGORY CARDS ⭐ */}
       <div className="max-w-[1200px] mx-auto py-12 px-4">
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-[#1c1c1c]">Visa Categories</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-[#1c1c1c]">
+          Visa Categories
+        </h2>
 
         <div className="space-y-8">
           {visaTypes.map((visa) => (
@@ -170,11 +149,10 @@ export default function VisaPage() {
                  p-5 flex flex-col md:flex-row gap-6 hover:shadow-xl 
                  transition-all duration-300 cursor-pointer"
             >
-              
               {/* IMAGE */}
               <div className="md:w-1/3 w-full overflow-hidden rounded-xl">
                 <img
-                  src={visaImages[visa.slug]}
+                  src={visa.image || "/visa-placeholder.jpg"}
                   alt={visa.name}
                   className="w-full h-52 md:h-60 object-cover rounded-xl hover:scale-105 transition-transform duration-500"
                 />
@@ -182,18 +160,22 @@ export default function VisaPage() {
 
               {/* CONTENT */}
               <div className="flex-1 flex flex-col justify-center space-y-3">
-                <h2 className="text-2xl font-bold text-[#1c1c1c]">{visa.name}</h2>
+                <h2 className="text-2xl font-bold text-[#1c1c1c]">
+                  {visa.name}
+                </h2>
                 <p className="text-gray-700 text-[15px] leading-relaxed">
-                  Fast & easy UAE visa processing with expert support, verified 
+                  Fast & easy UAE visa processing with expert support, verified
                   documents and high approval success rate.
                 </p>
 
                 <div className="flex items-center gap-3 text-sm text-gray-600 pt-1">
                   <span className="flex items-center gap-1">
-                    <FaCheckCircle className="text-green-500" /> Verified service
+                    <FaCheckCircle className="text-green-500" /> Verified
+                    service
                   </span>
                   <span className="flex items-center gap-1">
-                    <FaCalendarCheck className="text-[#721011]" /> Flexible plans
+                    <FaCalendarCheck className="text-[#721011]" /> Flexible
+                    plans
                   </span>
                   <span className="flex items-center gap-1">
                     <FaClock className="text-gray-500" /> 24×7 support
@@ -206,11 +188,14 @@ export default function VisaPage() {
               </div>
 
               {/* CTA BOX */}
-              <div className="md:w-1/4 w-full md:border-l border-t md:border-t-0 border-gray-200 
+              <div
+                className="md:w-1/4 w-full md:border-l border-t md:border-t-0 border-gray-200 
                    flex flex-col justify-center pt-3 md:pt-0 md:pl-6 space-y-4"
               >
                 <div className="bg-[#fff5f5] border border-[#e82429]/20 rounded-xl p-4">
-                  <p className="text-[#721011] font-bold text-lg">Popular Visa Type</p>
+                  <p className="text-[#721011] font-bold text-lg">
+                    Popular Visa Type
+                  </p>
                   <p className="text-gray-600 text-sm mt-1">
                     Trusted visa applications with high approval success.
                   </p>
@@ -224,7 +209,6 @@ export default function VisaPage() {
                   View Details
                 </button>
               </div>
-
             </div>
           ))}
         </div>

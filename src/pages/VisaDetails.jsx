@@ -22,7 +22,7 @@ import {
 } from "react-icons/fa";
 
 export default function VisaDetails() {
-  const { categorySlug, visaSlug } = useParams();
+  const { categorySlug, subCategorySlug, visaSlug } = useParams();
   const [visa, setVisa] = useState(null);
   const [relatedVisas, setRelatedVisas] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +122,7 @@ export default function VisaDetails() {
 
         <link
           rel="canonical"
-          href={`https://www.desertplanners.net/visa/${categorySlug}/${visaSlug}`}
+          href={`https://www.desertplanners.net/visa/${categorySlug}/${subCategorySlug}/${visaSlug}`}
         />
 
         {/* OG Tags */}
@@ -210,7 +210,7 @@ export default function VisaDetails() {
         </script>
       </Helmet>
 
-      {/* ✅ STATIC HERO SECTION */}
+      {/*  STATIC HERO SECTION */}
       <div className="relative h-96 w-full overflow-hidden">
         <img
           src={staticBanner}

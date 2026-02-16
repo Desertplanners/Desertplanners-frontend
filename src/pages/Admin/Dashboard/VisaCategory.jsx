@@ -11,63 +11,64 @@ import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../../config/API";
 import DataService from "../../../config/DataService";
 import toast from "react-hot-toast";
+import AdminVisaSubCategory from "./AdminVisaSubCategory";
 
 export default function VisaCategory() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
 
-  // 🔥 CONTENT MODAL STATES
+  // SEO modal
   const [showContentModal, setShowContentModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const [description, setDescription] = useState("");
   const [savingContent, setSavingContent] = useState(false);
+  const [newImage, setNewImage] = useState(null);
+  const [editImage, setEditImage] = useState(null);
 
-  // ================= FETCH VISA CATEGORIES =================
+  const api = DataService();
+
+  // ================= FETCH =================
   const fetchCategories = async () => {
     try {
-      const api = DataService();
       const res = await api.get(API.GET_VISA_CATEGORIES);
       setCategories(res.data);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error("Failed to load categories");
     }
   };
 
-  // ================= ADD VISA CATEGORY =================
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // ================= ADD =================
   const addCategory = async (e) => {
     e.preventDefault();
-    if (!newCategory.trim()) return alert("Please enter a visa category name");
+    if (!newCategory.trim()) return;
 
     try {
-      setLoading(true);
-      const api = DataService();
-      await api.post(API.ADD_VISA_CATEGORY, { name: newCategory });
+      const formData = new FormData();
+      formData.append("name", newCategory);
+      if (newImage) formData.append("image", newImage);
+
+      await api.post(API.ADD_VISA_CATEGORY, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      setNewImage(null);
       setNewCategory("");
       fetchCategories();
-    } catch (err) {
-      alert(err.response?.data?.message || "Error adding visa category");
-    } finally {
-      setLoading(false);
+    } catch {
+      toast.error("Failed to add category");
     }
   };
 
-  // ================= DELETE VISA CATEGORY =================
-  const deleteCategory = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
-    try {
-      const api = DataService();
-      await api.delete(API.DELETE_VISA_CATEGORY(id));
-      fetchCategories();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // ================= EDIT VISA CATEGORY NAME =================
+  // ================= EDIT =================
   const startEdit = (cat) => {
     setEditId(cat._id);
     setEditName(cat.name);
@@ -79,197 +80,290 @@ export default function VisaCategory() {
   };
 
   const saveCategory = async (id) => {
-    if (!editName.trim()) return alert("Category name cannot be empty");
+    if (!editName.trim()) return;
     try {
-      const api = DataService();
-      await api.put(API.UPDATE_VISA_CATEGORY(id), { name: editName });
+      const formData = new FormData();
+      formData.append("name", editName);
+      if (editImage) formData.append("image", editImage);
+
+      await api.put(API.UPDATE_VISA_CATEGORY(id), formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setEditImage(null);
       setEditId(null);
       setEditName("");
       fetchCategories();
-    } catch (err) {
-      alert(err.response?.data?.message || "Error updating visa category");
+    } catch {
+      toast.error("Update failed");
     }
   };
 
-  // ================= OPEN CONTENT MODAL =================
+  // ================= DELETE =================
+  const deleteCategory = async (id) => {
+    if (!window.confirm("Delete this category?")) return;
+    try {
+      await api.delete(API.DELETE_VISA_CATEGORY(id));
+      fetchCategories();
+    } catch {
+      toast.error("Delete failed");
+    }
+  };
+
+  // ================= SEO =================
   const openContentModal = async (cat) => {
     try {
-      const api = DataService();
       const res = await api.get(API.GET_VISA_CATEGORY_BY_ID(cat._id));
       setActiveCategory(cat);
       setDescription(res.data?.description || "");
       setShowContentModal(true);
     } catch {
-      toast.error("Failed to load visa category content");
+      toast.error("Failed to load content");
     }
   };
 
-  // ================= SAVE CONTENT =================
   const saveContent = async () => {
     try {
       setSavingContent(true);
-      const api = DataService();
-      await api.put(
-        API.UPDATE_VISA_CATEGORY_DESCRIPTION(activeCategory._id),
-        { description }
-      );
-      toast.success("Visa category content updated");
+      await api.put(API.UPDATE_VISA_CATEGORY_DESCRIPTION(activeCategory._id), {
+        description,
+      });
+      toast.success("Content updated");
       setShowContentModal(false);
     } catch {
-      toast.error("Failed to save content");
+      toast.error("Save failed");
     } finally {
       setSavingContent(false);
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-6">
-        <h1 className="text-3xl font-bold text-[#721011] mb-6 text-center">
-          🛂 Manage Visa Categories
+<div className="min-h-screen bg-gradient-to-br from-[#f8fafc] via-white to-[#fdf2f2] p-10">
+  <div className="max-w-7xl mx-auto">
+
+    {/* HEADER */}
+    <div className="flex justify-between items-center mb-12">
+      <div>
+        <h1 className="text-4xl font-extrabold text-[#721011] tracking-tight">
+          🛂 Visa Categories
         </h1>
+        <p className="text-gray-500 mt-2">
+          Manage categories, images, content & subcategories
+        </p>
+      </div>
 
-        {/* ADD CATEGORY */}
-        <form
-          onSubmit={addCategory}
-          className="flex flex-col sm:flex-row gap-3 mb-6"
+      <div className="bg-[#721011]/10 text-[#721011] px-5 py-2 rounded-full text-sm font-medium">
+        {categories.length} Categories
+      </div>
+    </div>
+
+    {/* ADD SECTION */}
+    <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 mb-14">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">
+        Add New Category
+      </h2>
+
+      <form onSubmit={addCategory} className="grid md:grid-cols-3 gap-6">
+        <input
+          value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          placeholder="Category name..."
+          className="border border-gray-200 focus:ring-2 focus:ring-[#e82429] rounded-xl px-4 py-3 outline-none"
+        />
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setNewImage(e.target.files[0])}
+          className="border border-gray-200 rounded-xl px-4 py-3 bg-white"
+        />
+
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white rounded-xl py-3 font-semibold hover:scale-105 transition-all duration-300 shadow-md"
         >
-          <input
-            type="text"
-            placeholder="Enter new visa category name..."
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-            className="flex-1 border rounded-xl px-4 py-2"
-          />
-          <button className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white px-6 py-2 rounded-xl">
-            <FaPlus /> Add
-          </button>
-        </form>
+          <FaPlus className="inline mr-2" />
+          Add Category
+        </button>
+      </form>
+    </div>
 
-        {/* CATEGORY LIST */}
-        <ul className="space-y-3">
-          {categories.map((cat) => (
-            <li
-              key={cat._id}
-              className="flex justify-between items-center bg-gray-50 p-3 rounded-xl border"
-            >
+    {/* CATEGORY LIST */}
+    <div className="space-y-12">
+      {categories.map((cat) => (
+        <div
+          key={cat._id}
+          className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition duration-300"
+        >
+
+          {/* TOP SECTION */}
+          <div className="grid md:grid-cols-4">
+
+            {/* IMAGE */}
+            <div className="h-56 bg-gray-100">
+              {cat.image ? (
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  No Image
+                </div>
+              )}
+            </div>
+
+            {/* CONTENT */}
+            <div className="md:col-span-3 p-8 flex flex-col justify-between">
+
               {editId === cat._id ? (
-                <div className="flex gap-3 flex-1">
+                <>
                   <input
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="flex-1 border rounded px-3 py-1"
+                    className="border rounded-xl px-4 py-3 mb-4"
                   />
-                  <button onClick={() => saveCategory(cat._id)}>
-                    <FaSave className="text-green-600" />
-                  </button>
-                  <button onClick={cancelEdit}>
-                    <FaTimes />
-                  </button>
-                </div>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setEditImage(e.target.files[0])}
+                    className="border rounded-xl px-4 py-3 mb-4"
+                  />
+
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => saveCategory(cat._id)}
+                      className="bg-green-600 text-white px-5 py-2 rounded-xl hover:bg-green-700 transition"
+                    >
+                      <FaSave />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={cancelEdit}
+                      className="bg-gray-300 px-5 py-2 rounded-xl hover:bg-gray-400 transition"
+                    >
+                      <FaTimes />
+                    </button>
+                  </div>
+                </>
               ) : (
                 <>
-                  <span className="font-medium">{cat.name}</span>
-                  <div className="flex gap-3">
-                    {/* ⭐ CONTENT BUTTON */}
+                  <div>
+                    <h3 className="text-3xl font-bold text-[#721011] mb-3">
+                      {cat.name}
+                    </h3>
+
+                    {/* DESCRIPTION PREVIEW */}
+                    {cat.description ? (
+                      <div
+                        className="text-gray-600 text-sm line-clamp-3 prose max-w-none"
+                        dangerouslySetInnerHTML={{
+                          __html: cat.description,
+                        }}
+                      />
+                    ) : (
+                      <p className="text-gray-400 text-sm italic">
+                        No description added yet.
+                      </p>
+                    )}
+                  </div>
+
+                  {/* ACTIONS */}
+                  <div className="flex gap-6 mt-6">
                     <button
                       type="button"
                       onClick={() => openContentModal(cat)}
-                      className="text-purple-600"
-                      title="Manage Content"
+                      className="flex items-center gap-2 text-purple-600 hover:text-purple-800 transition"
                     >
-                      <FaFileAlt />
+                      <FaFileAlt /> SEO / Content
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => startEdit(cat)}
-                      className="text-blue-600"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition"
                     >
-                      <FaEdit />
+                      <FaEdit /> Edit
                     </button>
 
                     <button
+                      type="button"
                       onClick={() => deleteCategory(cat._id)}
-                      className="text-red-600"
+                      className="flex items-center gap-2 text-red-600 hover:text-red-800 transition"
                     >
-                      <FaTrashAlt />
+                      <FaTrashAlt /> Delete
                     </button>
                   </div>
                 </>
               )}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* ================= CONTENT MODAL ================= */}
-      {showContentModal && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
-          <div className="bg-white w-[95%] max-w-4xl rounded-2xl p-6 shadow-xl">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-[#721011]">
-                SEO Content – {activeCategory?.name}
-              </h2>
-              <button onClick={() => setShowContentModal(false)}>
-                <FaTimes />
-              </button>
-            </div>
-
-            <Editor
-              apiKey="8s89n75h7ygps6blc3zk8y0mkkid5zf3f505scrck14fx9ol"
-              value={description}
-              onEditorChange={setDescription}
-              init={{
-                height: 400,
-                menubar: "file edit view insert format tools table help",
-                plugins: [
-                  "advlist",
-                  "autolink",
-                  "lists",
-                  "link",
-                  "image",
-                  "charmap",
-                  "preview",
-                  "anchor",
-                  "searchreplace",
-                  "visualblocks",
-                  "code",
-                  "fullscreen",
-                  "insertdatetime",
-                  "media",
-                  "table",
-                  "help",
-                  "wordcount",
-                ],
-                toolbar:
-                  "undo redo | blocks | " +
-                  "bold italic underline strikethrough | forecolor backcolor | " +
-                  "alignleft aligncenter alignright alignjustify | " +
-                  "bullist numlist outdent indent | " +
-                  "removeformat | link image media table | fullscreen preview code",
-                block_formats:
-                  "Paragraph=p; Heading 1=h1; Heading 2=h2; Heading 3=h3; Heading 4=h4",
-                content_style:
-                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-              }}
-            />
-
-            <div className="text-right mt-4">
-              <button
-                onClick={saveContent}
-                disabled={savingContent}
-                className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white px-6 py-2 rounded-xl"
-              >
-                {savingContent ? "Saving..." : "Save Content"}
-              </button>
             </div>
           </div>
+
+          {/* SUB CATEGORY SECTION */}
+          {editId !== cat._id && (
+            <div className="bg-gradient-to-r from-gray-50 to-white border-t border-gray-100 p-8">
+              <h4 className="text-lg font-semibold text-gray-700 mb-6">
+                Sub Categories
+              </h4>
+
+              <div className="bg-white rounded-2xl shadow-inner p-6 border border-gray-100">
+                <AdminVisaSubCategory category={cat} />
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      ))}
     </div>
+  </div>
+
+  {/* SEO MODAL */}
+  {showContentModal && (
+    <div className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center">
+      <div className="bg-white w-[95%] max-w-5xl rounded-3xl p-8 shadow-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-[#721011]">
+            SEO Content – {activeCategory?.name}
+          </h2>
+
+          <button
+            type="button"
+            onClick={() => setShowContentModal(false)}
+            className="text-gray-500 hover:text-black"
+          >
+            <FaTimes size={18} />
+          </button>
+        </div>
+
+        <Editor
+          apiKey="YOUR_TINYMCE_KEY"
+          value={description}
+          onEditorChange={setDescription}
+          init={{
+            height: 400,
+            toolbar:
+              "undo redo | blocks | bold italic underline | bullist numlist | link image | preview code",
+          }}
+        />
+
+        <div className="text-right mt-6">
+          <button
+            type="button"
+            onClick={saveContent}
+            disabled={savingContent}
+            className="bg-gradient-to-r from-[#e82429] to-[#721011] text-white px-8 py-3 rounded-xl font-semibold hover:scale-105 transition"
+          >
+            {savingContent ? "Saving..." : "Save Content"}
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
+
   );
 }
