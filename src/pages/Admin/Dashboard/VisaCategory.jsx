@@ -54,11 +54,7 @@ export default function VisaCategory() {
       formData.append("name", newCategory);
       if (newImage) formData.append("image", newImage);
 
-      await api.post(API.ADD_VISA_CATEGORY, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.post(API.ADD_VISA_CATEGORY, formData);
 
       setNewImage(null);
       setNewCategory("");
@@ -86,11 +82,8 @@ export default function VisaCategory() {
       formData.append("name", editName);
       if (editImage) formData.append("image", editImage);
 
-      await api.put(API.UPDATE_VISA_CATEGORY(id), formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.put(API.UPDATE_VISA_CATEGORY(id), formData);
+
       setEditImage(null);
       setEditId(null);
       setEditName("");
