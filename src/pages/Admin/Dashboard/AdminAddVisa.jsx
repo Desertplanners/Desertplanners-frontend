@@ -247,7 +247,7 @@ export default function AdminAddVisa({ closeModal, fetchVisas, editVisa }) {
                   {field}
                 </label>
                 <input
-                  type={field === "price" ? "number" : "text"}
+                  type="text"
                   name={field}
                   value={formData[field]}
                   onChange={handleChange}
