@@ -352,11 +352,16 @@ export default function AdminAddHolidayTour({
         arrayMap[key].forEach((item) => fd.append(key, item.text));
       });
 
-      itinerary.forEach((it, index) => {
-        it.points.forEach((p) => {
-          fd.append(`itineraryPoints[${index}][]`, p);
-        });
-      });
+      // ✅ Send full itinerary structure (title + points + old image)
+      const cleanItinerary = itinerary.map((day, index) => ({
+        title: day.title,
+        points: day.points,
+        image: itineraryFiles[index]
+          ? null // new image will replace
+          : day.image || null,
+      }));
+
+      fd.append("itinerary", JSON.stringify(cleanItinerary));
 
       // 1️⃣ existing old images (user kept)
       fd.append(
@@ -369,11 +374,11 @@ export default function AdminAddHolidayTour({
 
       sliderFiles.forEach((file) => fd.append("sliderImages", file));
 
+      // ✅ Send new itinerary images
       itineraryFiles.forEach((file, index) => {
         if (file) {
-          fd.append(`itineraryImages_${index}`, file);
-        } else {
-          fd.append(`itineraryImages_${index}`, "__KEEP_OLD__");
+          fd.append("itineraryImages", file);
+          fd.append("itineraryImageIndexes", index);
         }
       });
 
