@@ -718,6 +718,7 @@ function TabsArea({
         )}
 
         {/* ITINERARY */}
+        {/* ITINERARY */}
         {activeTab === "itinerary" && (
           <div className="space-y-10">
             {itinerary.length === 0 ? (
@@ -747,16 +748,16 @@ function TabsArea({
                     {/* DAY BADGE */}
                     <div
                       className="
-              absolute top-4 left-4 
-              bg-white/90 backdrop-blur-md
-              px-4 py-1.5 
-              rounded-full 
-              shadow-lg 
-              border
-              text-[#721011] 
-              font-bold 
-              text-sm md:text-base
-            "
+                absolute top-4 left-4 
+                bg-white/90 backdrop-blur-md
+                px-4 py-1.5 
+                rounded-full 
+                shadow-lg 
+                border
+                text-[#721011] 
+                font-bold 
+                text-sm md:text-base
+              "
                     >
                       DAY {d.day ?? i + 1}
                     </div>
@@ -767,25 +768,39 @@ function TabsArea({
                     {/* Accent Line */}
                     <div className="w-12 h-1.5 bg-gradient-to-r from-[#e82429] to-[#721011] rounded-full mb-4"></div>
 
-                    {/* Modern Title */}
-                    <h3
-                      className="
-    text-lg md:text-xl      /* smaller font */
-    font-bold               /* little softer than extrabold */
-    text-[#2a2a2a]
-    tracking-normal         /* reduced tracking */
-    leading-snug
-  "
-                    >
+                    {/* Title */}
+                    <h3 className="text-lg md:text-xl font-bold text-[#2a2a2a] leading-snug">
                       {d.title || `Day ${i + 1}`}
                     </h3>
+
+                    {/* BULLET POINTS */}
+                   
+                    {Array.isArray(d.points) && d.points.length > 0 && (
+                      <div className="mt-5 space-y-3">
+                        {d.points.map((point, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-start gap-3 bg-[#fff7f7] border border-[#e82429]/15 rounded-xl px-4 py-3 transition hover:border-[#e82429]/30"
+                          >
+                            {/* Smaller Number Badge */}
+                            <div className="min-w-[26px] h-[26px] flex items-center justify-center bg-[#e82429] text-white text-xs font-semibold rounded-full">
+                              {idx + 1}
+                            </div>
+
+                            {/* Text */}
+                            <p className="text-gray-700 text-[14px] leading-relaxed">
+                              {point}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
             )}
           </div>
         )}
-
         {/* NEED TO KNOW */}
         {activeTab === "know" && (
           <div className="space-y-4">

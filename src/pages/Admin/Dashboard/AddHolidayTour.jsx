@@ -47,7 +47,10 @@ export default function AdminAddHolidayTour({
   const [terms, setTerms] = useState([{ id: makeId(), text: "" }]);
 
   // itinerary & image files (parallel arrays)
-  const [itinerary, setItinerary] = useState([{ id: makeId(), title: "" }]);
+  const [itinerary, setItinerary] = useState([
+    { id: makeId(), title: "", points: [""] },
+  ]);
+
   const [itineraryFiles, setItineraryFiles] = useState([]);
   const [itineraryPreviews, setItineraryPreviews] = useState([]);
 
@@ -106,7 +109,7 @@ export default function AdminAddHolidayTour({
       setCancellationPolicy([{ id: makeId(), text: "" }]);
       setTerms([{ id: makeId(), text: "" }]);
 
-      setItinerary([{ id: makeId(), title: "", image: "" }]);
+      setItinerary([{ id: makeId(), title: "", image: "", points: [""] }]);
       setItineraryFiles([]);
       setItineraryPreviews([]);
 
@@ -147,8 +150,10 @@ export default function AdminAddHolidayTour({
           id: makeId(),
           title: it.title,
           image: it.image || "",
+          points:
+            Array.isArray(it.points) && it.points.length ? it.points : [""], // ✅ SAFE DEFAULT
         }))
-      : [{ id: makeId(), title: "", image: "" }];
+      : [{ id: makeId(), title: "", image: "", points: [""] }];
 
     setItinerary(itList);
 
@@ -187,7 +192,10 @@ export default function AdminAddHolidayTour({
 
   const addItinerary = () => {
     setItinerary((prev) => {
-      const updated = [...prev, { id: makeId(), title: "", image: "" }];
+      const updated = [
+        ...prev,
+        { id: makeId(), title: "", image: "", points: [""] },
+      ];
 
       setItineraryFiles((files) => {
         const arr = [...files];
@@ -224,6 +232,44 @@ export default function AdminAddHolidayTour({
     });
   };
 
+  const addPoint = (dayId) => {
+    setItinerary((prev) =>
+      prev.map((d) =>
+        d.id === dayId
+          ? {
+              ...d,
+              points: Array.isArray(d.points) ? [...d.points, ""] : [""],
+            }
+          : d
+      )
+    );
+  };
+
+  const updatePoint = (dayId, index, value) => {
+    setItinerary((prev) =>
+      prev.map((d) =>
+        d.id === dayId
+          ? {
+              ...d,
+              points: d.points.map((p, i) => (i === index ? value : p)),
+            }
+          : d
+      )
+    );
+  };
+
+  const removePoint = (dayId, index) => {
+    setItinerary((prev) =>
+      prev.map((d) =>
+        d.id === dayId
+          ? {
+              ...d,
+              points: d.points.filter((_, i) => i !== index),
+            }
+          : d
+      )
+    );
+  };
   // -----------------------
   // IMAGE HANDLERS
   // -----------------------
@@ -306,7 +352,11 @@ export default function AdminAddHolidayTour({
         arrayMap[key].forEach((item) => fd.append(key, item.text));
       });
 
-      itinerary.forEach((it) => fd.append("itineraryTitle[]", it.title));
+      itinerary.forEach((it, index) => {
+        it.points.forEach((p) => {
+          fd.append(`itineraryPoints[${index}][]`, p);
+        });
+      });
 
       // 1️⃣ existing old images (user kept)
       fd.append(
@@ -581,6 +631,38 @@ export default function AdminAddHolidayTour({
                 >
                   <FaTrash size={14} /> Remove Day
                 </button>
+
+                {/* BULLET POINTS */}
+                <div className="space-y-2 mt-3">
+                  {it.points?.map((point, pIndex) => (
+                    <div key={pIndex} className="flex gap-2">
+                      <input
+                        className="flex-1 p-2 border rounded-lg"
+                        placeholder="Enter bullet point"
+                        value={point}
+                        onChange={(e) =>
+                          updatePoint(it.id, pIndex, e.target.value)
+                        }
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => removePoint(it.id, pIndex)}
+                        className="text-red-500"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => addPoint(it.id)}
+                    className="text-sm text-[#721011] font-semibold"
+                  >
+                    + Add Point
+                  </button>
+                </div>
               </div>
             ))}
 
