@@ -347,7 +347,7 @@ export default function HolidayPage() {
             {/* PRICE - smaller */}
             <div className="flex flex-col items-start md:items-end">
               <p className="text-2xl md:text-3xl font-black text-[#e82429]">
-                $ {priceAdult}
+                AED {priceAdult}
               </p>
 
               <p className="text-gray-500 text-sm">(Per Person)</p>
