@@ -325,7 +325,36 @@ export default function VisaDetails() {
               </ul>
             </motion.section>
           )}
+          {/* INCLUSIONS */}
+          {visa.inclusions?.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-white rounded-3xl shadow-lg border border-gray-100 p-10"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className="p-3 bg-[#e82429]/10 rounded-full">
+                  <FaCheckCircle className="text-[#e82429] text-2xl" />
+                </div>
+                <h2 className="text-3xl font-extrabold text-[#2e2e2e]">
+                  Visa Inclusions
+                </h2>
+              </div>
 
+              <ul className="space-y-4">
+                {visa.inclusions.map((item, idx) => (
+                  <li
+                    key={idx}
+                    className="flex items-start gap-3 bg-white border border-gray-100 rounded-xl p-4"
+                  >
+                    <FaCheckCircle className="text-[#e82429] mt-1" />
+                    <p className="text-gray-700">{item}</p>
+                  </li>
+                ))}
+              </ul>
+            </motion.section>
+          )}
           {/* HOW TO APPLY */}
           {visa.howToApply?.length > 0 && (
             <motion.section
