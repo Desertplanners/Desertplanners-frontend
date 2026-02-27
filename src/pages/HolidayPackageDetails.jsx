@@ -149,6 +149,10 @@ export default function HolidayPage() {
       : // category might be id — fallback to categorySlug
         categorySlug?.replaceAll("-", " ");
   const priceAdult = packageData.priceAdult ?? "Contact";
+  const isNumericPrice =
+  priceAdult !== null &&
+  priceAdult !== "" &&
+  !isNaN(priceAdult);
   const description = packageData.description || "";
   const highlights = packageData.highlights || {};
   const itinerary = packageData.itinerary || [];
@@ -347,7 +351,7 @@ export default function HolidayPage() {
             {/* PRICE - smaller */}
             <div className="flex flex-col items-start md:items-end">
               <p className="text-2xl md:text-3xl font-black text-[#e82429]">
-                AED {priceAdult}
+                {isNumericPrice ? `AED ${priceAdult}` : priceAdult}
               </p>
 
               <p className="text-gray-500 text-sm">(Per Person)</p>
@@ -774,7 +778,7 @@ function TabsArea({
                     </h3>
 
                     {/* BULLET POINTS */}
-                   
+
                     {Array.isArray(d.points) && d.points.length > 0 && (
                       <div className="mt-5 space-y-3">
                         {d.points.map((point, idx) => (
