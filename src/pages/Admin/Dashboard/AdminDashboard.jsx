@@ -22,7 +22,7 @@ import SEOManagement from "./SEOManagement";
 import AdminSEOEditor from "./AdminSEOEditor";
 import BlogManagement from "./BlogManagement";
 import CouponManagement from "./CouponManagement";
-
+import HolidayBookings from "./HolidayBookings";
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -44,6 +44,7 @@ export default function AdminDashboard() {
     category: TourCategory,
     sections: SectionsManagement,
     bookings: Bookings,
+    holidayBookings: HolidayBookings,
     visaBookings: VisaBookings,
     payments: Payments,
     users: Users,

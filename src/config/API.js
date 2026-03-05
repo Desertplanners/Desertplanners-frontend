@@ -18,7 +18,9 @@ const visaSubCategories = "/api/visa-sub-categories";
 const payment = "/api/payment";
 const banners = "/api/banner";
 const visaBookings = "/api/visa-bookings";
+const holidayBookings = "/api/holiday-booking";
 const visaPayment = "/api/visa-payment";
+const holidayPayment = "/api/holiday-payment";
 const holidayCategories = "/api/holiday-categories";
 const holidayTours = "/api/holiday-tour";
 const blogCategories = "/api/blog-categories";
@@ -125,6 +127,10 @@ export const API = {
   WEBHOOK_PAYMENT: `${payment}/webhook`,
   GET_ALL_PAYMENTS: `${payment}/all`,
 
+  // Holiday Tour Payment
+
+  CREATE_HOLIDAY_PAYMENT: `${holidayPayment}/create`,
+  WEBHOOK_HOLIDAY_PAYMENT: `${holidayPayment}/webhook`,
   // ---- Enquiries ----
   CREATE_ENQUIRY: `${enquiries}`,
   GET_ALL_ENQUIRIES: `${enquiries}`,
@@ -200,6 +206,10 @@ export const API = {
   GET_HOLIDAY_PACKAGE_BY_SLUG: (category, slug) =>
     `${holidayTours}/category/${category}/${slug}`,
 
+  // ---- Holiday Bookings ----
+  CREATE_HOLIDAY_BOOKING: `${holidayBookings}/create`,
+  GET_ALL_HOLIDAY_BOOKINGS: `${holidayBookings}/all`,
+  GET_HOLIDAY_BOOKING_BY_ID: (id) => `${holidayBookings}/${id}`,
   // ---- Blog Categories ----
   // ---- Blog Categories ----
   ADD_BLOG_CATEGORY: `${blogCategories}`,

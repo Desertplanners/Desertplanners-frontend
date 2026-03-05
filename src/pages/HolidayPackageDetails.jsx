@@ -36,6 +36,20 @@ export default function HolidayPage() {
     message: "",
   });
 
+  const [bookingForm, setBookingForm] = useState({
+    guestName: "",
+    guestEmail: "",
+    guestContact: "",
+    travelDate: "",
+    adults: 1,
+    children: 0,
+  });
+  const handleBookingChange = (e) => {
+    setBookingForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
   // fetch package data
   useEffect(() => {
     const api = DataService();
@@ -116,6 +130,46 @@ export default function HolidayPage() {
     }
   };
 
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const api = DataService();
+
+      const payload = {
+        packageId: packageData._id,
+        guestName: bookingForm.guestName,
+        guestEmail: bookingForm.guestEmail,
+        guestContact: bookingForm.guestContact,
+        travelDate: bookingForm.travelDate,
+        adults: Number(bookingForm.adults),
+        children: Number(bookingForm.children),
+      };
+
+      // 1️⃣ Create Booking
+      const bookingRes = await api.post(API.CREATE_HOLIDAY_BOOKING, payload);
+
+      const bookingId = bookingRes.data.booking._id;
+
+      console.log("Booking ID:", bookingId);
+
+      // 2️⃣ Create Payment
+      const paymentRes = await api.post(API.CREATE_HOLIDAY_PAYMENT, {
+        bookingId,
+      });
+
+      const paymentLink = paymentRes.data.paymentLink;
+
+      // 3️⃣ Redirect to Paymennt Checkout
+      window.location.href = paymentLink;
+    } catch (err) {
+      console.log("FULL ERROR:", err);
+      console.log("SERVER ERROR:", err.response?.data);
+
+      alert(err.response?.data?.message || "Something went wrong");
+    }
+  };
+
   if (loading)
     return (
       <div className="text-center py-20 text-xl font-semibold">Loading...</div>
@@ -150,9 +204,7 @@ export default function HolidayPage() {
         categorySlug?.replaceAll("-", " ");
   const priceAdult = packageData.priceAdult ?? "Contact";
   const isNumericPrice =
-  priceAdult !== null &&
-  priceAdult !== "" &&
-  !isNaN(priceAdult);
+    priceAdult !== null && priceAdult !== "" && !isNaN(priceAdult);
   const description = packageData.description || "";
   const highlights = packageData.highlights || {};
   const itinerary = packageData.itinerary || [];
@@ -354,8 +406,16 @@ export default function HolidayPage() {
                 {isNumericPrice ? `AED ${priceAdult}` : priceAdult}
               </p>
 
-           
-
+              {/* <button
+                onClick={() =>
+                  document
+                    .getElementById("bookingForm")
+                    .scrollIntoView({ behavior: "smooth" })
+                }
+                className="mt-3 px-6 py-3 bg-[#e82429] text-white font-bold rounded-xl hover:bg-[#b91c1c]"
+              >
+                Book Now
+              </button> */}
             </div>
           </div>
 
@@ -363,7 +423,7 @@ export default function HolidayPage() {
         </div>
 
         {/* ⭐ MOBILE ENQUIRY FORM HERE */}
-        <div className="block md:hidden">
+        {/* <div className="block md:hidden">
           <div className="bg-white rounded-3xl shadow-xl p-7 border border-[#e82429]/20 mt-5">
             <h3 className="text-2xl font-extrabold text-[#721011] mb-6">
               Enquire Now
@@ -435,7 +495,7 @@ export default function HolidayPage() {
               </button>
             </form>
           </div>
-        </div>
+        </div> */}
 
         {/* TABS BLOCK (keeps exact same design) */}
         <div className="bg-white rounded-3xl shadow-lg p-6 border border-[#e82429]/20">
@@ -520,7 +580,7 @@ export default function HolidayPage() {
         </div>
 
         {/* ENQUIRY FORM (STATIC layout but selected tour filled dynamically) */}
-        <div className="bg-white rounded-3xl shadow-xl p-7 border border-[#e82429]/20 hidden md:block">
+        {/* <div className="bg-white rounded-3xl shadow-xl p-7 border border-[#e82429]/20 hidden md:block">
           <h3 className="text-2xl font-extrabold text-[#721011] mb-6">
             Enquire Now
           </h3>
@@ -589,8 +649,76 @@ export default function HolidayPage() {
               Submit Enquiry
             </button>
           </form>
-        </div>
+        </div> */}
+        <div
+          id="bookingForm"
+          className="bg-white rounded-3xl shadow-xl p-6 border border-[#e82429]/20"
+        >
+          <h3 className="text-xl font-bold mb-4 text-[#721011]">
+            Book This Package
+          </h3>
 
+          <form onSubmit={handleBookingSubmit} className="space-y-3">
+            <input
+              name="guestName"
+              placeholder="Full Name"
+              value={bookingForm.guestName}
+              onChange={handleBookingChange}
+              className="p-3 border rounded-xl w-full"
+            />
+
+            <input
+              name="guestEmail"
+              placeholder="Email"
+              value={bookingForm.guestEmail}
+              onChange={handleBookingChange}
+              className="p-3 border rounded-xl w-full"
+            />
+
+            <input
+              name="guestContact"
+              placeholder="Phone"
+              value={bookingForm.guestContact}
+              onChange={handleBookingChange}
+              className="p-3 border rounded-xl w-full"
+            />
+
+            <input
+              type="date"
+              name="travelDate"
+              value={bookingForm.travelDate}
+              onChange={handleBookingChange}
+              className="p-3 border rounded-xl w-full"
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <input
+                type="number"
+                name="adults"
+                min="1"
+                value={bookingForm.adults}
+                onChange={handleBookingChange}
+                className="p-3 border rounded-xl"
+              />
+
+              <input
+                type="number"
+                name="children"
+                min="0"
+                value={bookingForm.children}
+                onChange={handleBookingChange}
+                className="p-3 border rounded-xl"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 bg-gradient-to-r from-[#e82429] to-[#721011] text-white font-bold rounded-xl"
+            >
+              Book Now
+            </button>
+          </form>
+        </div>
         {/* NEED HELP (STATIC) */}
         <div className="bg-white rounded-3xl shadow-xl p-5 border border-[#e82429]/20">
           <h3 className="text-lg font-bold text-[#721011] mb-3">

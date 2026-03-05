@@ -73,7 +73,11 @@ const ITEMS = [
     label: "Tour Bookings",
     icon: <CalendarCheck size={18} />,
   },
-
+  {
+    tab: "holidayBookings",
+    label: "Holiday Bookings",
+    icon: <CalendarCheck size={18} />,
+  },
   // Visa Bookings
   {
     tab: "visaBookings",
