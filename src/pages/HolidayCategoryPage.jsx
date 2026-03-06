@@ -257,7 +257,7 @@ function ImageCard({ pkg, categorySlug }) {
             {pkg.title}
           </h3>
           <p className="text-[#e82429] font-bold text-lg whitespace-nowrap">
-            $ {pkg.priceAdult}
+            AED {pkg.priceAdult}
           </p>
         </div>
 
