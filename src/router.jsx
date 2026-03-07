@@ -39,7 +39,8 @@ import VisaSubCategoryPage from "./pages/VisaSubCategoryPage";
 import BlogList from "./pages/BlogList";
 import BlogCategory from "./pages/BlogCategory";
 import BlogDetails from "./pages/BlogDetails";
-
+import FixedHolidays from "./pages/FixedHolidays";
+import CustomizedHolidays from "./pages/CustomizedHolidays";
 const AppRouter = () => (
   <>
     <ScrollToTop />
@@ -95,6 +96,8 @@ const AppRouter = () => (
         path="/holidays/:categorySlug/:packageSlug"
         element={<HolidayPackageDetails />}
       />
+      <Route path="/holidays/fixed" element={<FixedHolidays />} />
+      <Route path="/holidays/customized" element={<CustomizedHolidays />} />
       <Route path="/blog" element={<BlogList />} />
       <Route path="/blog/category/:slug" element={<BlogCategory />} />
       <Route path="/blog/:slug" element={<BlogDetails />} />

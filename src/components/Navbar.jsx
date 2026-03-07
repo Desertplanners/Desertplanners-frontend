@@ -12,7 +12,7 @@ export default function Navbar() {
   const [tourCategories, setTourCategories] = useState([]);
   const [holidayCategories, setHolidayCategories] = useState([]);
   const [visaCategories, setVisaCategories] = useState([]);
-
+  
   const [openIndex, setOpenIndex] = useState(null);
   const [openSubIndex, setOpenSubIndex] = useState({});
   const [openVisaIndex, setOpenVisaIndex] = useState(null);
@@ -161,16 +161,17 @@ export default function Navbar() {
     {
       title: "Holiday Packages",
       path: "/holidays",
-      subLinks: holidayCategories.map((cat) => ({
-        name: cat.name,
-        path: `/holidays/${cat.slug}`,
-        subSubLinks:
-          cat.packages?.map((pkg) => ({
-            name: pkg.title,
-            path: `/holidays/${cat.slug}/${pkg.slug}`,
-          })) || [],
-      })),
-    },
+      subLinks: [
+        {
+          name: "Fixed Departure",
+          path: "/holidays/fixed",
+        },
+        {
+          name: "Customized Holidays",
+          path: "/holidays/customized",
+        },
+      ],
+    }
   ];
 
   // ================================

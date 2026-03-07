@@ -2,19 +2,14 @@ import React, { useEffect, useState } from "react";
 import { API } from "../../../config/API";
 import DataService from "../../../config/DataService";
 import axios from "axios";
-import {
-  Pencil,
-  Trash2,
-  Plus,
-  FileText,
-  X,
-} from "lucide-react";
+import { Pencil, Trash2, Plus, FileText, X } from "lucide-react";
 import { Editor } from "@tinymce/tinymce-react";
 import toast from "react-hot-toast";
 
 export default function HolidayCategory() {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
+  const [type, setType] = useState("");
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -53,15 +48,17 @@ export default function HolidayCategory() {
       if (editId) {
         await axios.put(
           `${API.BASE_URL}${API.UPDATE_HOLIDAY_CATEGORY(editId)}`,
-          { name }
+          { name, type }
         );
       } else {
         await axios.post(`${API.BASE_URL}${API.ADD_HOLIDAY_CATEGORY}`, {
           name,
+          type,
         });
       }
 
       setName("");
+      setType("");
       setEditId(null);
       getAllCategories();
     } catch (err) {
@@ -77,9 +74,7 @@ export default function HolidayCategory() {
       return;
 
     try {
-      await axios.delete(
-        `${API.BASE_URL}${API.DELETE_HOLIDAY_CATEGORY(id)}`
-      );
+      await axios.delete(`${API.BASE_URL}${API.DELETE_HOLIDAY_CATEGORY(id)}`);
       getAllCategories();
     } catch (err) {
       console.log("Delete error:", err);
@@ -90,14 +85,13 @@ export default function HolidayCategory() {
   const handleEdit = (cat) => {
     setEditId(cat._id);
     setName(cat.name);
+    setType(cat.type || "");
   };
 
   // ================= OPEN CONTENT MODAL =================
   const openContentModal = async (cat) => {
     try {
-      const res = await api.get(
-        API.GET_HOLIDAY_CATEGORY_BY_ID(cat._id)
-      );
+      const res = await api.get(API.GET_HOLIDAY_CATEGORY_BY_ID(cat._id));
       setActiveCategory(cat);
       setDescription(res.data?.description || "");
       setShowContentModal(true);
@@ -142,6 +136,16 @@ export default function HolidayCategory() {
           onChange={(e) => setName(e.target.value)}
         />
 
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="p-3 border rounded-xl outline-none focus:ring-2 focus:ring-[#e82429]"
+        >
+          <option value="">Select Type</option>
+          <option value="fixed">Fixed Departure</option>
+          <option value="customized">Customized Holidays</option>
+        </select>
+
         <button
           type="submit"
           className="flex items-center gap-2 bg-gradient-to-r from-[#e82429] to-[#721011] text-white px-4 py-3 rounded-xl shadow hover:opacity-90 transition-all"
@@ -158,6 +162,7 @@ export default function HolidayCategory() {
             <tr>
               <th className="p-3 text-left">#</th>
               <th className="p-3 text-left">Category Name</th>
+              <th className="p-3 text-left">Type</th>
               <th className="p-3 text-left">Slug</th>
               <th className="p-3 text-center">Actions</th>
             </tr>
@@ -172,6 +177,18 @@ export default function HolidayCategory() {
                 >
                   <td className="p-3">{index + 1}</td>
                   <td className="p-3 font-medium">{cat.name}</td>
+                  <td className="p-3">
+                    {cat.type === "fixed" ? (
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700">
+                        ✈️ Fixed Departure
+                      </span>
+                    ) : (
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-700">
+                        🎯 Customized
+                      </span>
+                    )}
+                  </td>
+
                   <td className="p-3 text-gray-600">{cat.slug}</td>
 
                   <td className="p-3 flex items-center justify-center gap-4">

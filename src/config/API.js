@@ -206,6 +206,15 @@ export const API = {
   GET_HOLIDAY_PACKAGE_BY_SLUG: (category, slug) =>
     `${holidayTours}/category/${category}/${slug}`,
 
+  // ---- Holiday Tour Downloads ----
+
+  DOWNLOAD_ITINERARY: (slug) => `${holidayTours}/download/itinerary/${slug}`,
+
+  DOWNLOAD_FLYER_LOGO: (slug) => `${holidayTours}/download/flyer-logo/${slug}`,
+
+  DOWNLOAD_FLYER_NO_LOGO: (slug) =>
+    `${holidayTours}/download/flyer-no-logo/${slug}`,
+
   // ---- Holiday Bookings ----
   CREATE_HOLIDAY_BOOKING: `${holidayBookings}/create`,
   GET_ALL_HOLIDAY_BOOKINGS: `${holidayBookings}/all`,

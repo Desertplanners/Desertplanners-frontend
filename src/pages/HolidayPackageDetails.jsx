@@ -43,6 +43,7 @@ export default function HolidayPage() {
     travelDate: "",
     adults: 1,
     children: 0,
+    message: "",
   });
   const handleBookingChange = (e) => {
     setBookingForm((prev) => ({
@@ -170,6 +171,34 @@ export default function HolidayPage() {
     }
   };
 
+  const handleEnquirySubmit = async () => {
+    try {
+      const api = DataService();
+
+      const payload = {
+        name: bookingForm.guestName,
+        email: bookingForm.guestEmail,
+        contactNumber: bookingForm.guestContact,
+        services: title,
+        message: `
+  Travel Date: ${bookingForm.travelDate}
+  Adults: ${bookingForm.adults}
+  Children: ${bookingForm.children}
+  
+  ${bookingForm.message}
+  `,
+      };
+
+      const res = await api.post(API.CREATE_ENQUIRY, payload);
+
+      if (res.status === 200 || res.status === 201) {
+        alert("Enquiry submitted successfully!");
+      }
+    } catch (err) {
+      console.log(err);
+      alert("Failed to submit enquiry");
+    }
+  };
   if (loading)
     return (
       <div className="text-center py-20 text-xl font-semibold">Loading...</div>
@@ -381,47 +410,73 @@ export default function HolidayPage() {
         </div>
 
         {/* HERO CARD */}
-        <div className="bg-white rounded-3xl shadow-lg p-7 border border-[#e82429]/10">
-          <div className="flex flex-col md:flex-row justify-between gap-8">
-            <div className="flex-1">
-              {/* TITLE - smaller */}
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#721011]">
+
+        <div className="relative bg-gradient-to-br from-white to-[#fff5f5] rounded-3xl shadow-xl border border-[#e82429]/10 p-8">
+          <div className="grid lg:grid-cols-3 gap-8 items-start">
+            {/* LEFT CONTENT */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* TITLE */}
+              <h1 className="text-3xl md:text-4xl font-extrabold text-[#721011] leading-tight">
                 {title}
               </h1>
 
-              <div className="mt-4 flex flex-wrap gap-3">
-                <span className="bg-[#ffe4e4] px-4 py-1.5 rounded-full flex items-center gap-2 font-semibold">
-                  <FaClock className="text-[#e82429]" /> {duration}
+              {/* BADGES */}
+              <div className="flex flex-wrap gap-3">
+                <span className="flex items-center gap-2 bg-[#ffe6e6] px-4 py-2 rounded-full text-sm font-semibold text-[#721011]">
+                  <FaClock className="text-[#e82429]" />
+                  {duration}
                 </span>
 
-                <span className="bg-[#fff4f4] px-4 py-1.5 rounded-full font-semibold">
+                <span className="bg-[#fff1f1] px-4 py-2 rounded-full text-sm font-semibold text-[#721011]">
                   {categoryName}
                 </span>
               </div>
+
+              {/* DESCRIPTION */}
+              <p className="text-gray-600 leading-relaxed max-w-2xl">
+                {description}
+              </p>
             </div>
 
-            {/* PRICE - smaller */}
-            <div className="flex flex-col items-start md:items-end">
-              <p className="text-2xl md:text-3xl font-black text-[#e82429]">
-                {isNumericPrice ? `AED ${priceAdult}` : priceAdult}
-              </p>
+            {/* PRICE CARD */}
+            <div className="bg-white rounded-2xl shadow-lg border border-[#e82429]/20 p-6 flex flex-col gap-4">
+              <div className="text-center">
+                <p className="text-sm text-gray-500">Starting From</p>
 
-              {/* <button
-                onClick={() =>
-                  document
-                    .getElementById("bookingForm")
-                    .scrollIntoView({ behavior: "smooth" })
-                }
-                className="mt-3 px-6 py-3 bg-[#e82429] text-white font-bold rounded-xl hover:bg-[#b91c1c]"
-              >
-                Book Now
-              </button> */}
+                <p className="text-3xl font-extrabold text-[#e82429]">
+                  {isNumericPrice ? `AED ${priceAdult}` : priceAdult}
+                </p>
+              </div>
+
+              {/* BUTTONS */}
+              <div className="flex flex-col gap-3">
+                <a
+                  href={`${API.BASE_URL}/api/holiday-tour/download/itinerary/${packageData.slug}`}
+                  target="_blank"
+                  className="w-full text-center px-4 py-2.5 rounded-lg bg-[#721011] text-white font-semibold hover:bg-[#e82429] transition"
+                >
+                  📄 Download Itinerary
+                </a>
+
+                <a
+                  href={`${API.BASE_URL}/api/holiday-tour/download/flyer-logo/${packageData.slug}`}
+                  target="_blank"
+                  className="w-full text-center px-4 py-2.5 rounded-lg bg-[#e82429] text-white font-semibold hover:bg-[#721011] transition"
+                >
+                  📥 Flyer With Logo
+                </a>
+
+                <a
+                  href={`${API.BASE_URL}/api/holiday-tour/download/flyer-no-logo/${packageData.slug}`}
+                  target="_blank"
+                  className="w-full text-center px-4 py-2.5 rounded-lg bg-gray-900 text-white font-semibold hover:bg-black transition"
+                >
+                  📥 Flyer Without Logo
+                </a>
+              </div>
             </div>
           </div>
-
-          <p className="mt-5 text-gray-700">{description}</p>
         </div>
-
         {/* ⭐ MOBILE ENQUIRY FORM HERE */}
         {/* <div className="block md:hidden">
           <div className="bg-white rounded-3xl shadow-xl p-7 border border-[#e82429]/20 mt-5">
@@ -655,10 +710,10 @@ export default function HolidayPage() {
           className="bg-white rounded-3xl shadow-xl p-6 border border-[#e82429]/20"
         >
           <h3 className="text-xl font-bold mb-4 text-[#721011]">
-            Book This Package
+            {isNumericPrice ? "Book This Package" : "Send Enquiry"}
           </h3>
 
-          <form onSubmit={handleBookingSubmit} className="space-y-3">
+          <form className="space-y-3">
             <input
               name="guestName"
               placeholder="Full Name"
@@ -675,12 +730,14 @@ export default function HolidayPage() {
               className="p-3 border rounded-xl w-full"
             />
 
-            <input
-              name="guestContact"
-              placeholder="Phone"
+            <PhoneInput
               value={bookingForm.guestContact}
-              onChange={handleBookingChange}
-              className="p-3 border rounded-xl w-full"
+              onChange={(value) =>
+                setBookingForm((prev) => ({
+                  ...prev,
+                  guestContact: value,
+                }))
+              }
             />
 
             <input
@@ -711,12 +768,34 @@ export default function HolidayPage() {
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-3 bg-gradient-to-r from-[#e82429] to-[#721011] text-white font-bold rounded-xl"
-            >
-              Book Now
-            </button>
+            {/* BUTTONS */}
+            {isNumericPrice ? (
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={handleEnquirySubmit}
+                  className="py-3 bg-gray-900 text-white font-bold rounded-xl"
+                >
+                  Enquiry Now
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleBookingSubmit}
+                  className="py-3 bg-gradient-to-r from-[#e82429] to-[#721011] text-white font-bold rounded-xl"
+                >
+                  Book Now
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleEnquirySubmit}
+                className="w-full py-3 bg-gradient-to-r from-[#e82429] to-[#721011] text-white font-bold rounded-xl"
+              >
+                Send Enquiry
+              </button>
+            )}
           </form>
         </div>
         {/* NEED HELP (STATIC) */}
