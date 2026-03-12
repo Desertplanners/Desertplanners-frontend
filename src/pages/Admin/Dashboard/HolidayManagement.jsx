@@ -173,7 +173,7 @@ export default function HolidayManagement() {
                 </p>
 
                 <p className="text-sm text-gray-700 flex items-center gap-2 font-semibold">
-                  <FaMoneyBillWave className="text-green-600" /> USD{" "}
+                   AED{" "}
                   {t.priceAdult}
                 </p>
 
