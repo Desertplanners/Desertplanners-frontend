@@ -12,7 +12,7 @@ export default function Navbar() {
   const [tourCategories, setTourCategories] = useState([]);
   const [holidayCategories, setHolidayCategories] = useState([]);
   const [visaCategories, setVisaCategories] = useState([]);
-  
+
   const [openIndex, setOpenIndex] = useState(null);
   const [openSubIndex, setOpenSubIndex] = useState({});
   const [openVisaIndex, setOpenVisaIndex] = useState(null);
@@ -171,7 +171,7 @@ export default function Navbar() {
           path: "/holidays/customized",
         },
       ],
-    }
+    },
   ];
 
   // ================================
@@ -249,10 +249,7 @@ export default function Navbar() {
 
           <div className="relative group">
             {/* TRIGGER */}
-            <Link
-              to="/visa"
-              className="flex items-center gap-2   transition"
-            >
+            <Link to="/visa" className="flex items-center gap-2   transition">
               <span className="relative">
                 Visa Services
                 <span className="absolute -bottom-1 left-0 h-[2px] w-0 bg-[#e82429] group-hover:w-full transition-all"></span>
@@ -280,7 +277,6 @@ export default function Navbar() {
                   <h3 className="text-base font-bold text-[#721011]">
                     🌍 Visa Services by Destination
                   </h3>
-                 
                 </div>
                 <Link
                   to="/visa"
@@ -496,6 +492,7 @@ export default function Navbar() {
             ))}
 
             {/* VISA SERVICES MOBILE */}
+            {/* VISA SERVICES MOBILE */}
             <li>
               <div className="flex justify-between items-center">
                 <Link
@@ -521,30 +518,51 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* LEVEL 2 – REGION */}
+              {/* REGION */}
               {openVisaIndex === 0 && (
-                <ul className="pl-4 mt-2 space-y-2">
-                  {visaTree.map((region, rIndex) => (
-                    <li key={region._id}>
-                      <div className="font-medium text-sm">{region.name}</div>
+                <div className="mt-3 space-y-4">
+                  {visaTree.map((region) => (
+                    <div key={region._id}>
+                      {/* REGION TITLE */}
+                      <h4 className="text-xs font-bold text-[#721011] uppercase mb-2">
+                        {region.name}
+                      </h4>
 
-                      {/* LEVEL 3 – COUNTRY */}
-                      <ul className="pl-4 mt-1 space-y-1">
+                      {/* GRID (3 COLUMN) */}
+                      <div className="grid grid-cols-3 gap-2">
                         {region.subCategories?.map((country) => (
-                          <li key={country._id}>
-                            <Link
-                              to={`/visa/${region.slug}/${country.slug}`}
-                              className="block py-1 text-xs text-gray-600"
-                              onClick={() => setMenuOpen(false)}
-                            >
+                          <Link
+                            key={country._id}
+                            to={`/visa/${region.slug}/${country.slug}`}
+                            onClick={() => setMenuOpen(false)}
+                            className="
+                  flex flex-col items-center
+                  p-2
+                  rounded-lg
+                  bg-[#fafafa]
+                  hover:bg-[#fbeaea]
+                  transition
+                "
+                          >
+                            {/* FLAG */}
+                            {country.countryCode && (
+                              <img
+                                src={`https://flagcdn.com/w40/${country.countryCode.toLowerCase()}.png`}
+                                alt={country.name}
+                                className="w-6 h-4 rounded shadow-sm mb-1"
+                              />
+                            )}
+
+                            {/* NAME */}
+                            <span className="text-[10px] text-center text-gray-700 font-medium leading-tight">
                               {country.name}
-                            </Link>
-                          </li>
+                            </span>
+                          </Link>
                         ))}
-                      </ul>
-                    </li>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               )}
             </li>
             {/* ABOUT US */}
