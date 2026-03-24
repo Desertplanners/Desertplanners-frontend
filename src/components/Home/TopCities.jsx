@@ -134,9 +134,13 @@ export default function TopCitiesSlider() {
                     draggable="false"
                   />
                   <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition duration-300" />
-                  <h3 className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white text-2xl font-semibold tracking-wide drop-shadow-lg">
+                  <div className="absolute bottom-0 left-0 w-full bg-black/50 backdrop-blur-sm px-5 py-4 flex flex-col items-start">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-1 tracking-wide">
                     {city.name}
                   </h3>
+
+                  
+                </div>
                 </div>
               </div>
             ))}
